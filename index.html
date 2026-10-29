@@ -49,6 +49,10 @@ th{font-size:11px;color:#657993;font-weight:600}
 .copy{margin-top:10px}
 .results{margin-top:14px}
 .badge-incomplete{display:inline-block;background:#fdecef;color:#bd2638;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-left:6px}
+.checkbox-field{display:flex;align-items:flex-start;gap:9px;margin:12px 0;padding:11px 13px;background:#f0f7ff;border:1px solid #dbeafe;border-radius:10px}
+.checkbox-field input[type="checkbox"]{width:auto;flex:0 0 auto;margin-top:2px;transform:scale(1.25);accent-color:#1463e8}
+.checkbox-field label{font-size:12.5px;font-weight:700;margin:0;line-height:1.45;cursor:pointer}
+.checkbox-field small.hint{display:block;font-weight:400;margin-top:3px}
 @media(min-width:700px){.flow{grid-template-columns:repeat(4,1fr)}.metrics{grid-template-columns:repeat(3,1fr)}.metric.wide{grid-column:1/-1}}
 @media(max-width:400px){.row{grid-template-columns:1fr}}
 </style>
@@ -113,6 +117,13 @@ th{font-size:11px;color:#657993;font-weight:600}
       </select>
       <small class="hint">"না" হলে রুটটি সম্পন্নযোগ্য নয় — ফলাফল অসম্পূর্ণ হিসেবে চিহ্নিত হবে।</small>
     </div>
+    <div class="checkbox-field">
+      <input type="checkbox" id="limitOk">
+      <label for="limitOk">
+        আমি P2P অর্ডার বুকের min/max limit যাচাই করেছি
+        <small class="hint">DOGE, MMK ও USDT — তিনটি ধাপেই অর্ডার সীমা যাচাই করুন। টিক না দিলে ফলাফল "অসম্পূর্ণ" হিসেবে চিহ্নিত হবে।</small>
+      </label>
+    </div>
   </section>
 
   <section class="card">
@@ -165,7 +176,7 @@ th{font-size:11px;color:#657993;font-weight:600}
     <button class="btn copy" id="copy">📋 সম্পূর্ণ ফলাফল কপি</button>
   </section>
 
-  <p class="footer">শুধু পরিকল্পনা ও শিক্ষার জন্য। অর্ডার সীমা, পেমেন্ট সুবিধা ও নেটওয়ার্ক যাচাই করুন। সব মূল্য ম্যানুয়াল — লাইভ API নয়।</p>
+  <p class="footer">শুধু পরিকল্পনা ও শিক্ষার জন্য। <b>⚠️ বড় অর্ডার দেওয়ার আগে অবশ্যই P2P অর্ডার বুকের min/max limit যাচাই করুন</b> — নাহলে পুরো অর্ডার একবারে ফিল নাও হতে পারে। পেমেন্ট সুবিধা ও নেটওয়ার্কও যাচাই করুন। সব মূল্য ম্যানুয়াল — লাইভ API নয়।</p>
 </main>
 
 <script>
@@ -185,6 +196,7 @@ th{font-size:11px;color:#657993;font-weight:600}
     const bfee=n("bfee"), oth=n("oth"), init=n("init");
     const fix=bfee+oth;
     const netOk=$("net").value==="yes";
+    const limitOk=$("limitOk").checked;
     const w=[];
 
     // ---- হিসাব ----
@@ -208,11 +220,14 @@ th{font-size:11px;color:#657993;font-weight:600}
     if(isEmpty("ubs")||ubs<=0)w.push("⚠️ প্রতি USDT-এর বিক্রয়মূল্য (BDT) শূন্য/খালি।");
     if(sl<0||sl>100)w.push("⚠️ স্লিপেজ ০–১০০% এর মধ্যে হওয়া উচিত।");
 
+    // ---- অর্ডার লিমিট যাচাই (চেকবক্স) ----
+    if(!limitOk)w.push("⚠️ P2P অর্ডার বুকের min/max limit যাচাই করা হয়নি — পুরো অর্ডার একবারে ফিল না-ও হতে পারে।");
+
     // ---- নেটওয়ার্ক ----
     if(!netOk)w.push("⛔ USDT নেটওয়ার্ক যাচাই করা হয়নি — এই রুট সম্পন্নযোগ্য নয় বলে ধরা হবে।");
 
     // ---- ওয়ার্নিং রেন্ডার ----
-    const hasError=!netOk;
+    const hasError=!netOk||!limitOk;
     $("warn").className="warn"+(hasError?" err":"")+(w.length?"":" hidden");
     $("warn").innerHTML=w.join("<br>");
     $("incompleteBadge").classList.toggle("hidden",!hasError);
@@ -265,6 +280,7 @@ th{font-size:11px;color:#657993;font-weight:600}
       "  প্রতি USDT ক্রয়মূল্য: "+ubm+" MMK\n"+
       "  প্রতি USDT বিক্রয়মূল্য: "+ubs+" BDT\n"+
       "  নেটওয়ার্ক যাচাই: "+(netOk?"হ্যাঁ":"না")+"\n"+
+      "  অর্ডার লিমিট যাচাই: "+(limitOk?"হ্যাঁ":"না")+"\n"+
       "-----------------------------\n"+
       "ফলাফল:\n"+
       "  মোট বিনিয়োগ: "+$("inv").textContent+"\n"+
