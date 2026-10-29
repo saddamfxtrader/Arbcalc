@@ -67,17 +67,10 @@ th{font-size:11px;color:#657993;font-weight:600}
       <label>আপনি কতটি DOGE বিক্রি করবেন?</label>
       <input id="q" type="number" value="10" min="0" step="any" inputmode="decimal" placeholder="DOGE পরিমাণ">
     </div>
-    <div class="row">
-      <div class="field">
-        <label>প্রতি ১ DOGE-এর বিক্রয়মূল্য</label>
-        <input id="ds" type="number" value="160" min="0" step="any" inputmode="decimal" placeholder="MMK">
-        <small class="hint">একক: <span class="unit">MMK</span> — Myanmar P2P-তে ১ DOGE-এর দাম কত MMK, সেটি লিখুন।</small>
-      </div>
-      <div class="field">
-        <label>বিক্রেতার কাছে সর্বোচ্চ কত DOGE আছে? <small>(ঐচ্ছিক)</small></label>
-        <input id="da" type="number" placeholder="DOGE" min="0" step="any" inputmode="decimal">
-        <small class="hint">Myanmar P2P অর্ডার বুকের উপলভ্যতা (ঐচ্ছিক)।</small>
-      </div>
+    <div class="field">
+      <label>প্রতি ১ DOGE-এর বিক্রয়মূল্য</label>
+      <input id="ds" type="number" value="160" min="0" step="any" inputmode="decimal" placeholder="MMK">
+      <small class="hint">একক: <span class="unit">MMK</span> — Myanmar P2P-তে ১ DOGE-এর দাম কত MMK, সেটি লিখুন।</small>
     </div>
     <div class="row">
       <div class="field">
@@ -95,17 +88,10 @@ th{font-size:11px;color:#657993;font-weight:600}
 
   <section class="card">
     <h2>🔹 ধাপ ২ · MMK → USDT</h2>
-    <div class="row">
-      <div class="field">
-        <label>প্রতি ১ USDT-এর ক্রয়মূল্য</label>
-        <input id="ubm" type="number" value="4700" min="0" step="any" inputmode="decimal" placeholder="MMK">
-        <small class="hint">একক: <span class="unit">MMK</span> — ১ USDT কিনতে কত MMK লাগছে।</small>
-      </div>
-      <div class="field">
-        <label>বিক্রেতার কাছে সর্বোচ্চ কত USDT আছে? <small>(ঐচ্ছিক)</small></label>
-        <input id="ua" type="number" placeholder="USDT" min="0" step="any" inputmode="decimal">
-        <small class="hint">Myanmar P2P USDT অর্ডার বুকের উপলভ্যতা।</small>
-      </div>
+    <div class="field">
+      <label>প্রতি ১ USDT-এর ক্রয়মূল্য</label>
+      <input id="ubm" type="number" value="4700" min="0" step="any" inputmode="decimal" placeholder="MMK">
+      <small class="hint">একক: <span class="unit">MMK</span> — ১ USDT কিনতে কত MMK লাগছে।</small>
     </div>
     <div class="row">
       <div class="field">
@@ -131,17 +117,10 @@ th{font-size:11px;color:#657993;font-weight:600}
 
   <section class="card">
     <h2>🔹 ধাপ ৩ · USDT → BDT</h2>
-    <div class="row">
-      <div class="field">
-        <label>প্রতি ১ USDT-এর বিক্রয়মূল্য</label>
-        <input id="ubs" type="number" value="130" min="0" step="any" inputmode="decimal" placeholder="BDT">
-        <small class="hint">একক: <span class="unit">BDT</span> — Bangladesh P2P-তে ১ USDT-এর দাম।</small>
-      </div>
-      <div class="field">
-        <label>ক্রেতার কাছে সর্বোচ্চ কত USDT চাহিদা আছে? <small>(ঐচ্ছিক)</small></label>
-        <input id="uba" type="number" placeholder="USDT" min="0" step="any" inputmode="decimal">
-        <small class="hint">Bangladesh P2P ক্রয় অর্ডারের উপলভ্যতা।</small>
-      </div>
+    <div class="field">
+      <label>প্রতি ১ USDT-এর বিক্রয়মূল্য</label>
+      <input id="ubs" type="number" value="130" min="0" step="any" inputmode="decimal" placeholder="BDT">
+      <small class="hint">একক: <span class="unit">BDT</span> — Bangladesh P2P-তে ১ USDT-এর দাম।</small>
     </div>
     <div class="row">
       <div class="field">
@@ -196,8 +175,6 @@ th{font-size:11px;color:#657993;font-weight:600}
   const isEmpty=x=>raw(x)==="";
   // খালি হলে 0, নাহলে সংখ্যা (ঋণাত্মক হলে 0)
   const n=x=>{const v=parseFloat(raw(x));return isNaN(v)?0:Math.max(0,v);};
-  // ঐচ্ছিক ফিল্ড: খালি হলে Infinity
-  const op=x=>isEmpty(x)?Infinity:n(x);
   const F=(x,c)=>({BDT:"৳",MMK:"K",USDT:"₮",DOGE:"Ð"}[c]||"")+" "+Number(x||0).toLocaleString("en-US",{maximumFractionDigits:["USDT","DOGE"].includes(c)?8:2});
   const P=x=>Number(x||0).toFixed(2)+"%";
 
@@ -230,11 +207,6 @@ th{font-size:11px;color:#657993;font-weight:600}
     if(isEmpty("ubm")||ubm<=0)w.push("⚠️ প্রতি USDT-এর ক্রয়মূল্য (MMK) শূন্য/খালি — MMK → USDT হিসাব করা যাচ্ছে না।");
     if(isEmpty("ubs")||ubs<=0)w.push("⚠️ প্রতি USDT-এর বিক্রয়মূল্য (BDT) শূন্য/খালি।");
     if(sl<0||sl>100)w.push("⚠️ স্লিপেজ ০–১০০% এর মধ্যে হওয়া উচিত।");
-
-    // ---- অর্ডার উপলভ্যতা ----
-    if(q>op("da"))w.push("⚠️ Myanmar DOGE অর্ডার বুকের উপলভ্যতা কম ("+F(op("da"),"DOGE")+")।");
-    if(before>op("ua"))w.push("⚠️ Myanmar USDT অর্ডার বুকের উপলভ্যতা কম ("+F(op("ua"),"USDT")+")।");
-    if(u>op("uba"))w.push("⚠️ Bangladesh USDT অর্ডার বুকের উপলভ্যতা কম ("+F(op("uba"),"USDT")+")।");
 
     // ---- নেটওয়ার্ক ----
     if(!netOk)w.push("⛔ USDT নেটওয়ার্ক যাচাই করা হয়নি — এই রুট সম্পন্নযোগ্য নয় বলে ধরা হবে।");
