@@ -1,1104 +1,251 @@
-<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DOGE Arbitrage Calculator</title><style>
-*{box-sizing:border-box}body{margin:0;background:#f3f7fc;color:#102846;font:14px system-ui}.app{max-width:1180px;margin:auto;padding:22px 14px}.hero{display:flex;justify-content:space-between;gap:12px}.hero h1{margin:0;font-size:28px}.muted{color:#657993}.pill{background:#fff2d2;color:#805100;padding:7px 10px;border-radius:20px;height:max-content;font-size:12px}.tabs{display:flex;gap:8px;margin:16px 0}.tab,.sec{background:white;border:1px solid #d9e4ef;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer}.tab.active{background:#102846;color:#fff}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:#fff;border:1px solid #dce6f2;border-radius:16px;padding:16px}.card h2{font-size:16px;margin:0}.tag{font-size:10px;background:#e5f0ff;color:#1455ba;padding:2px 6px;border-radius:8px}.field{margin:9px 0}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:4px}.field small{float:right;color:#657993;font-weight:400}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}input,select{width:100%;padding:9px;border:1px solid #cbd8e8;border-radius:8px;font:inherit}.btn{background:#1463e8;border:0;border-radius:9px;padding:12px;width:100%;color:white;font-weight:800;cursor:pointer}.panel{display:none}.panel.active{display:block}.results{margin-top:16px}.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.metric{border:1px solid #dce6f2;border-radius:12px;padding:10px}.metric b{display:block;font-size:11px;color:#657993}.metric strong{display:block;font-size:18px;margin-top:3px}.pos{color:#07824d}.neg{color:#bd2638}.warn{margin:12px 0;padding:10px;background:#fff5df;border-left:4px solid #e9a321;color:#79500a}.hidden{display:none}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:13px 0}.step{border:1px solid #dce6f2;background:#fbfdff;border-radius:10px;padding:9px}.step span{display:block;color:#657993;font-size:12px;margin:4px 0}.detail{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}table{width:100%;border-collapse:collapse;font-size:13px}td,th{border-bottom:1px solid #e5edf5;padding:8px;text-align:left;white-space:nowrap}th{font-size:10px;color:#657993}.best{background:#effbf5}.footer{text-align:center;font-size:12px;color:#657993;margin-top:18px}@media(max-width:850px){.grid,.detail{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}@media(max-width:500px){.hero{display:block}.row,.flow{grid-template-columns:1fr}.hero h1{font-size:23px}}
-</style></head><body><main class="app"><header class="hero"><div><h1>DOGE → USDT → BDT Arbitrage</h1><p class="muted">Myanmar P2P · Binance / MEXC Spot or Convert · Bangladesh P2P</p></div><span class="pill">ম্যানুয়াল কোট মোড · লাইভ API নয়</span></header><div class="tabs"><button class="tab active" data-m="buy">A. MMK দিয়ে DOGE কিনে USDT বিক্রি</button><button class="tab" data-m="sell">B. DOGE বিক্রি → MMK → USDT → BDT</button></div>
-<section class="grid"><article class="card"><h2>1 · Myanmar P2P <i class="tag">MMK</i></h2><p class="muted">বাস্তব অর্ডার মূল্য, সীমা ও ফি দিন।</p><div class="field"><label>DOGE পরিমাণ</label><input id="q" type="number" value="10" min="0" step="any"></div><div class="row"><div class="field"><label>DOGE ক্রয়মূল্য <small>MMK/DOGE</small></label><input id="db" type="number" value="160"></div><div class="field"><label>DOGE বিক্রয়মূল্য <small>MMK/DOGE</small></label><input id="ds" type="number" value="160"></div></div><div class="row"><div class="field"><label>USDT ক্রয়মূল্য <small>MMK/USDT</small></label><input id="ubm" type="number" value="4700"></div><div class="field"><label>USDT বিক্রয়মূল্য <small>MMK/USDT</small></label><input id="usm" type="number" value="4700"></div></div><div class="row"><div class="field"><label>DOGE অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label><input id="da" type="number" placeholder="DOGE"></div><div class="field"><label>USDT অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label><input id="ua" type="number" placeholder="USDT"></div></div><div class="row"><div class="field"><label>P2P ফি <small>MMK</small></label><input id="mf" type="number" value="0"></div><div class="field"><label>পেমেন্ট ফি <small>MMK</small></label><input id="pf" type="number" value="0"></div></div></article>
-<article class="card"><h2>2 · Exchange <i class="tag">DOGE/USDT</i></h2><p class="muted">Convert quote স্পট চার্টের থেকে আলাদা রাখা হয়েছে।</p><div class="field"><label>Execution</label><select id="ex"><option value="c">Binance Convert quote</option><option value="b">Binance spot sell</option><option value="m">MEXC spot sell</option></select></div><div class="row"><div class="field"><label>Binance bid <small>USDT/DOGE</small></label><input id="bb" type="number" step="any" value="0.07816"></div><div class="field"><label>Binance ask <small>USDT/DOGE</small></label><input id="ba" type="number" step="any" value="0.07830"></div></div><div class="field"><label>Binance Convert প্রকৃত quote <small>USDT/DOGE; 10→0.77869467 হলে 0.077869467</small></label><input id="cv" type="number" step="any" value="0.077869467"></div><div class="row"><div class="field"><label>MEXC bid <small>USDT/DOGE</small></label><input id="mb" type="number" step="any" value="0.07800"></div><div class="field"><label>MEXC ask <small>USDT/DOGE</small></label><input id="ma" type="number" step="any" value="0.07820"></div></div><div class="row"><div class="field"><label>Binance fee <small>%</small></label><input id="bf" type="number" step="any" value="0.1"></div><div class="field"><label>MEXC fee <small>%</small></label><input id="xf" type="number" step="any" value="0.1"></div></div><div class="row"><div class="field"><label>Network/withdrawal <small>USDT</small></label><input id="nf" type="number" step="any" value="0"></div><div class="field"><label>নেটওয়ার্ক উপলভ্য?</label><select id="net"><option value="yes">হ্যাঁ — যাচাই করা</option><option value="no">না / অজানা</option></select></div></div><div class="field"><label>স্লিপেজ <small>%</small></label><input id="sl" type="number" step="any" value="0.2"></div></article>
-<article class="card"><h2>3 · Bangladesh P2P <i class="tag">BDT</i></h2><p class="muted">চূড়ান্ত USDT বিক্রির বাস্তব P2P rate ও খরচ।</p><div class="row"><div class="field"><label>USDT ক্রয়মূল্য <small>BDT/USDT</small></label><input id="ubb" type="number" value="129"></div><div class="field"><label>USDT বিক্রয়মূল্য <small>BDT/USDT</small></label><input id="ubs" type="number" value="130"></div></div><div class="field"><label>USDT অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label><input id="uba" type="number" placeholder="USDT"></div><div class="row"><div class="field"><label>P2P/পেমেন্ট ফি <small>BDT</small></label><input id="bfee" type="number" value="0"></div><div class="field"><label>অন্যান্য খরচ <small>BDT</small></label><input id="oth" type="number" value="0"></div></div><div class="panel active" id="pbuy"><div class="field"><label>MMK/USDT রূপান্তর রেট <small>খরচকে BDT-তে তুলনার জন্য</small></label><input id="base" type="number" value="4700"></div></div><div class="panel" id="psell"><div class="field"><label>DOGE-এর প্রাথমিক মোট ক্রয়মূল্য <small>BDT; না দিলে নিশ্চিত লাভ নয়</small></label><input id="init" type="number" placeholder="যেমন 220"></div></div><button class="btn" id="go">সম্পূর্ণ হিসাব আপডেট করুন</button></article></section>
-<section class="card results"><h2 id="ttl">রুট A · Myanmar DOGE → USDT → Bangladesh BDT</h2><p class="muted">প্রতিটি মুদ্রা পৃথক রেখে অর্থপ্রবাহের হিসাব।</p><div class="metrics"><div class="metric"><b>মোট বিনিয়োগ</b><strong id="inv">—</strong></div><div class="metric"><b>মোট বিক্রয়মূল্য</b><strong id="rev">—</strong></div><div class="metric"><b>মোট ফি ও খরচ</b><strong id="fee">—</strong></div><div class="metric"><b>নিট লাভ / ক্ষতি</b><strong id="pro">—</strong></div><div class="metric"><b>ROI</b><strong id="roi">—</strong></div></div><div id="warn" class="warn hidden"></div><div id="flow" class="flow"></div><div class="detail"><div><h2>সব sell execution-এর তুলনা</h2><table><thead><tr><th>রুট</th><th>USDT (ফি-পর)</th><th>BDT আয়</th><th>নিট ফল</th><th>ROI</th><th>অবস্থা</th></tr></thead><tbody id="comp"></tbody></table></div><div><h2>বিস্তারিত যাচাই</h2><table><tbody id="det"></tbody></table></div></div><p class="muted" id="time"></p><button class="sec" id="copy">ফলাফল কপি</button></section><p class="footer">শুধু পরিকল্পনা ও শিক্ষার জন্য। অর্ডার সীমা, পেমেন্ট সুবিধা, নেটওয়ার্ক ও Convert quote যাচাই করুন।</p></main>
-<script>
-(()=>{let M="buy",$=x=>document.getElementById(x),n=x=>Math.max(0,parseFloat($(x).value)||0),op=x=>$(x).value.trim()===""?Infinity:n(x),F=(x,c)=>({BDT:"৳",MMK:"K",USDT:"₮",DOGE:"Ð"}[c]||"")+" "+Number(x||0).toLocaleString("en-US",{maximumFractionDigits:["USDT","DOGE"].includes(c)?8:2}),P=x=>Number(x||0).toFixed(2)+"%";function e(name,q){let p=name==="Convert"?n("cv"):name==="Binance"?n("bb"):n("mb"),r=(name==="MEXC"?n("xf"):n("bf"))/100,g=q*p,t=g*r,s=(g-t)*n("sl")/100;return{name,p,t,s,u:Math.max(0,g-t-s-n("nf"))}}function out(){let q=n("q"),rate=n("ubs"),fix=n("bfee")+n("oth"),w=[],I,R,C,Z,fl,dt,E=[];if(M==="buy"){let mm=q*n("db"),m=n("mf")+n("pf"),base=n("base")||n("ubm");I=(mm+m)/(base||1)*rate;E=["Convert","Binance","MEXC"].map(x=>e(x,q));let s=E.find(x=>x.name===({c:"Convert",b:"Binance",m:"MEXC"}[$("ex").value]));R=s.u*rate-fix;C=m/(base||1)*rate+(s.t+s.s+n("nf"))*rate+fix;Z=R-I;fl=[["1. DOGE কিনুন",F(q,"DOGE"),F(mm,"MMK")],["2. DOGE → USDT",F(q,"DOGE"),F(s.u,"USDT")],["3. USDT বিক্রি",F(s.u,"USDT"),F(R,"BDT")],["4. তুলনাযোগ্য খরচ",F(mm+m,"MMK"),F(I,"BDT")]];dt=[["DOGE কেনার খরচ",F(mm,"MMK")],["MMK ফি",F(m,"MMK")],["ভিত্তি রেট",F(base,"MMK")+" = 1 USDT"],["Execution",s.name+" @ "+s.p.toFixed(8)],["Trading + slippage",F(s.t+s.s,"USDT")],["Network fee",F(n("nf"),"USDT")],["BD P2P + অন্যান্য",F(fix,"BDT")],["প্রতি DOGE ফল",F(q?Z/q:0,"BDT")]];if(q>op("da"))w.push("Myanmar DOGE অর্ডারের উপলভ্য পরিমাণের চেয়ে পরিমাণ বেশি।");if(s.u>op("uba"))w.push("Bangladesh USDT অর্ডারের উপলভ্যতার চেয়ে পাওয়া USDT বেশি।");if(!n("cv")&&$("ex").value==="c")w.push("প্রকৃত Convert quote নেই; spot quote দিয়ে প্রতিস্থাপন করা হয়নি।")}else{let sale=q*n("ds"),m=n("mf")+n("pf"),usable=Math.max(0,sale-m),before=Math.max(0,usable/(n("ubm")||1)-n("nf")),u=before*(1-n("sl")/100),initial=n("init");I=initial+fix;R=u*rate-fix;C=m/(n("ubm")||1)*rate+n("nf")*rate+(before-u)*rate+fix;Z=R-I;fl=[["1. DOGE বিক্রি",F(q,"DOGE"),F(sale,"MMK")],["2. MMK দিয়ে USDT",F(usable,"MMK"),F(before,"USDT")],["3. USDT বিক্রি",F(u,"USDT"),F(R,"BDT")],["4. প্রাথমিক asset cost",F(initial,"BDT"),F(I,"BDT")]];dt=[["DOGE বিক্রির আয়",F(sale,"MMK")],["MMK ফি",F(m,"MMK")],["ব্যবহারযোগ্য MMK",F(usable,"MMK")],["MMK → USDT rate",F(n("ubm"),"MMK")+" / 1 USDT"],["Network fee",F(n("nf"),"USDT")],["Slippage",F(before-u,"USDT")],["প্রতি DOGE ফল",F(q?Z/q:0,"BDT")]];if(!initial)w.push("DOGE-এর প্রাথমিক ক্রয়মূল্য দেওয়া হয়নি—লাভ/ক্ষতি নিশ্চিত নয়।");if(q>op("da"))w.push("Myanmar DOGE অর্ডারের উপলভ্যতা কম।");if(before>op("ua"))w.push("Myanmar USDT অর্ডারের উপলভ্যতা কম।");if(u>op("uba"))w.push("Bangladesh USDT অর্ডারের উপলভ্যতা কম।")}if($("net").value==="no")w.push("নেটওয়ার্ক না / অজানা—এই রুট সম্পন্নযোগ্য বলে ধরা যাবে না।");if(!q||!rate||!I)w.push("প্রয়োজনীয় পরিমাণ, rate বা ভিত্তিমুদ্রার খরচ অনুপস্থিত।");let roi=I?Z/I*100:0;$("ttl").textContent=M==="buy"?"রুট A · Myanmar DOGE → USDT → Bangladesh BDT":"রুট B · DOGE → Myanmar MMK → USDT → Bangladesh BDT";["inv","rev","fee"].forEach((x,i)=>$(x).textContent=F([I,R,C][i],"BDT"));$("pro").textContent=F(Z,"BDT");$("pro").className=Z>=0?"pos":"neg";$("roi").textContent=P(roi);$("roi").className=roi>=0?"pos":"neg";$("warn").innerHTML=w.join("<br>");$("warn").classList.toggle("hidden",!w.length);$("flow").innerHTML=fl.map(x=>`<div class="step"><b>${x[0]}</b><span>${x[1]}</span><strong>${x[2]}</strong></div>`).join("");$("det").innerHTML=dt.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join("");$("comp").innerHTML=M==="buy"?E.map(x=>{let r=x.u*rate-fix,z=r-I,ro=I?z/I*100:0,sel=x.name===({c:"Convert",b:"Binance",m:"MEXC"}[$("ex").value]);return `<tr class="${sel?"best":""}"><td>${x.name}${sel?" · নির্বাচিত":""}</td><td>${F(x.u,"USDT")}</td><td>${F(r,"BDT")}</td><td class="${z>=0?"pos":"neg"}">${F(z,"BDT")}</td><td>${P(ro)}</td><td>${$("net").value==="yes"?"যাচাই করুন":"নেটওয়ার্ক অজানা"}</td></tr>`}).join(""):`<tr><td>রুট B</td><td>—</td><td>${F(R,"BDT")}</td><td class="${Z>=0?"pos":"neg"}">${F(Z,"BDT")}</td><td>${P(roi)}</td><td>যাচাই করুন</td></tr>`;$("time").textContent="হিসাবের সময়: "+new Date().toLocaleString("bn-BD")+" · সব মূল্য ম্যানুয়াল; API-ভিত্তিক লাইভ quote নয়"}document.querySelectorAll("input,select").forEach(x=>x.oninput=out);document.querySelectorAll(".tab").forEach(x=>x.onclick=()=>{M=x.dataset.m;document.querySelectorAll(".tab").forEach(y=>y.classList.toggle("active",x===y));$("pbuy").classList.toggle("active",M==="buy");$("psell").classList.toggle("active",M==="sell");out()});$("go").onclick=out;$("copy").onclick=()=>navigator.clipboard?.writeText($("ttl").textContent+"\nInvestment: "+$("inv").textContent+"\nNet: "+$("pro").textContent+"\nROI: "+$("roi").textContent);out()})();
-</script></body></html>
-<template id="legacy-calculator">
-<html lang="bn" translate="no" class="notranslate">
+<!doctype html>
+<html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>P2P Calculator</title>
-
-    <!-- ===== Google Translate OFF ===== -->
-    <meta name="google" content="notranslate">
-    <meta name="google-translate-customization" content="none">
-
-    <!-- ===== PWA META ===== -->
-    <meta name="theme-color" content="#0b1a33">
-    <meta name="description" content="P2P USDT/BDT Trade Calculator — Binance, Bitget, Bybit">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="P2P Calculator">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="P2P Calculator">
-
-    <!-- Inline manifest (data URI) -->
-    <link rel="manifest" id="appManifest">
-    <link rel="apple-touch-icon" id="appleIcon">
-    <link rel="icon" id="favIcon">
-
-    <style>
-        .notranslate, .notranslate * {
-            translate: no !important;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background: #f4f7fc;
-            padding: 16px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            transition: background 0.2s;
-        }
-
-        .app-container {
-            max-width: 560px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 20px 18px;
-            margin-bottom: 18px;
-            box-shadow: 0 8px 24px rgba(0, 20, 50, 0.06);
-            transition: box-shadow 0.15s;
-            border: 1px solid #eef2f6;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .card-header h2 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #0b1a33;
-            letter-spacing: -0.3px;
-        }
-
-        .badge {
-            background: #e9edf4;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #2c3e66;
-        }
-
-        .toggle-group {
-            display: flex;
-            background: #f0f3f9;
-            border-radius: 60px;
-            padding: 4px;
-            margin-bottom: 18px;
-        }
-
-        .toggle-btn {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 10px 8px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 14px;
-            color: #4a5b7a;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .toggle-btn.active {
-            background: #ffffff;
-            color: #0f2b4f;
-            box-shadow: 0 3px 12px rgba(0, 20, 50, 0.08);
-        }
-
-        .input-group {
-            margin-bottom: 14px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: #1f344f;
-            margin-bottom: 5px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-row .input-group {
-            flex: 1;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1.5px solid #dce2ec;
-            border-radius: 14px;
-            font-size: 15px;
-            background: #fafcff;
-            transition: border 0.2s;
-            color: #0b1a33;
-        }
-
-        input:focus, select:focus {
-            border-color: #2563eb;
-            outline: none;
-            background: #ffffff;
-        }
-
-        input::placeholder {
-            color: #9aabbf;
-            font-weight: 400;
-        }
-
-        .hint {
-            font-size: 11px;
-            color: #6b7f9b;
-            margin-top: 3px;
-        }
-
-        .fee-section {
-            background: #f8faff;
-            border-radius: 16px;
-            padding: 12px 14px;
-            margin: 8px 0 16px 0;
-            border: 1px solid #e3eaf3;
-        }
-
-        .fee-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px 14px;
-        }
-
-        .fee-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: #1f344f;
-        }
-
-        .fee-item input {
-            width: 70px;
-            padding: 6px 6px;
-            border-radius: 10px;
-            font-size: 13px;
-            flex-shrink: 0;
-        }
-
-        .fee-item select {
-            width: 70px;
-            padding: 6px 4px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: #0b1a33;
-            color: white;
-            border: none;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 6px;
-        }
-
-        .btn-primary:hover {
-            background: #1c3152;
-        }
-
-        .result-card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 20px 18px;
-            margin-top: 16px;
-            border: 1px solid #eef2f6;
-        }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px 16px;
-            margin: 14px 0 10px;
-        }
-
-        .result-item {
-            background: #f8fbff;
-            padding: 12px 10px;
-            border-radius: 16px;
-        }
-
-        .result-item .label {
-            font-size: 11px;
-            color: #6b7f9b;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .result-item .value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0b1a33;
-            margin-top: 2px;
-        }
-
-        .result-item .value.positive {
-            color: #0b7e3b;
-        }
-
-        .result-item .value.negative {
-            color: #b91c1c;
-        }
-
-        .result-item.span-2 {
-            grid-column: span 2;
-        }
-
-        .breakdown {
-            margin-top: 16px;
-            border-top: 1px solid #e3eaf3;
-            padding-top: 16px;
-        }
-
-        .breakdown-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            padding: 4px 0;
-            color: #1f344f;
-        }
-
-        .breakdown-row .amount {
-            font-weight: 500;
-        }
-
-        .warning-box {
-            background: #fef7e8;
-            border-left: 4px solid #f59e0b;
-            padding: 10px 14px;
-            border-radius: 12px;
-            margin: 12px 0 6px;
-            font-size: 13px;
-            color: #7b5d1e;
-        }
-
-        .history-section {
-            margin-top: 18px;
-        }
-
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eef2f6;
-            font-size: 13px;
-        }
-
-        .history-item .win {
-            color: #0b7e3b;
-            font-weight: 600;
-        }
-
-        .history-item .loss {
-            color: #b91c1c;
-            font-weight: 600;
-        }
-
-        .flex {
-            display: flex;
-            gap: 8px;
-        }
-
-        .flex .btn-secondary {
-            flex: 1;
-            padding: 10px;
-            background: #eef2f6;
-            border: none;
-            border-radius: 40px;
-            font-weight: 500;
-            font-size: 13px;
-            cursor: pointer;
-            color: #1f344f;
-        }
-
-        .btn-secondary:hover {
-            background: #dce2ec;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-2 {
-            margin-top: 12px;
-        }
-
-        .mt-1 {
-            margin-top: 6px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .badge-success {
-            background: #d1fae5;
-            color: #0b7e3b;
-        }
-
-        .badge-danger {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            left: 50%;
-            bottom: 24px;
-            transform: translateX(-50%) translateY(80px);
-            background: #0b1a33;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 500;
-            box-shadow: 0 8px 24px rgba(0, 20, 50, 0.25);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 9999;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        @media (max-width: 480px) {
-            .fee-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .result-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1a33">
+<title>DOGE → BDT Arbitrage</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#f3f7fc;color:#102846;font:14px system-ui,-apple-system,'Segoe UI',sans-serif;padding:14px}
+.app{max-width:560px;margin:auto}
+.hero{text-align:center;margin-bottom:16px}
+.hero h1{margin:0;font-size:22px;letter-spacing:-.3px}
+.hero p{margin:4px 0 0;color:#657993;font-size:13px}
+.card{background:#fff;border:1px solid #dce6f2;border-radius:16px;padding:16px;margin-bottom:14px}
+.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+.tag{font-size:10px;background:#e5f0ff;color:#1455ba;padding:2px 7px;border-radius:8px;font-weight:600}
+.field{margin:10px 0}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
+.field small{float:right;color:#657993;font-weight:400;font-size:11px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+input,select{width:100%;padding:11px 12px;border:1.5px solid #cbd8e8;border-radius:10px;font:inherit;font-size:15px;background:#fafcff}
+input:focus,select:focus{border-color:#1463e8;outline:none;background:#fff}
+.btn{background:#1463e8;border:0;border-radius:11px;padding:14px;width:100%;color:#fff;font-weight:800;font-size:15px;cursor:pointer;margin-top:6px}
+.btn:active{background:#0f4fc0}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.metric{border:1px solid #dce6f2;border-radius:12px;padding:11px;background:#fafcff}
+.metric b{display:block;font-size:11px;color:#657993;font-weight:600}
+.metric strong{display:block;font-size:17px;margin-top:3px}
+.metric.wide{grid-column:1/-1;background:#f0f7ff;border-color:#dbeafe}
+.pos{color:#07824d}
+.neg{color:#bd2638}
+.warn{margin:12px 0;padding:11px 13px;background:#fff5df;border-left:4px solid #e9a321;color:#79500a;border-radius:8px;font-size:13px;line-height:1.5}
+.hidden{display:none}
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.step{border:1px solid #dce6f2;background:#fbfdff;border-radius:10px;padding:10px}
+.step b{font-size:12px;display:block}
+.step span{display:block;color:#657993;font-size:12px;margin:4px 0}
+.step strong{font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{border-bottom:1px solid #e5edf5;padding:9px 6px;text-align:left}
+td:last-child,th:last-child{text-align:right}
+th{font-size:11px;color:#657993;font-weight:600}
+.detail{display:grid;grid-template-columns:1fr;gap:14px}
+.footer{text-align:center;font-size:12px;color:#657993;margin:18px 0 8px;line-height:1.5}
+.copy{margin-top:10px}
+.results{margin-top:14px}
+@media(min-width:700px){.flow{grid-template-columns:repeat(4,1fr)}.metrics{grid-template-columns:repeat(3,1fr)}.metric.wide{grid-column:1/-1}}
+@media(max-width:400px){.row{grid-template-columns:1fr}}
+</style>
 </head>
-<body class="notranslate">
-<div class="app-container" id="app">
+<body>
+<main class="app">
+  <header class="hero">
+    <h1>DOGE → MMK → USDT → BDT</h1>
+    <p>আপনার DOGE বিক্রি করে বাংলাদেশি টাকায় রূপান্তর</p>
+  </header>
 
-    <!-- header -->
-    <div style="margin-bottom: 12px; text-align: center;">
-        <h1 style="font-size: 22px; color: #0b1a33; letter-spacing: -0.5px;">P2P Trade Calculator</h1>
-        <p style="color: #4a5b7a; font-size: 14px;">USDT ↔ BDT · Binance · Bitget · Bybit</p>
+  <!-- INPUTS -->
+  <section class="card">
+    <h2>🔹 ধাপ ১ · DOGE বিক্রি (MMK)</h2>
+    <div class="field">
+      <label>DOGE পরিমাণ</label>
+      <input id="q" type="number" value="10" min="0" step="any" inputmode="decimal">
     </div>
-
-    <!-- mode toggle -->
-    <div class="card">
-        <div class="toggle-group">
-            <button class="toggle-btn active" data-mode="buy" id="modeBuyBtn">📥 USDT কিনব</button>
-            <button class="toggle-btn" data-mode="sell" id="modeSellBtn">📤 USDT বিক্রি করব</button>
-        </div>
-
-        <!-- buy/sell price -->
-        <div class="input-row">
-            <div class="input-group">
-                <label id="priceLabel">Buy Price (BDT)</label>
-                <input type="number" id="buyPrice" value="118.50" min="0" step="0.01" placeholder="118.50">
-            </div>
-            <div class="input-group">
-                <label id="priceLabel2">Sell Price (BDT)</label>
-                <input type="number" id="sellPrice" value="119.20" min="0" step="0.01" placeholder="119.20">
-            </div>
-        </div>
-
-        <!-- quantity / capital -->
-        <div class="input-row">
-            <div class="input-group">
-                <label>USDT পরিমাণ</label>
-                <input type="number" id="usdtQty" value="1000" min="0" step="1" placeholder="1000">
-            </div>
-            <div class="input-group">
-                <label>বিনিয়োগ (BDT)</label>
-                <input type="number" id="investmentBdt" value="118500" min="0" step="100" placeholder="118500">
-            </div>
-        </div>
-
-        <!-- fees -->
-        <div class="fee-section">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="font-weight: 500; font-size: 14px;">ফি ও খরচ (BDT)</span>
-                <span style="font-size: 12px; color: #6b7f9b;">শূন্য রাখুন যদি প্রযোজ্য না হয়</span>
-            </div>
-            <div class="fee-grid">
-                <div class="fee-item"><span>Buy Fee</span> <input type="number" id="buyFee" value="0" min="0" step="0.01" placeholder="0"></div>
-                <div class="fee-item"><span>Sell Fee</span> <input type="number" id="sellFee" value="0" min="0" step="0.01" placeholder="0"></div>
-                <div class="fee-item"><span>Payment Fee</span> <input type="number" id="paymentFee" value="0" min="0" step="0.01" placeholder="0"></div>
-                <div class="fee-item"><span>Network/Transfer</span> <input type="number" id="networkFee" value="0" min="0" step="0.01" placeholder="0"></div>
-                <div class="fee-item"><span>Slippage (%)</span> <input type="number" id="slippagePct" value="0.2" min="0" max="99.99" step="0.1" placeholder="0"></div>
-                <div class="fee-item"><span>অন্যান্য (BDT)</span> <input type="number" id="otherCost" value="0" min="0" step="0.01" placeholder="0"></div>
-            </div>
-        </div>
-
-        <button class="btn-primary" id="calculateBtn">🔍 হিসাব করুন</button>
+    <div class="row">
+      <div class="field">
+        <label>DOGE বিক্রয়মূল্য <small>MMK/DOGE</small></label>
+        <input id="ds" type="number" value="160" min="0" step="any" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label>DOGE অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label>
+        <input id="da" type="number" placeholder="DOGE" min="0" step="any" inputmode="decimal">
+      </div>
     </div>
-
-    <!-- result area -->
-    <div id="resultArea" class="hidden">
-        <div class="result-card" id="resultCard">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-size: 16px; color: #0b1a33;">📊 ট্রেড ফলাফল</h3>
-                <span class="badge" id="tradeModeBadge">BUY → SELL</span>
-            </div>
-
-            <div class="result-grid" id="resultGrid">
-                <div class="result-item span-2" style="background: #f0f7ff; border: 1px solid #dbeafe;">
-                    <div class="label">নিট লাভ / ক্ষতি (Net Profit)</div>
-                    <div class="value" id="netProfitDisplay">৳ 0.00</div>
-                </div>
-                <div class="result-item"><div class="label">Profit / USDT</div><div class="value" id="profitPerUsdt">৳ 0.00</div></div>
-                <div class="result-item"><div class="label">ROI (%)</div><div class="value" id="roiDisplay">0.00%</div></div>
-                <div class="result-item"><div class="label">মোট বিনিয়োগ</div><div class="value" id="totalInvestmentDisplay">৳ 0</div></div>
-                <div class="result-item"><div class="label">মোট আয়</div><div class="value" id="totalRevenueDisplay">৳ 0</div></div>
-                <div class="result-item"><div class="label">মোট ফি ও খরচ</div><div class="value" id="totalCostDisplay">৳ 0</div></div>
-                <div class="result-item"><div class="label">Break-even Sell</div><div class="value" id="beSellDisplay">৳ 0.00</div></div>
-                <div class="result-item"><div class="label">Max Buy (break-even)</div><div class="value" id="beBuyDisplay">৳ 0.00</div></div>
-            </div>
-
-            <div id="warningBox" class="warning-box hidden"></div>
-
-            <div class="breakdown" id="breakdownArea">
-                <div class="breakdown-row"><span>Gross Profit</span><span class="amount" id="grossProfitDisplay">৳ 0.00</span></div>
-                <div class="breakdown-row"><span>মোট ফি (BDT)</span><span class="amount" id="totalFeesDisplay">৳ 0.00</span></div>
-                <div class="breakdown-row"><span>Slippage cost</span><span class="amount" id="slippageCostDisplay">৳ 0.00</span></div>
-                <div class="breakdown-row" style="font-weight: 600; border-top: 1px solid #dce2ec; padding-top: 8px; margin-top: 4px;">
-                    <span>নিট লাভ (Net Profit)</span>
-                    <span class="amount" id="netProfitBreakdown">৳ 0.00</span>
-                </div>
-            </div>
-
-            <div class="flex mt-2">
-                <button class="btn-secondary" id="resetBtn">↺ রিসেট</button>
-                <button class="btn-secondary" id="copyResultBtn">📋 কপি</button>
-            </div>
-        </div>
+    <div class="row">
+      <div class="field">
+        <label>P2P ফি <small>MMK</small></label>
+        <input id="mf" type="number" value="0" min="0" step="any" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label>পেমেন্ট ফি <small>MMK</small></label>
+        <input id="pf" type="number" value="0" min="0" step="any" inputmode="decimal">
+      </div>
     </div>
+  </section>
 
-    <!-- history -->
-    <div class="card history-section" id="historyCard">
-        <div class="card-header">
-            <h2>📋 ট্রেড হিস্টোরি</h2>
-            <span class="badge" id="historyCount">0</span>
-        </div>
-        <div id="historyList">
-            <div style="color: #9aabbf; font-size: 13px; text-align: center; padding: 12px 0;">কোনো হিসাব নেই</div>
-        </div>
-        <button class="btn-secondary" style="width:100%; margin-top:10px;" id="clearHistoryBtn">🗑 হিস্টোরি মুছুন</button>
+  <section class="card">
+    <h2>🔹 ধাপ ২ · MMK → USDT</h2>
+    <div class="row">
+      <div class="field">
+        <label>USDT ক্রয়মূল্য <small>MMK/USDT</small></label>
+        <input id="ubm" type="number" value="4700" min="0" step="any" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label>USDT অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label>
+        <input id="ua" type="number" placeholder="USDT" min="0" step="any" inputmode="decimal">
+      </div>
     </div>
-
-    <div style="font-size: 11px; color: #6b7f9b; text-align: center; margin-top: 20px; border-top: 1px solid #e3eaf3; padding-top: 14px;">
-        ⚠️ শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে · P2P মার্কেট ঝুঁকিপূর্ণ
+    <div class="row">
+      <div class="field">
+        <label>Network/withdrawal <small>USDT</small></label>
+        <input id="nf" type="number" value="0" min="0" step="any" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label>স্লিপেজ <small>%</small></label>
+        <input id="sl" type="number" value="0.2" min="0" step="any" inputmode="decimal">
+      </div>
     </div>
-</div>
+    <div class="field">
+      <label>নেটওয়ার্ক উপলভ্য?</label>
+      <select id="net">
+        <option value="yes">হ্যাঁ — যাচাই করা</option>
+        <option value="no">না / অজানা</option>
+      </select>
+    </div>
+  </section>
 
-<!-- toast -->
-<div class="toast" id="toast"></div>
+  <section class="card">
+    <h2>🔹 ধাপ ৩ · USDT → BDT</h2>
+    <div class="row">
+      <div class="field">
+        <label>USDT বিক্রয়মূল্য <small>BDT/USDT</small></label>
+        <input id="ubs" type="number" value="130" min="0" step="any" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label>USDT অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label>
+        <input id="uba" type="number" placeholder="USDT" min="0" step="any" inputmode="decimal">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>P2P/পেমেন্ট ফি <small>BDT</small></label>
+        <input id="bfee" type="number" value="0" min="0" step="any" inputmode="decimal">
+      </div>
+      <div class="field">
+        <label>অন্যান্য খরচ <small>BDT</small></label>
+        <input id="oth" type="number" value="0" min="0" step="any" inputmode="decimal">
+      </div>
+    </div>
+    <div class="field">
+      <label>DOGE-এর প্রাথমিক মোট ক্রয়মূল্য <small>BDT</small></label>
+      <input id="init" type="number" placeholder="যেমন 220" min="0" step="any" inputmode="decimal">
+    </div>
+    <button class="btn" id="go">সম্পূর্ণ হিসাব আপডেট করুন</button>
+  </section>
 
-<!-- ============ INLINE ICON + MANIFEST ============ -->
+  <!-- RESULTS -->
+  <section class="card results">
+    <h2>📊 ফলাফল</h2>
+    <div class="metrics">
+      <div class="metric wide"><b>নিট লাভ / ক্ষতি</b><strong id="pro">—</strong></div>
+      <div class="metric"><b>মোট বিনিয়োগ</b><strong id="inv">—</strong></div>
+      <div class="metric"><b>মোট আয়</b><strong id="rev">—</strong></div>
+      <div class="metric"><b>মোট ফি ও খরচ</b><strong id="fee">—</strong></div>
+      <div class="metric"><b>ROI</b><strong id="roi">—</strong></div>
+      <div class="metric"><b>প্রতি DOGE ফল</b><strong id="pd">—</strong></div>
+    </div>
+    <div id="warn" class="warn hidden"></div>
+    <div id="flow" class="flow"></div>
+    <div class="detail">
+      <div>
+        <h2>🔍 বিস্তারিত যাচাই</h2>
+        <table><tbody id="det"></tbody></table>
+      </div>
+    </div>
+    <p style="color:#657993;font-size:12px;margin:10px 0 0" id="time"></p>
+    <button class="btn copy" id="copy">📋 ফলাফল কপি</button>
+  </section>
+
+  <p class="footer">শুধু পরিকল্পনা ও শিক্ষার জন্য। অর্ডার সীমা, পেমেন্ট সুবিধা ও নেটওয়ার্ক যাচাই করুন।</p>
+</main>
+
 <script>
-    (function buildIcon() {
-        // ===== SVG (favicon / apple-touch-icon এর জন্য) =====
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <rect width="512" height="512" rx="96" fill="#0b1a33"/>
-            <text x="50%" y="47%" font-family="Segoe UI, Arial, sans-serif" font-size="150" font-weight="700"
-                  fill="#ffffff" text-anchor="middle" dominant-baseline="middle">P2P</text>
-            <text x="50%" y="72%" font-family="Segoe UI, Arial, sans-serif" font-size="80" font-weight="600"
-                  fill="#7fb2ff" text-anchor="middle" dominant-baseline="middle">৳</text>
-        </svg>`;
-        const dataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-        const dataUriB64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
-
-        document.getElementById('favIcon').href = dataUri;
-        document.getElementById('appleIcon').href = dataUriB64;
-
-        // ===== PNG আইকন (manifest install icon — Chrome লোগো এড়াতে) =====
-        // Canvas দিয়ে SVG → PNG কনভার্ট করে manifest-এ PNG হিসেবে দেওয়া হচ্ছে।
-        function svgToPngDataUrl(size, bgColor) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = function () {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = size;
-                    canvas.height = size;
-                    const ctx = canvas.getContext('2d');
-                    if (bgColor) {
-                        ctx.fillStyle = bgColor;
-                        ctx.fillRect(0, 0, size, size);
-                    }
-                    ctx.drawImage(img, 0, 0, size, size);
-                    resolve(canvas.toDataURL('image/png'));
-                };
-                img.onerror = function () { resolve(dataUri); }; // fallback
-                img.src = dataUri;
-            });
-        }
-
-        const manifest = {
-            name: "Calculator",              // ← পরিবর্তন: শুধু "Calculator"
-            short_name: "Calculator",        // ← পরিবর্তন: শুধু "Calculator"
-            description: "P2P USDT/BDT Trade Calculator",
-            start_url: ".",
-            scope: ".",
-            display: "standalone",
-            orientation: "portrait",
-            background_color: "#f4f7fc",
-            theme_color: "#0b1a33",
-            lang: "bn",
-            icons: []  // নিচে async ভরে দেব
-        };
-
-        (async function () {
-            // PNG 192 এবং 512 — maskable purpose বাদ দেওয়া হলো
-            const [png192, png512] = await Promise.all([
-                svgToPngDataUrl(192, '#0b1a33'),
-                svgToPngDataUrl(512, '#0b1a33')
-            ]);
-
-            manifest.icons = [
-                { src: png192, sizes: "192x192", type: "image/png", purpose: "any" },
-                { src: png512, sizes: "512x512", type: "image/png", purpose: "any" }
-            ];
-
-            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-            const manifestUrl = URL.createObjectURL(manifestBlob);
-            document.getElementById('appManifest').href = manifestUrl;
-        })();
-    })();
-</script>
-
-<!-- ============ GOOGLE TRANSLATE BAR REMOVER ============ -->
-<script>
-    (function killTranslate() {
-        const kill = () => {
-            document.querySelectorAll(
-                '.goog-te-banner-frame, .skiptranslate > iframe, iframe.goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame'
-            ).forEach(el => el.remove());
-            if (document.body) document.body.style.top = '0px';
-            document.documentElement.style.marginTop = '0px';
-        };
-        kill();
-        try {
-            const obs = new MutationObserver(kill);
-            obs.observe(document.documentElement, { childList: true, subtree: true });
-        } catch (e) {}
-        setTimeout(kill, 500);
-        setTimeout(kill, 1500);
-        setTimeout(kill, 3000);
-    })();
-</script>
-
-<!-- ============ MAIN APP LOGIC ============ -->
-<script>
-    (function() {
-        'use strict';
-
-        /* =========================================================
-           STORAGE KEYS
-           ========================================================= */
-        const STORAGE_KEY = 'p2pCalcState_v1';
-        const HISTORY_KEY = 'p2pCalcHistory_v1';
-
-        const INPUT_IDS = [
-            'buyPrice', 'sellPrice',
-            'usdtQty', 'investmentBdt',
-            'buyFee', 'sellFee', 'paymentFee', 'networkFee',
-            'slippagePct', 'otherCost'
-        ];
-
-        const storage = {
-            get(key, fallback) {
-                try {
-                    const raw = localStorage.getItem(key);
-                    return raw ? JSON.parse(raw) : fallback;
-                } catch (e) { return fallback; }
-            },
-            set(key, val) {
-                try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
-            },
-            remove(key) {
-                try { localStorage.removeItem(key); } catch (e) {}
-            }
-        };
-
-        /* ----- state ----- */
-        let mode = 'buy';
-        let history = [];
-
-        /* DOM refs */
-        const usdtQtyInput = document.getElementById('usdtQty');
-        const investmentBdtInput = document.getElementById('investmentBdt');
-
-        const resultArea = document.getElementById('resultArea');
-        const netProfitDisplay = document.getElementById('netProfitDisplay');
-        const profitPerUsdt = document.getElementById('profitPerUsdt');
-        const roiDisplay = document.getElementById('roiDisplay');
-        const totalInvestmentDisplay = document.getElementById('totalInvestmentDisplay');
-        const totalRevenueDisplay = document.getElementById('totalRevenueDisplay');
-        const totalCostDisplay = document.getElementById('totalCostDisplay');
-        const beSellDisplay = document.getElementById('beSellDisplay');
-        const beBuyDisplay = document.getElementById('beBuyDisplay');
-        const grossProfitDisplay = document.getElementById('grossProfitDisplay');
-        const totalFeesDisplay = document.getElementById('totalFeesDisplay');
-        const slippageCostDisplay = document.getElementById('slippageCostDisplay');
-        const netProfitBreakdown = document.getElementById('netProfitBreakdown');
-        const warningBox = document.getElementById('warningBox');
-        const tradeModeBadge = document.getElementById('tradeModeBadge');
-        const historyList = document.getElementById('historyList');
-        const historyCount = document.getElementById('historyCount');
-        const toastEl = document.getElementById('toast');
-
-        /* ----- helpers ----- */
-        function fmt(n) { return '৳ ' + n.toFixed(2); }
-        function fmtInt(n) { return '৳ ' + Math.round(n).toLocaleString(); }
-        function fmtPct(n) { return n.toFixed(2) + '%'; }
-
-        function showToast(msg) {
-            toastEl.textContent = msg;
-            toastEl.classList.add('show');
-            clearTimeout(showToast._t);
-            showToast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
-        }
-
-        /* =========================================================
-           VALIDATION HELPERS
-           ========================================================= */
-        function readNonNegative(id, label) {
-            const el = document.getElementById(id);
-            const raw = el.value.trim();
-            if (raw === '') {
-                throw new Error(`${label} পূরণ করুন।`);
-            }
-            const value = Number(raw);
-            if (!Number.isFinite(value) || value < 0) {
-                throw new Error(`${label} অবশ্যই শূন্য বা তার বেশি হতে হবে।`);
-            }
-            return value;
-        }
-
-        function readPositive(id, label) {
-            const value = readNonNegative(id, label);
-            if (value <= 0) {
-                throw new Error(`${label} শূন্যের বেশি হতে হবে।`);
-            }
-            return value;
-        }
-
-        /* =========================================================
-           PERSISTENCE
-           ========================================================= */
-        function saveState() {
-            const state = { mode };
-            INPUT_IDS.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) state[id] = el.value;
-            });
-            storage.set(STORAGE_KEY, state);
-        }
-
-        function restoreState() {
-            const state = storage.get(STORAGE_KEY, null);
-            if (!state) return false;
-            if (state.mode) mode = state.mode === 'sell' ? 'sell' : 'buy';
-            INPUT_IDS.forEach(id => {
-                const el = document.getElementById(id);
-                if (el && state[id] !== undefined && state[id] !== null) {
-                    el.value = state[id];
-                }
-            });
-            return true;
-        }
-
-        function saveHistory() { storage.set(HISTORY_KEY, history); }
-
-        function restoreHistory() {
-            const h = storage.get(HISTORY_KEY, null);
-            if (Array.isArray(h)) history = h;
-        }
-
-        function clearAllStorage() {
-            storage.remove(STORAGE_KEY);
-            storage.remove(HISTORY_KEY);
-        }
-
-        /* =========================================================
-           CALCULATION CORE
-           সব fee BDT, slippage sell-side revenue-এর %।
-           ========================================================= */
-        function calculate() {
-            const buyPrice = readPositive('buyPrice', 'Buy Price');
-            const sellPrice = readPositive('sellPrice', 'Sell Price');
-            const usdtQty = readPositive('usdtQty', 'USDT পরিমাণ');
-
-            const buyFee = readNonNegative('buyFee', 'Buy Fee');
-            const sellFee = readNonNegative('sellFee', 'Sell Fee');
-            const paymentFee = readNonNegative('paymentFee', 'Payment Fee');
-            const networkFee = readNonNegative('networkFee', 'Network Fee');
-            const otherCost = readNonNegative('otherCost', 'অন্যান্য খরচ');
-
-            const slippageRateRaw = readNonNegative('slippagePct', 'Slippage');
-            if (slippageRateRaw >= 100) {
-                throw new Error('Slippage 100% এর কম হতে হবে।');
-            }
-            const slippageRate = slippageRateRaw / 100;
-
-            const buyCost = usdtQty * buyPrice;
-            const sellRevenue = usdtQty * sellPrice;
-            const grossProfit = sellRevenue - buyCost;
-
-            const totalFixedFees =
-                buyFee + sellFee + paymentFee + networkFee + otherCost;
-
-            const slippageCost = sellRevenue * slippageRate;
-            const totalCost = totalFixedFees + slippageCost;
-            const netProfit = grossProfit - totalCost;
-
-            const capitalUsed = buyCost + totalFixedFees;
-
-            const roi = capitalUsed > 0
-                ? (netProfit / capitalUsed) * 100
-                : 0;
-
-            const profitPerUsdt = netProfit / usdtQty;
-
-            const beSell = (buyCost + totalFixedFees) /
-                (usdtQty * (1 - slippageRate));
-
-            const beBuy = Math.max(
-                0,
-                sellPrice * (1 - slippageRate) - totalFixedFees / usdtQty
-            );
-
-            return {
-                buyPrice, sellPrice, usdtQty,
-                buyCost, sellRevenue, grossProfit,
-                totalFixedFees, slippageCost, totalCost,
-                capitalUsed, netProfit, roi, profitPerUsdt,
-                beSell, beBuy
-            };
-        }
-
-        /* =========================================================
-           RENDER RESULT
-           saveToHistory=true হলে তবেই history-তে যায়।
-           ========================================================= */
-        function renderResult({ saveToHistory = false } = {}) {
-            let result;
-            try {
-                result = calculate();
-            } catch (error) {
-                resultArea.classList.add('hidden');
-                showToast(error.message);
-                return;
-            }
-
-            resultArea.classList.remove('hidden');
-
-            const isProfit = result.netProfit >= 0;
-            netProfitDisplay.textContent = fmt(result.netProfit);
-            netProfitDisplay.className = 'value ' + (isProfit ? 'positive' : 'negative');
-
-            profitPerUsdt.textContent = fmt(result.profitPerUsdt);
-            profitPerUsdt.className = 'value ' + (isProfit ? 'positive' : 'negative');
-
-            roiDisplay.textContent = fmtPct(result.roi);
-            roiDisplay.className = 'value ' + (isProfit ? 'positive' : 'negative');
-
-            totalInvestmentDisplay.textContent = fmtInt(result.capitalUsed);
-            totalRevenueDisplay.textContent = fmtInt(result.sellRevenue);
-            totalCostDisplay.textContent = fmt(result.totalCost);
-            beSellDisplay.textContent = fmt(result.beSell);
-            beBuyDisplay.textContent = fmt(result.beBuy);
-
-            grossProfitDisplay.textContent = fmt(result.grossProfit);
-            totalFeesDisplay.textContent = fmt(result.totalFixedFees);
-            slippageCostDisplay.textContent = fmt(result.slippageCost);
-            netProfitBreakdown.textContent = fmt(result.netProfit);
-
-            warningBox.classList.add('hidden');
-            if (result.netProfit < 0) {
-                warningBox.textContent = '⚠️ এই ট্রেডে সম্ভাব্য ক্ষতি হবে। Break-even price দেখে নিন।';
-                warningBox.classList.remove('hidden');
-            } else if (result.netProfit < 50 && result.capitalUsed > 1000) {
-                warningBox.textContent = 'ℹ️ মুনাফা খুব কম। ফি বা স্লিপেজ পরীক্ষা করুন।';
-                warningBox.classList.remove('hidden');
-            } else if (result.grossProfit > 0 && result.totalCost > Math.abs(result.grossProfit) * 0.3) {
-                warningBox.textContent = '🧾 ফি ও খরচ মুনাফার তুলনায় বেশি। নেট লাভ কম হতে পারে।';
-                warningBox.classList.remove('hidden');
-            }
-
-            tradeModeBadge.textContent = mode === 'buy' ? 'BUY → SELL' : 'SELL → BUY';
-
-            if (saveToHistory) {
-                addHistory(result);
-            }
-        }
-
-        /* =========================================================
-           HISTORY
-           ========================================================= */
-        function addHistory(result) {
-            const entry = {
-                time: new Date().toLocaleTimeString(),
-                buy: result.buyPrice,
-                sell: result.sellPrice,
-                qty: result.usdtQty,
-                net: result.netProfit,
-                roi: result.roi
-            };
-            history.unshift(entry);
-            if (history.length > 20) history.pop();
-            saveHistory();
-            renderHistory();
-        }
-
-        function renderHistory() {
-            historyList.innerHTML = '';
-            historyCount.textContent = history.length;
-            if (history.length === 0) {
-                historyList.innerHTML = '<div style="color: #9aabbf; font-size: 13px; text-align: center; padding: 12px 0;">কোনো হিসাব নেই</div>';
-                return;
-            }
-            history.forEach((h, idx) => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                const sign = h.net >= 0 ? 'win' : 'loss';
-                div.innerHTML = `
-                    <span>#${idx + 1} ${h.buy.toFixed(2)} → ${h.sell.toFixed(2)} · ${h.qty.toFixed(0)} USDT</span>
-                    <span class="${sign}">${h.net >= 0 ? '+' : ''}${h.net.toFixed(2)} ৳ (${h.roi.toFixed(2)}%)</span>
-                `;
-                historyList.appendChild(div);
-            });
-        }
-
-        /* =========================================================
-           MODE TOGGLE
-           Label সবসময় একই অর্থ রাখে: Buy Price / Sell Price।
-           Mode শুধু starting side বোঝায় (badge-এ)।
-           ========================================================= */
-        function setMode(newMode, skipCalc) {
-            mode = newMode;
-            document.querySelectorAll('.toggle-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.mode === mode);
-            });
-
-            document.getElementById('priceLabel').textContent = 'Buy Price (BDT)';
-            document.getElementById('priceLabel2').textContent = 'Sell Price (BDT)';
-
-            saveState();
-
-            if (!skipCalc && !resultArea.classList.contains('hidden')) {
-                renderResult({ saveToHistory: false });
-            }
-        }
-
-        /* =========================================================
-           QTY / INVESTMENT SYNC
-           Quantity source ধরে investment আপডেট; buy price বদলালেও sync।
-           ========================================================= */
-        function syncInvestmentFromQty() {
-            const buyPrice = Number(document.getElementById('buyPrice').value);
-            const qty = Number(usdtQtyInput.value);
-            if (Number.isFinite(buyPrice) && buyPrice > 0 &&
-                Number.isFinite(qty) && qty > 0) {
-                investmentBdtInput.value = (qty * buyPrice).toFixed(2);
-            }
-        }
-
-        function syncQtyFromInvestment() {
-            const buyPrice = Number(document.getElementById('buyPrice').value);
-            const inv = Number(investmentBdtInput.value);
-            if (Number.isFinite(buyPrice) && buyPrice > 0 &&
-                Number.isFinite(inv) && inv > 0) {
-                usdtQtyInput.value = (inv / buyPrice).toFixed(4);
-            }
-        }
-
-        /* =========================================================
-           RESET
-           ========================================================= */
-        function resetCalculator() {
-            clearAllStorage();
-
-            document.getElementById('buyPrice').value = '118.50';
-            document.getElementById('sellPrice').value = '119.20';
-            document.getElementById('usdtQty').value = '1000';
-            document.getElementById('investmentBdt').value = '118500';
-            document.getElementById('buyFee').value = '0';
-            document.getElementById('sellFee').value = '0';
-            document.getElementById('paymentFee').value = '0';
-            document.getElementById('networkFee').value = '0';
-            document.getElementById('slippagePct').value = '0.2';
-            document.getElementById('otherCost').value = '0';
-
-            setMode('buy', true);
-            resultArea.classList.add('hidden');
-            history = [];
-            renderHistory();
-            saveState();
-
-            showToast('সব ভ্যালু রিসেট হয়েছে');
-        }
-
-        /* =========================================================
-           COPY RESULT
-           ========================================================= */
-        function copyResult() {
-            let result;
-            try {
-                result = calculate();
-            } catch (error) {
-                showToast(error.message);
-                return;
-            }
-            const text = `
-P2P Trade Result
-Buy: ${result.buyPrice.toFixed(2)} BDT | Sell: ${result.sellPrice.toFixed(2)} BDT
-USDT: ${result.usdtQty.toFixed(2)} | Capital Used: ${result.capitalUsed.toFixed(2)} BDT
-Gross Profit: ${result.grossProfit.toFixed(2)} BDT
-Fixed Fees: ${result.totalFixedFees.toFixed(2)} BDT
-Slippage Cost: ${result.slippageCost.toFixed(2)} BDT
-Total Cost: ${result.totalCost.toFixed(2)} BDT
-Net Profit: ${result.netProfit.toFixed(2)} BDT
-ROI: ${result.roi.toFixed(2)}%
-Profit/USDT: ${result.profitPerUsdt.toFixed(2)} BDT
-Break-even Sell: ${result.beSell.toFixed(2)} BDT
-Max Buy (break-even): ${result.beBuy.toFixed(2)} BDT
-            `.trim();
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('ফলাফল কপি করা হয়েছে!');
-            }).catch(() => {
-                showToast('কপি করতে ব্যর্থ, ম্যানুয়ালি কপি করুন।');
-            });
-        }
-
-        /* =========================================================
-           EVENT BINDING
-           ========================================================= */
-        document.getElementById('modeBuyBtn').addEventListener('click', () => setMode('buy'));
-        document.getElementById('modeSellBtn').addEventListener('click', () => setMode('sell'));
-
-        document.getElementById('calculateBtn').addEventListener('click', () => {
-            renderResult({ saveToHistory: true });
-        });
-
-        document.getElementById('resetBtn').addEventListener('click', resetCalculator);
-        document.getElementById('copyResultBtn').addEventListener('click', copyResult);
-
-        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-            history = [];
-            storage.remove(HISTORY_KEY);
-            renderHistory();
-            showToast('হিস্টোরি মুছে ফেলা হয়েছে');
-        });
-
-        usdtQtyInput.addEventListener('input', function() {
-            syncInvestmentFromQty();
-            saveState();
-        });
-
-        investmentBdtInput.addEventListener('input', function() {
-            syncQtyFromInvestment();
-            saveState();
-        });
-
-        document.getElementById('buyPrice').addEventListener('input', function() {
-            syncInvestmentFromQty();
-            saveState();
-        });
-
-        INPUT_IDS.forEach(id => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.addEventListener('input', saveState);
-            el.addEventListener('change', saveState);
-        });
-
-        window.addEventListener('beforeunload', saveState);
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') saveState();
-        });
-
-        /* =========================================================
-           INIT
-           ========================================================= */
-        (function init() {
-            const restored = restoreState();
-            restoreHistory();
-            setMode(mode, true);
-            renderHistory();
-
-            if (restored) {
-                renderResult({ saveToHistory: false });
-            } else {
-                setTimeout(() => renderResult({ saveToHistory: false }), 100);
-            }
-        })();
-
-        /* =========================================================
-           SERVICE WORKER (Blob URL)
-           নোট: best-effort। স্থায়ী offline caching-এর জন্য আলাদা sw.js দরকার।
-           ========================================================= */
-        (function registerSW() {
-            if (!('serviceWorker' in navigator)) return;
-            if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
-
-            const swCode = `
-                const CACHE = 'p2p-calc-v1';
-                self.addEventListener('install', e => { self.skipWaiting(); });
-                self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
-                self.addEventListener('fetch', e => {
-                    if (e.request.method !== 'GET') return;
-                    e.respondWith(
-                        caches.match(e.request).then(cached => {
-                            const fetchPromise = fetch(e.request).then(res => {
-                                const copy = res.clone();
-                                caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
-                                return res;
-                            }).catch(() => cached);
-                            return cached || fetchPromise;
-                        })
-                    );
-                });
-            `;
-            try {
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(swUrl).catch(() => {});
-            } catch (e) {}
-        })();
-    })();
+(()=>{
+  const $=x=>document.getElementById(x);
+  const n=x=>Math.max(0,parseFloat($(x).value)||0);
+  const op=x=>$(x).value.trim()===""?Infinity:n(x);
+  const F=(x,c)=>({BDT:"৳",MMK:"K",USDT:"₮",DOGE:"Ð"}[c]||"")+" "+Number(x||0).toLocaleString("en-US",{maximumFractionDigits:["USDT","DOGE"].includes(c)?8:2});
+  const P=x=>Number(x||0).toFixed(2)+"%";
+
+  function out(){
+    const q=n("q"), rate=n("ubs"), fix=n("bfee")+n("oth"), w=[];
+    const sale=q*n("ds");
+    const m=n("mf")+n("pf");
+    const usable=Math.max(0,sale-m);
+    const before=Math.max(0,usable/(n("ubm")||1)-n("nf"));
+    const u=before*(1-n("sl")/100);
+    const initial=n("init");
+    const I=initial+fix;
+    const R=u*rate-fix;
+    const C=m/(n("ubm")||1)*rate+n("nf")*rate+(before-u)*rate+fix;
+    const Z=R-I;
+    const roi=I?Z/I*100:0;
+
+    const fl=[
+      ["1. DOGE বিক্রি",F(q,"DOGE"),F(sale,"MMK")],
+      ["2. MMK → USDT",F(usable,"MMK"),F(before,"USDT")],
+      ["3. USDT বিক্রি",F(u,"USDT"),F(R,"BDT")],
+      ["4. মোট বিনিয়োগ",F(initial,"BDT"),F(I,"BDT")]
+    ];
+    const dt=[
+      ["DOGE বিক্রির আয়",F(sale,"MMK")],
+      ["MMK ফি",F(m,"MMK")],
+      ["ব্যবহারযোগ্য MMK",F(usable,"MMK")],
+      ["MMK → USDT rate",F(n("ubm"),"MMK")+" / 1 USDT"],
+      ["Network fee",F(n("nf"),"USDT")],
+      ["Slippage",F(before-u,"USDT")],
+      ["প্রাপ্ত USDT",F(u,"USDT")],
+      ["BD P2P + অন্যান্য",F(fix,"BDT")],
+      ["প্রাথমিক ক্রয়মূল্য",F(initial,"BDT")],
+      ["প্রতি DOGE ফল",F(q?Z/q:0,"BDT")]
+    ];
+
+    if(!initial)w.push("DOGE-এর প্রাথমিক ক্রয়মূল্য দেওয়া হয়নি—লাভ/ক্ষতি নিশ্চিত নয়।");
+    if(q>op("da"))w.push("Myanmar DOGE অর্ডারের উপলভ্যতা কম।");
+    if(before>op("ua"))w.push("Myanmar USDT অর্ডারের উপলভ্যতা কম।");
+    if(u>op("uba"))w.push("Bangladesh USDT অর্ডারের উপলভ্যতা কম।");
+    if($("net").value==="no")w.push("নেটওয়ার্ক না / অজানা—এই রুট সম্পন্নযোগ্য বলে ধরা যাবে না।");
+    if(!q||!rate||!I)w.push("প্রয়োজনীয় পরিমাণ, rate বা ভিত্তিমুদ্রার খরচ অনুপস্থিত।");
+
+    $("inv").textContent=F(I,"BDT");
+    $("rev").textContent=F(R,"BDT");
+    $("fee").textContent=F(C,"BDT");
+    $("pro").textContent=F(Z,"BDT");
+    $("pro").className=Z>=0?"pos":"neg";
+    $("roi").textContent=P(roi);
+    $("roi").className=roi>=0?"pos":"neg";
+    $("pd").textContent=F(q?Z/q:0,"BDT");
+    $("pd").className=(q?Z/q:0)>=0?"pos":"neg";
+    $("warn").innerHTML=w.join("<br>");
+    $("warn").classList.toggle("hidden",!w.length);
+    $("flow").innerHTML=fl.map(x=>`<div class="step"><b>${x[0]}</b><span>${x[1]}</span><strong>${x[2]}</strong></div>`).join("");
+    $("det").innerHTML=dt.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join("");
+    $("time").textContent="হিসাবের সময়: "+new Date().toLocaleString("bn-BD")+" · সব মূল্য ম্যানুয়াল; API-ভিত্তিক লাইভ quote নয়";
+  }
+
+  document.querySelectorAll("input,select").forEach(x=>x.oninput=out);
+  $("go").onclick=out;
+  $("copy").onclick=()=>navigator.clipboard?.writeText(
+    "DOGE → MMK → USDT → BDT\n"+
+    "Investment: "+$("inv").textContent+"\n"+
+    "Revenue: "+$("rev").textContent+"\n"+
+    "Net: "+$("pro").textContent+"\n"+
+    "ROI: "+$("roi").textContent
+  );
+  out();
+})();
 </script>
 </body>
 </html>
-</template>
