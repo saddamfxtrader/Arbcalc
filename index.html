@@ -15,22 +15,25 @@ body{margin:0;background:#f3f7fc;color:#102846;font:14px system-ui,-apple-system
 .card{background:#fff;border:1px solid #dce6f2;border-radius:16px;padding:16px;margin-bottom:14px}
 .card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
 .tag{font-size:10px;background:#e5f0ff;color:#1455ba;padding:2px 7px;border-radius:8px;font-weight:600}
-.field{margin:10px 0}
-.field label{display:block;font-size:12px;font-weight:700;margin-bottom:5px}
-.field small{float:right;color:#657993;font-weight:400;font-size:11px}
+.field{margin:12px 0}
+.field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:5px}
+.field small.hint{display:block;color:#657993;font-weight:400;font-size:11px;margin-top:4px;line-height:1.45}
+.field .unit{color:#1455ba;font-weight:600}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 input,select{width:100%;padding:11px 12px;border:1.5px solid #cbd8e8;border-radius:10px;font:inherit;font-size:15px;background:#fafcff}
 input:focus,select:focus{border-color:#1463e8;outline:none;background:#fff}
+input.invalid{border-color:#bd2638;background:#fff5f6}
 .btn{background:#1463e8;border:0;border-radius:11px;padding:14px;width:100%;color:#fff;font-weight:800;font-size:15px;cursor:pointer;margin-top:6px}
 .btn:active{background:#0f4fc0}
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
 .metric{border:1px solid #dce6f2;border-radius:12px;padding:11px;background:#fafcff}
-.metric b{display:block;font-size:11px;color:#657993;font-weight:600}
+.metric b{display:block;font-size:11px;color:#657993;font-weight:600;line-height:1.4}
 .metric strong{display:block;font-size:17px;margin-top:3px}
 .metric.wide{grid-column:1/-1;background:#f0f7ff;border-color:#dbeafe}
 .pos{color:#07824d}
 .neg{color:#bd2638}
-.warn{margin:12px 0;padding:11px 13px;background:#fff5df;border-left:4px solid #e9a321;color:#79500a;border-radius:8px;font-size:13px;line-height:1.5}
+.warn{margin:12px 0;padding:11px 13px;background:#fff5df;border-left:4px solid #e9a321;color:#79500a;border-radius:8px;font-size:13px;line-height:1.6}
+.warn.err{background:#fdecef;border-left-color:#bd2638;color:#7a1020}
 .hidden{display:none}
 .flow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
 .step{border:1px solid #dce6f2;background:#fbfdff;border-radius:10px;padding:10px}
@@ -38,13 +41,14 @@ input:focus,select:focus{border-color:#1463e8;outline:none;background:#fff}
 .step span{display:block;color:#657993;font-size:12px;margin:4px 0}
 .step strong{font-size:14px}
 table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{border-bottom:1px solid #e5edf5;padding:9px 6px;text-align:left}
+td,th{border-bottom:1px solid #e5edf5;padding:9px 6px;text-align:left;vertical-align:top}
 td:last-child,th:last-child{text-align:right}
 th{font-size:11px;color:#657993;font-weight:600}
 .detail{display:grid;grid-template-columns:1fr;gap:14px}
 .footer{text-align:center;font-size:12px;color:#657993;margin:18px 0 8px;line-height:1.5}
 .copy{margin-top:10px}
 .results{margin-top:14px}
+.badge-incomplete{display:inline-block;background:#fdecef;color:#bd2638;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-left:6px}
 @media(min-width:700px){.flow{grid-template-columns:repeat(4,1fr)}.metrics{grid-template-columns:repeat(3,1fr)}.metric.wide{grid-column:1/-1}}
 @media(max-width:400px){.row{grid-template-columns:1fr}}
 </style>
@@ -58,29 +62,33 @@ th{font-size:11px;color:#657993;font-weight:600}
 
   <!-- INPUTS -->
   <section class="card">
-    <h2>🔹 ধাপ ১ · DOGE বিক্রি (MMK)</h2>
+    <h2>🔹 ধাপ ১ · DOGE বিক্রি (MMK পাবেন)</h2>
     <div class="field">
-      <label>DOGE পরিমাণ</label>
-      <input id="q" type="number" value="10" min="0" step="any" inputmode="decimal">
+      <label>আপনি কতটি DOGE বিক্রি করবেন?</label>
+      <input id="q" type="number" value="10" min="0" step="any" inputmode="decimal" placeholder="DOGE পরিমাণ">
     </div>
     <div class="row">
       <div class="field">
-        <label>DOGE বিক্রয়মূল্য <small>MMK/DOGE</small></label>
-        <input id="ds" type="number" value="160" min="0" step="any" inputmode="decimal">
+        <label>প্রতি ১ DOGE-এর বিক্রয়মূল্য</label>
+        <input id="ds" type="number" value="160" min="0" step="any" inputmode="decimal" placeholder="MMK">
+        <small class="hint">একক: <span class="unit">MMK</span> — Myanmar P2P-তে ১ DOGE-এর দাম কত MMK, সেটি লিখুন।</small>
       </div>
       <div class="field">
-        <label>DOGE অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label>
+        <label>বিক্রেতার কাছে সর্বোচ্চ কত DOGE আছে? <small>(ঐচ্ছিক)</small></label>
         <input id="da" type="number" placeholder="DOGE" min="0" step="any" inputmode="decimal">
+        <small class="hint">Myanmar P2P অর্ডার বুকের উপলভ্যতা (ঐচ্ছিক)।</small>
       </div>
     </div>
     <div class="row">
       <div class="field">
-        <label>P2P ফি <small>MMK</small></label>
+        <label>P2P ফি <span class="unit">(MMK)</span></label>
         <input id="mf" type="number" value="0" min="0" step="any" inputmode="decimal">
+        <small class="hint">DOGE বিক্রির সময় কাটা ফি, MMK-এ।</small>
       </div>
       <div class="field">
-        <label>পেমেন্ট ফি <small>MMK</small></label>
+        <label>পেমেন্ট ফি <span class="unit">(MMK)</span></label>
         <input id="pf" type="number" value="0" min="0" step="any" inputmode="decimal">
+        <small class="hint">MMK পাঠানোর সময় ব্যাংক/ওয়ালেট ফি।</small>
       </div>
     </div>
   </section>
@@ -89,30 +97,35 @@ th{font-size:11px;color:#657993;font-weight:600}
     <h2>🔹 ধাপ ২ · MMK → USDT</h2>
     <div class="row">
       <div class="field">
-        <label>USDT ক্রয়মূল্য <small>MMK/USDT</small></label>
-        <input id="ubm" type="number" value="4700" min="0" step="any" inputmode="decimal">
+        <label>প্রতি ১ USDT-এর ক্রয়মূল্য</label>
+        <input id="ubm" type="number" value="4700" min="0" step="any" inputmode="decimal" placeholder="MMK">
+        <small class="hint">একক: <span class="unit">MMK</span> — ১ USDT কিনতে কত MMK লাগছে।</small>
       </div>
       <div class="field">
-        <label>USDT অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label>
+        <label>বিক্রেতার কাছে সর্বোচ্চ কত USDT আছে? <small>(ঐচ্ছিক)</small></label>
         <input id="ua" type="number" placeholder="USDT" min="0" step="any" inputmode="decimal">
+        <small class="hint">Myanmar P2P USDT অর্ডার বুকের উপলভ্যতা।</small>
       </div>
     </div>
     <div class="row">
       <div class="field">
-        <label>Network/withdrawal <small>USDT</small></label>
+        <label>নেটওয়ার্ক/উইথড্রয়াল ফি <span class="unit">(USDT)</span></label>
         <input id="nf" type="number" value="0" min="0" step="any" inputmode="decimal">
+        <small class="hint">USDT টোকেনে কাটা হবে।</small>
       </div>
       <div class="field">
-        <label>স্লিপেজ <small>%</small></label>
+        <label>স্লিপেজ <span class="unit">(%)</span></label>
         <input id="sl" type="number" value="0.2" min="0" step="any" inputmode="decimal">
+        <small class="hint">MMK → USDT রূপান্তরে দাম পতনের শতাংশ।</small>
       </div>
     </div>
     <div class="field">
-      <label>নেটওয়ার্ক উপলভ্য?</label>
+      <label>USDT নেটওয়ার্ক যাচাই করা হয়েছে?</label>
       <select id="net">
-        <option value="yes">হ্যাঁ — যাচাই করা</option>
+        <option value="yes">হ্যাঁ — নেটওয়ার্ক কাজ করছে</option>
         <option value="no">না / অজানা</option>
       </select>
+      <small class="hint">"না" হলে রুটটি সম্পন্নযোগ্য নয় — ফলাফল অসম্পূর্ণ হিসেবে চিহ্নিত হবে।</small>
     </div>
   </section>
 
@@ -120,41 +133,46 @@ th{font-size:11px;color:#657993;font-weight:600}
     <h2>🔹 ধাপ ৩ · USDT → BDT</h2>
     <div class="row">
       <div class="field">
-        <label>USDT বিক্রয়মূল্য <small>BDT/USDT</small></label>
-        <input id="ubs" type="number" value="130" min="0" step="any" inputmode="decimal">
+        <label>প্রতি ১ USDT-এর বিক্রয়মূল্য</label>
+        <input id="ubs" type="number" value="130" min="0" step="any" inputmode="decimal" placeholder="BDT">
+        <small class="hint">একক: <span class="unit">BDT</span> — Bangladesh P2P-তে ১ USDT-এর দাম।</small>
       </div>
       <div class="field">
-        <label>USDT অর্ডার উপলভ্য <small>ঐচ্ছিক</small></label>
+        <label>ক্রেতার কাছে সর্বোচ্চ কত USDT চাহিদা আছে? <small>(ঐচ্ছিক)</small></label>
         <input id="uba" type="number" placeholder="USDT" min="0" step="any" inputmode="decimal">
+        <small class="hint">Bangladesh P2P ক্রয় অর্ডারের উপলভ্যতা।</small>
       </div>
     </div>
     <div class="row">
       <div class="field">
-        <label>P2P/পেমেন্ট ফি <small>BDT</small></label>
+        <label>P2P/পেমেন্ট ফি <span class="unit">(BDT)</span></label>
         <input id="bfee" type="number" value="0" min="0" step="any" inputmode="decimal">
+        <small class="hint">USDT বিক্রির পর BDT ফি।</small>
       </div>
       <div class="field">
-        <label>অন্যান্য খরচ <small>BDT</small></label>
+        <label>অন্যান্য খরচ <span class="unit">(BDT)</span></label>
         <input id="oth" type="number" value="0" min="0" step="any" inputmode="decimal">
+        <small class="hint">যেকোনো অতিরিক্ত BDT খরচ।</small>
       </div>
     </div>
     <div class="field">
-      <label>DOGE-এর প্রাথমিক মোট ক্রয়মূল্য <small>BDT</small></label>
+      <label>DOGE কেনার সময় মোট কত BDT খরচ করেছিলেন?</label>
       <input id="init" type="number" placeholder="যেমন 220" min="0" step="any" inputmode="decimal">
+      <small class="hint">এটি মোট বিনিয়োগের ভিত্তি। না দিলে লাভ/ক্ষতি নিশ্চিত নয়।</small>
     </div>
     <button class="btn" id="go">সম্পূর্ণ হিসাব আপডেট করুন</button>
   </section>
 
   <!-- RESULTS -->
   <section class="card results">
-    <h2>📊 ফলাফল</h2>
+    <h2>📊 ফলাফল <span id="incompleteBadge" class="badge-incomplete hidden">অসম্পূর্ণ</span></h2>
     <div class="metrics">
-      <div class="metric wide"><b>নিট লাভ / ক্ষতি</b><strong id="pro">—</strong></div>
-      <div class="metric"><b>মোট বিনিয়োগ</b><strong id="inv">—</strong></div>
-      <div class="metric"><b>মোট আয়</b><strong id="rev">—</strong></div>
-      <div class="metric"><b>মোট ফি ও খরচ</b><strong id="fee">—</strong></div>
-      <div class="metric"><b>ROI</b><strong id="roi">—</strong></div>
-      <div class="metric"><b>প্রতি DOGE ফল</b><strong id="pd">—</strong></div>
+      <div class="metric wide"><b>নিট লাভ / ক্ষতি (BDT)</b><strong id="pro">—</strong></div>
+      <div class="metric"><b>মোট বিনিয়োগ<br><span style="font-weight:400">(DOGE ক্রয়মূল্য + BDT ফি)</span></b><strong id="inv">—</strong></div>
+      <div class="metric"><b>মোট আয়<br><span style="font-weight:400">(BDT ফি বাদে)</span></b><strong id="rev">—</strong></div>
+      <div class="metric"><b>মোট ফি ও ক্ষতি<br><span style="font-weight:400">(সব ধাপ + স্লিপেজ)</span></b><strong id="fee">—</strong></div>
+      <div class="metric"><b>ROI<br><span style="font-weight:400">(নিট লাভ ÷ মোট বিনিয়োগ)</span></b><strong id="roi">—</strong></div>
+      <div class="metric"><b>প্রতি DOGE-এ নিট লাভ/ক্ষতি</b><strong id="pd">—</strong></div>
     </div>
     <div id="warn" class="warn hidden"></div>
     <div id="flow" class="flow"></div>
@@ -165,59 +183,90 @@ th{font-size:11px;color:#657993;font-weight:600}
       </div>
     </div>
     <p style="color:#657993;font-size:12px;margin:10px 0 0" id="time"></p>
-    <button class="btn copy" id="copy">📋 ফলাফল কপি</button>
+    <button class="btn copy" id="copy">📋 সম্পূর্ণ ফলাফল কপি</button>
   </section>
 
-  <p class="footer">শুধু পরিকল্পনা ও শিক্ষার জন্য। অর্ডার সীমা, পেমেন্ট সুবিধা ও নেটওয়ার্ক যাচাই করুন।</p>
+  <p class="footer">শুধু পরিকল্পনা ও শিক্ষার জন্য। অর্ডার সীমা, পেমেন্ট সুবিধা ও নেটওয়ার্ক যাচাই করুন। সব মূল্য ম্যানুয়াল — লাইভ API নয়।</p>
 </main>
 
 <script>
 (()=>{
   const $=x=>document.getElementById(x);
-  const n=x=>Math.max(0,parseFloat($(x).value)||0);
-  const op=x=>$(x).value.trim()===""?Infinity:n(x);
+  const raw=x=>$(x).value.trim();
+  const isEmpty=x=>raw(x)==="";
+  // খালি হলে 0, নাহলে সংখ্যা (ঋণাত্মক হলে 0)
+  const n=x=>{const v=parseFloat(raw(x));return isNaN(v)?0:Math.max(0,v);};
+  // ঐচ্ছিক ফিল্ড: খালি হলে Infinity
+  const op=x=>isEmpty(x)?Infinity:n(x);
   const F=(x,c)=>({BDT:"৳",MMK:"K",USDT:"₮",DOGE:"Ð"}[c]||"")+" "+Number(x||0).toLocaleString("en-US",{maximumFractionDigits:["USDT","DOGE"].includes(c)?8:2});
   const P=x=>Number(x||0).toFixed(2)+"%";
 
   function out(){
-    const q=n("q"), rate=n("ubs"), fix=n("bfee")+n("oth"), w=[];
-    const sale=q*n("ds");
-    const m=n("mf")+n("pf");
-    const usable=Math.max(0,sale-m);
-    const before=Math.max(0,usable/(n("ubm")||1)-n("nf"));
-    const u=before*(1-n("sl")/100);
-    const initial=n("init");
-    const I=initial+fix;
-    const R=u*rate-fix;
-    const C=m/(n("ubm")||1)*rate+n("nf")*rate+(before-u)*rate+fix;
-    const Z=R-I;
+    // ---- ইনপুট পড়া ----
+    const q=n("q"), ds=n("ds"), ubm=n("ubm"), ubs=n("ubs");
+    const mf=n("mf"), pf=n("pf"), nf=n("nf"), sl=n("sl");
+    const bfee=n("bfee"), oth=n("oth"), init=n("init");
+    const fix=bfee+oth;
+    const netOk=$("net").value==="yes";
+    const w=[];
+
+    // ---- হিসাব ----
+    const sale=q*ds;                    // DOGE → MMK (মোট)
+    const m=mf+pf;                      // MMK ফি
+    const usable=Math.max(0,sale-m);    // ব্যবহারযোগ্য MMK
+    const before=Math.max(0,usable/(ubm||1)-nf); // USDT (ফির আগে/পরে, স্লিপেজের আগে)
+    const u=before*(1-sl/100);          // স্লিপেজের পরে USDT
+    const I=init+fix;                   // মোট বিনিয়োগ
+    const R=u*ubs-fix;                  // মোট আয় (BDT)
+    const slipLoss=(before-u)*ubs;      // স্লিপেজের কারণে BDT ক্ষতি
+    const C=m/(ubm||1)*ubs+nf*ubs+slipLoss+fix; // মোট ফি/ক্ষতি (BDT-তে)
+    const Z=R-I;                        // নিট লাভ/ক্ষতি
     const roi=I?Z/I*100:0;
 
+    // ---- ইনপুট ভ্যালিডেশন ওয়ার্নিং ----
+    if(isEmpty("init"))w.push("⚠️ DOGE-এর প্রাথমিক ক্রয়মূল্য (BDT) দেওয়া হয়নি — লাভ/ক্ষতি নির্ভরযোগ্য নয়।");
+    if(isEmpty("q")||q<=0)w.push("⚠️ DOGE পরিমাণ শূন্য/খালি — কিছুই বিক্রি হচ্ছে না।");
+    if(isEmpty("ds")||ds<=0)w.push("⚠️ প্রতি DOGE-এর বিক্রয়মূল্য (MMK) শূন্য/খালি।");
+    if(isEmpty("ubm")||ubm<=0)w.push("⚠️ প্রতি USDT-এর ক্রয়মূল্য (MMK) শূন্য/খালি — MMK → USDT হিসাব করা যাচ্ছে না।");
+    if(isEmpty("ubs")||ubs<=0)w.push("⚠️ প্রতি USDT-এর বিক্রয়মূল্য (BDT) শূন্য/খালি।");
+    if(sl<0||sl>100)w.push("⚠️ স্লিপেজ ০–১০০% এর মধ্যে হওয়া উচিত।");
+
+    // ---- অর্ডার উপলভ্যতা ----
+    if(q>op("da"))w.push("⚠️ Myanmar DOGE অর্ডার বুকের উপলভ্যতা কম ("+F(op("da"),"DOGE")+")।");
+    if(before>op("ua"))w.push("⚠️ Myanmar USDT অর্ডার বুকের উপলভ্যতা কম ("+F(op("ua"),"USDT")+")।");
+    if(u>op("uba"))w.push("⚠️ Bangladesh USDT অর্ডার বুকের উপলভ্যতা কম ("+F(op("uba"),"USDT")+")।");
+
+    // ---- নেটওয়ার্ক ----
+    if(!netOk)w.push("⛔ USDT নেটওয়ার্ক যাচাই করা হয়নি — এই রুট সম্পন্নযোগ্য নয় বলে ধরা হবে।");
+
+    // ---- ওয়ার্নিং রেন্ডার ----
+    const hasError=!netOk;
+    $("warn").className="warn"+(hasError?" err":"")+(w.length?"":" hidden");
+    $("warn").innerHTML=w.join("<br>");
+    $("incompleteBadge").classList.toggle("hidden",!hasError);
+
+    // ---- ফ্লো ----
     const fl=[
       ["1. DOGE বিক্রি",F(q,"DOGE"),F(sale,"MMK")],
       ["2. MMK → USDT",F(usable,"MMK"),F(before,"USDT")],
       ["3. USDT বিক্রি",F(u,"USDT"),F(R,"BDT")],
-      ["4. মোট বিনিয়োগ",F(initial,"BDT"),F(I,"BDT")]
+      ["4. মোট বিনিয়োগ",F(init,"BDT")+(fix?" + "+F(fix,"BDT")+" ফি":""),F(I,"BDT")]
     ];
     const dt=[
-      ["DOGE বিক্রির আয়",F(sale,"MMK")],
-      ["MMK ফি",F(m,"MMK")],
+      ["DOGE বিক্রির মোট আয়",F(sale,"MMK")],
+      ["MMK ফি (P2P + পেমেন্ট)",F(m,"MMK")],
       ["ব্যবহারযোগ্য MMK",F(usable,"MMK")],
-      ["MMK → USDT rate",F(n("ubm"),"MMK")+" / 1 USDT"],
-      ["Network fee",F(n("nf"),"USDT")],
-      ["Slippage",F(before-u,"USDT")],
-      ["প্রাপ্ত USDT",F(u,"USDT")],
-      ["BD P2P + অন্যান্য",F(fix,"BDT")],
-      ["প্রাথমিক ক্রয়মূল্য",F(initial,"BDT")],
-      ["প্রতি DOGE ফল",F(q?Z/q:0,"BDT")]
+      ["প্রতি USDT-এর ক্রয়মূল্য",F(ubm,"MMK")+" / 1 USDT"],
+      ["নেটওয়ার্ক ফি",F(nf,"USDT")],
+      ["স্লিপেজ ক্ষতি",F(before-u,"USDT")+" ≈ "+F(slipLoss,"BDT")],
+      ["প্রাপ্ত USDT (স্লিপেজের পরে)",F(u,"USDT")],
+      ["প্রতি USDT-এর বিক্রয়মূল্য",F(ubs,"BDT")+" / 1 USDT"],
+      ["BD ফি + অন্যান্য খরচ",F(fix,"BDT")],
+      ["DOGE-এর প্রাথমিক ক্রয়মূল্য",F(init,"BDT")],
+      ["মোট বিনিয়োগ",F(I,"BDT")],
+      ["মোট আয়",F(R,"BDT")],
+      ["প্রতি DOGE-এ নিট ফল",F(q?Z/q:0,"BDT")]
     ];
-
-    if(!initial)w.push("DOGE-এর প্রাথমিক ক্রয়মূল্য দেওয়া হয়নি—লাভ/ক্ষতি নিশ্চিত নয়।");
-    if(q>op("da"))w.push("Myanmar DOGE অর্ডারের উপলভ্যতা কম।");
-    if(before>op("ua"))w.push("Myanmar USDT অর্ডারের উপলভ্যতা কম।");
-    if(u>op("uba"))w.push("Bangladesh USDT অর্ডারের উপলভ্যতা কম।");
-    if($("net").value==="no")w.push("নেটওয়ার্ক না / অজানা—এই রুট সম্পন্নযোগ্য বলে ধরা যাবে না।");
-    if(!q||!rate||!I)w.push("প্রয়োজনীয় পরিমাণ, rate বা ভিত্তিমুদ্রার খরচ অনুপস্থিত।");
 
     $("inv").textContent=F(I,"BDT");
     $("rev").textContent=F(R,"BDT");
@@ -228,22 +277,54 @@ th{font-size:11px;color:#657993;font-weight:600}
     $("roi").className=roi>=0?"pos":"neg";
     $("pd").textContent=F(q?Z/q:0,"BDT");
     $("pd").className=(q?Z/q:0)>=0?"pos":"neg";
-    $("warn").innerHTML=w.join("<br>");
-    $("warn").classList.toggle("hidden",!w.length);
     $("flow").innerHTML=fl.map(x=>`<div class="step"><b>${x[0]}</b><span>${x[1]}</span><strong>${x[2]}</strong></div>`).join("");
     $("det").innerHTML=dt.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join("");
-    $("time").textContent="হিসাবের সময়: "+new Date().toLocaleString("bn-BD")+" · সব মূল্য ম্যানুয়াল; API-ভিত্তিক লাইভ quote নয়";
+
+    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"local";
+    $("time").textContent="হিসাবের সময়: "+new Date().toLocaleString("bn-BD")+" ("+tz+") · সব মূল্য ম্যানুয়াল; API-ভিত্তিক লাইভ quote নয়";
+
+    // কপি টেক্সট তৈরি করে রাখি
+    window.__copyText =
+      "DOGE → MMK → USDT → BDT\n"+
+      "-----------------------------\n"+
+      "ইনপুট:\n"+
+      "  DOGE পরিমাণ: "+q+" DOGE\n"+
+      "  প্রতি DOGE বিক্রয়মূল্য: "+ds+" MMK\n"+
+      "  প্রতি USDT ক্রয়মূল্য: "+ubm+" MMK\n"+
+      "  প্রতি USDT বিক্রয়মূল্য: "+ubs+" BDT\n"+
+      "  নেটওয়ার্ক যাচাই: "+(netOk?"হ্যাঁ":"না")+"\n"+
+      "-----------------------------\n"+
+      "ফলাফল:\n"+
+      "  মোট বিনিয়োগ: "+$("inv").textContent+"\n"+
+      "  মোট আয়: "+$("rev").textContent+"\n"+
+      "  মোট ফি ও ক্ষতি: "+$("fee").textContent+"\n"+
+      "  নিট লাভ/ক্ষতি: "+$("pro").textContent+"\n"+
+      "  ROI: "+$("roi").textContent+"\n"+
+      "  প্রতি DOGE-এ ফল: "+$("pd").textContent+"\n"+
+      (w.length?"-----------------------------\nসতর্কতা:\n  "+w.join("\n  ")+"\n":"");
   }
 
-  document.querySelectorAll("input,select").forEach(x=>x.oninput=out);
+  document.querySelectorAll("input,select").forEach(x=>{
+    x.addEventListener("input",out);
+    x.addEventListener("change",out);
+  });
   $("go").onclick=out;
-  $("copy").onclick=()=>navigator.clipboard?.writeText(
-    "DOGE → MMK → USDT → BDT\n"+
-    "Investment: "+$("inv").textContent+"\n"+
-    "Revenue: "+$("rev").textContent+"\n"+
-    "Net: "+$("pro").textContent+"\n"+
-    "ROI: "+$("roi").textContent
-  );
+  $("copy").onclick=()=>{
+    const txt=window.__copyText||"";
+    if(navigator.clipboard?.writeText){
+      navigator.clipboard.writeText(txt).then(
+        ()=>{$("copy").textContent="✅ কপি হয়েছে!";setTimeout(()=>$("copy").textContent="📋 সম্পূর্ণ ফলাফল কপি",1600);},
+        ()=>{$("copy").textContent="⚠️ কপি ব্যর্থ — ম্যানুয়ালি কপি করুন";setTimeout(()=>$("copy").textContent="📋 সম্পূর্ণ ফলাফল কপি",2000);}
+      );
+    }else{
+      // ফলব্যাক
+      const ta=document.createElement("textarea");
+      ta.value=txt;document.body.appendChild(ta);ta.select();
+      try{document.execCommand("copy");$("copy").textContent="✅ কপি হয়েছে!";}catch(e){$("copy").textContent="⚠️ কপি ব্যর্থ";}
+      document.body.removeChild(ta);
+      setTimeout(()=>$("copy").textContent="📋 সম্পূর্ণ ফলাফল কপি",1600);
+    }
+  };
   out();
 })();
 </script>
