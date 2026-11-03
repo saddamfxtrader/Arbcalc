@@ -1,319 +1,3050 @@
-<!doctype html>
-<html lang="bn">
+<!DOCTYPE html>
+<html lang="bn" translate="no" class="notranslate">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1a33">
-<title>DOGE → BDT Arbitrage</title>
-<style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:#f3f7fc;color:#102846;font:14px system-ui,-apple-system,'Segoe UI',sans-serif;padding:14px}
-.app{max-width:560px;margin:auto}
-.hero{text-align:center;margin-bottom:16px}
-.hero h1{margin:0;font-size:22px;letter-spacing:-.3px}
-.hero p{margin:4px 0 0;color:#657993;font-size:13px}
-.card{background:#fff;border:1px solid #dce6f2;border-radius:16px;padding:16px;margin-bottom:14px}
-.card h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:8px}
-.tag{font-size:10px;background:#e5f0ff;color:#1455ba;padding:2px 7px;border-radius:8px;font-weight:600}
-.field{margin:12px 0}
-.field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:5px}
-.field small.hint{display:block;color:#657993;font-weight:400;font-size:11px;margin-top:4px;line-height:1.45}
-.field .unit{color:#1455ba;font-weight:600}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-input,select{width:100%;padding:11px 12px;border:1.5px solid #cbd8e8;border-radius:10px;font:inherit;font-size:15px;background:#fafcff}
-input:focus,select:focus{border-color:#1463e8;outline:none;background:#fff}
-input.invalid{border-color:#bd2638;background:#fff5f6}
-.btn{background:#1463e8;border:0;border-radius:11px;padding:14px;width:100%;color:#fff;font-weight:800;font-size:15px;cursor:pointer;margin-top:6px}
-.btn:active{background:#0f4fc0}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
-.metric{border:1px solid #dce6f2;border-radius:12px;padding:11px;background:#fafcff}
-.metric b{display:block;font-size:11px;color:#657993;font-weight:600;line-height:1.4}
-.metric strong{display:block;font-size:17px;margin-top:3px}
-.metric.wide{grid-column:1/-1;background:#f0f7ff;border-color:#dbeafe}
-.pos{color:#07824d}
-.neg{color:#bd2638}
-.warn{margin:12px 0;padding:11px 13px;background:#fff5df;border-left:4px solid #e9a321;color:#79500a;border-radius:8px;font-size:13px;line-height:1.6}
-.warn.err{background:#fdecef;border-left-color:#bd2638;color:#7a1020}
-.hidden{display:none}
-.flow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
-.step{border:1px solid #dce6f2;background:#fbfdff;border-radius:10px;padding:10px}
-.step b{font-size:12px;display:block}
-.step span{display:block;color:#657993;font-size:12px;margin:4px 0}
-.step strong{font-size:14px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{border-bottom:1px solid #e5edf5;padding:9px 6px;text-align:left;vertical-align:top}
-td:last-child,th:last-child{text-align:right}
-th{font-size:11px;color:#657993;font-weight:600}
-.detail{display:grid;grid-template-columns:1fr;gap:14px}
-.footer{text-align:center;font-size:12px;color:#657993;margin:18px 0 8px;line-height:1.5}
-.copy{margin-top:10px}
-.results{margin-top:14px}
-.badge-incomplete{display:inline-block;background:#fdecef;color:#bd2638;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;margin-left:6px}
-.checkbox-field{display:flex;align-items:flex-start;gap:9px;margin:12px 0;padding:11px 13px;background:#f0f7ff;border:1px solid #dbeafe;border-radius:10px}
-.checkbox-field input[type="checkbox"]{width:auto;flex:0 0 auto;margin-top:2px;transform:scale(1.25);accent-color:#1463e8}
-.checkbox-field label{font-size:12.5px;font-weight:700;margin:0;line-height:1.45;cursor:pointer}
-.checkbox-field small.hint{display:block;font-weight:400;margin-top:3px}
-@media(min-width:700px){.flow{grid-template-columns:repeat(4,1fr)}.metrics{grid-template-columns:repeat(3,1fr)}.metric.wide{grid-column:1/-1}}
-@media(max-width:400px){.row{grid-template-columns:1fr}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>P2P Market Intelligence</title>
+
+    <!-- ===== Google Translate OFF ===== -->
+    <meta name="google" content="notranslate">
+    <meta name="google-translate-customization" content="none">
+
+    <!-- ===== PWA META ===== -->
+    <meta name="theme-color" content="#0b1a33">
+    <meta name="description" content="P2P Market Intelligence & Analysis Dashboard — Manual market data analysis and trade calculator">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="P2P Intel">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="P2P Intel">
+
+    <link rel="manifest" id="appManifest">
+    <link rel="apple-touch-icon" id="appleIcon">
+    <link rel="icon" id="favIcon">
+
+    <style>
+        /* ============================================================
+           CSS RESET & BASE
+           ============================================================ */
+        .notranslate, .notranslate * { translate: no !important; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --navy: #0b1a33;
+            --navy-light: #1c3152;
+            --blue: #2563eb;
+            --blue-light: #3b82f6;
+            --blue-bg: #f0f7ff;
+            --gray-bg: #f4f7fc;
+            --gray-border: #e3eaf3;
+            --gray-text: #6b7f9b;
+            --gray-light: #9aabbf;
+            --white: #ffffff;
+            --positive: #0b7e3b;
+            --negative: #b91c1c;
+            --warning: #f59e0b;
+            --warning-bg: #fef7e8;
+            --warning-text: #7b5d1e;
+            --card-shadow: 0 8px 24px rgba(0, 20, 50, 0.06);
+        }
+
+        body {
+            background: var(--gray-bg);
+            padding: 12px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            transition: background 0.2s;
+            color: var(--navy);
+        }
+
+        .app-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding-bottom: 40px;
+        }
+
+        /* ============================================================
+           TYPOGRAPHY
+           ============================================================ */
+        h1 { font-size: 22px; color: var(--navy); letter-spacing: -0.5px; font-weight: 700; }
+        h2 { font-size: 17px; font-weight: 600; color: var(--navy); letter-spacing: -0.3px; }
+        h3 { font-size: 15px; font-weight: 600; color: var(--navy); }
+        .subtitle { color: #4a5b7a; font-size: 13px; }
+
+        /* ============================================================
+           NAVIGATION
+           ============================================================ */
+        .nav-bar {
+            display: flex;
+            gap: 6px;
+            background: var(--white);
+            border-radius: 16px;
+            padding: 6px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            border: 1px solid var(--gray-border);
+            position: sticky;
+            top: 8px;
+            z-index: 100;
+        }
+        .nav-bar::-webkit-scrollbar { display: none; }
+
+        .nav-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 10px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray-text);
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+            text-align: center;
+        }
+        .nav-btn.active {
+            background: var(--navy);
+            color: var(--white);
+            font-weight: 600;
+        }
+        .nav-btn:hover:not(.active) {
+            background: var(--gray-bg);
+            color: var(--navy);
+        }
+
+        /* ============================================================
+           CARDS
+           ============================================================ */
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 18px 16px;
+            margin-bottom: 14px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--gray-border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-header h2 { flex: 1; }
+
+        .badge {
+            background: #e9edf4;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2c3e66;
+            white-space: nowrap;
+        }
+        .badge-success { background: #d1fae5; color: var(--positive); }
+        .badge-danger { background: #fee2e2; color: var(--negative); }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+
+        /* ============================================================
+           FORM ELEMENTS
+           ============================================================ */
+        .input-group { margin-bottom: 12px; }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #1f344f;
+            margin-bottom: 4px;
+        }
+
+        .input-row { display: flex; gap: 10px; }
+        .input-row .input-group { flex: 1; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #dce2ec;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #fafcff;
+            transition: border 0.2s;
+            color: var(--navy);
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--blue);
+            outline: none;
+            background: var(--white);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--gray-light);
+            font-weight: 400;
+        }
+
+        textarea { resize: vertical; min-height: 50px; }
+
+        .hint { font-size: 10px; color: var(--gray-text); margin-top: 2px; }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 4px;
+        }
+        .btn-primary:hover { background: var(--navy-light); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-primary.blue { background: var(--blue); }
+        .btn-primary.blue:hover { background: var(--blue-light); }
+
+        .btn-secondary {
+            padding: 10px 14px;
+            background: #eef2f6;
+            border: none;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            color: #1f344f;
+            transition: background 0.15s;
+        }
+        .btn-secondary:hover { background: #dce2ec; }
+        .btn-secondary.small { padding: 6px 10px; font-size: 12px; }
+        .btn-secondary.danger { background: #fee2e2; color: var(--negative); }
+        .btn-secondary.danger:hover { background: #fecaca; }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            background: #eef2f6;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-icon:hover { background: #dce2ec; }
+        .btn-icon.danger:hover { background: #fee2e2; }
+
+        .flex { display: flex; gap: 8px; flex-wrap: wrap; }
+        .flex .btn-secondary { flex: 1; min-width: 80px; }
+
+        /* ============================================================
+           METRIC CARDS
+           ============================================================ */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        @media (min-width: 480px) {
+            .metric-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .metric-card {
+            background: var(--blue-bg);
+            padding: 12px 10px;
+            border-radius: 14px;
+            border: 1px solid #dbeafe;
+        }
+        .metric-card .label {
+            font-size: 10px;
+            color: var(--gray-text);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-weight: 500;
+        }
+        .metric-card .value {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-top: 2px;
+            word-break: break-word;
+        }
+        .metric-card .value.positive { color: var(--positive); }
+        .metric-card .value.negative { color: var(--negative); }
+        .metric-card .sub { font-size: 10px; color: var(--gray-text); margin-top: 2px; }
+
+        .metric-card.span-2 { grid-column: span 2; }
+        @media (min-width: 480px) {
+            .metric-card.span-2 { grid-column: span 3; }
+        }
+
+        /* ============================================================
+           TABLE (Advertisement List)
+           ============================================================ */
+        .adv-table {
+            width: 100%;
+            font-size: 11px;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .adv-table th {
+            text-align: left;
+            padding: 6px 4px;
+            color: var(--gray-text);
+            font-weight: 500;
+            font-size: 10px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--gray-border);
+        }
+        .adv-table td {
+            padding: 6px 4px;
+            border-bottom: 1px solid #f1f4f9;
+            vertical-align: middle;
+        }
+        .adv-table tr:last-child td { border-bottom: none; }
+        .adv-table .actions { display: flex; gap: 4px; }
+
+        .adv-side-buy { color: var(--positive); font-weight: 600; }
+        .adv-side-sell { color: var(--negative); font-weight: 600; }
+
+        .empty-state {
+            text-align: center;
+            padding: 24px 12px;
+            color: var(--gray-light);
+            font-size: 13px;
+        }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--navy);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 20, 50, 0.25);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            pointer-events: none;
+            max-width: 90vw;
+            text-align: center;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.error { background: var(--negative); }
+
+        /* ============================================================
+           WARNING BOX
+           ============================================================ */
+        .warning-box {
+            background: var(--warning-bg);
+            border-left: 4px solid var(--warning);
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin: 12px 0 6px;
+            font-size: 12px;
+            color: var(--warning-text);
+            line-height: 1.5;
+        }
+        .warning-box.info {
+            background: var(--blue-bg);
+            border-left-color: var(--blue);
+            color: #1e40af;
+        }
+        .warning-box.danger {
+            background: #fee2e2;
+            border-left-color: var(--negative);
+            color: #7f1d1d;
+        }
+
+        /* ============================================================
+           REPORT SECTIONS
+           ============================================================ */
+        .report-section {
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+        .report-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        .report-section h3 {
+            font-size: 14px;
+            color: var(--navy);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .report-text {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #2c3e66;
+        }
+        .report-text strong { color: var(--navy); font-weight: 600; }
+
+        .evidence-list {
+            list-style: none;
+            padding: 0;
+            margin: 6px 0;
+        }
+        .evidence-list li {
+            font-size: 12px;
+            padding: 3px 0 3px 16px;
+            position: relative;
+            color: #2c3e66;
+            line-height: 1.5;
+        }
+        .evidence-list li::before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #e9edf4;
+            color: #2c3e66;
+        }
+        .tag.primary { background: var(--navy); color: var(--white); }
+        .tag.success { background: #d1fae5; color: var(--positive); }
+        .tag.danger { background: #fee2e2; color: var(--negative); }
+        .tag.warning { background: #fef3c7; color: #92400e; }
+        .tag.info { background: #dbeafe; color: #1e40af; }
+
+        /* ============================================================
+           CHART CONTAINER
+           ============================================================ */
+        .chart-container {
+            background: #fafcff;
+            border-radius: 14px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--gray-border);
+            overflow-x: auto;
+        }
+        .chart-container canvas {
+            width: 100%;
+            height: auto;
+            max-height: 220px;
+            display: block;
+        }
+        .chart-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+        .chart-legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+            font-size: 10px;
+            color: var(--gray-text);
+        }
+        .chart-legend span { display: flex; align-items: center; gap: 4px; }
+        .legend-dot {
+            width: 10px; height: 10px; border-radius: 3px; display: inline-block;
+        }
+
+        /* ============================================================
+           HISTORY SNAPSHOT
+           ============================================================ */
+        .snapshot-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f4f9;
+            font-size: 12px;
+            gap: 8px;
+        }
+        .snapshot-item:last-child { border-bottom: none; }
+        .snapshot-item .meta { flex: 1; min-width: 0; }
+        .snapshot-item .meta .title { font-weight: 600; color: var(--navy); }
+        .snapshot-item .meta .detail { color: var(--gray-text); font-size: 11px; margin-top: 2px; }
+
+        /* ============================================================
+           SCORE BARS
+           ============================================================ */
+        .score-bar-wrap { margin: 8px 0; }
+        .score-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 3px;
+            color: #2c3e66;
+        }
+        .score-bar-label strong { color: var(--navy); }
+        .score-bar-bg {
+            height: 8px;
+            background: #e9edf4;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        /* ============================================================
+           TABS / SECTIONS
+           ============================================================ */
+        .section-panel { display: none; }
+        .section-panel.active { display: block; }
+
+        /* ============================================================
+           UTILITY
+           ============================================================ */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 6px; }
+        .mt-2 { margin-top: 12px; }
+        .mt-3 { margin-top: 18px; }
+        .mb-1 { margin-bottom: 6px; }
+        .mb-2 { margin-bottom: 12px; }
+        .text-small { font-size: 11px; }
+        .text-muted { color: var(--gray-text); }
+        .text-positive { color: var(--positive); }
+        .text-negative { color: var(--negative); }
+        .fw-600 { font-weight: 600; }
+
+        .divider {
+            height: 1px;
+            background: var(--gray-border);
+            margin: 12px 0;
+        }
+
+        /* Calculator result grid */
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 12px 0 8px;
+        }
+        .result-item {
+            background: #f8fbff;
+            padding: 10px 8px;
+            border-radius: 12px;
+        }
+        .result-item .label {
+            font-size: 10px;
+            color: var(--gray-text);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .result-item .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-top: 2px;
+        }
+        .result-item .value.positive { color: var(--positive); }
+        .result-item .value.negative { color: var(--negative); }
+        .result-item.span-2 { grid-column: span 2; }
+
+        .breakdown {
+            margin-top: 14px;
+            border-top: 1px solid var(--gray-border);
+            padding-top: 12px;
+        }
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 3px 0;
+            color: #1f344f;
+        }
+        .breakdown-row .amount { font-weight: 500; }
+
+        /* Scrollable table wrapper */
+        .table-wrap { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+
+        /* CSV textarea */
+        #csvInput {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
-<body>
-<main class="app">
-  <header class="hero">
-    <h1>DOGE → MMK → USDT → BDT</h1>
-    <p>আপনার DOGE বিক্রি করে বাংলাদেশি টাকায় রূপান্তর</p>
-  </header>
+<body class="notranslate">
+<div class="app-container" id="app">
 
-  <!-- INPUTS -->
-  <section class="card">
-    <h2>🔹 ধাপ ১ · DOGE বিক্রি (MMK পাবেন)</h2>
-    <div class="field">
-      <label>আপনি কতটি DOGE বিক্রি করবেন?</label>
-      <input id="q" type="number" value="10" min="0" step="any" inputmode="decimal" placeholder="DOGE পরিমাণ">
+    <!-- ===== HEADER ===== -->
+    <div style="margin-bottom: 12px; text-align: center;">
+        <h1>📊 P2P Market Intelligence</h1>
+        <p class="subtitle">ম্যানুয়াল মার্কেট ডেটা বিশ্লেষণ ড্যাশবোর্ড</p>
     </div>
-    <div class="field">
-      <label>প্রতি ১ DOGE-এর বিক্রয়মূল্য</label>
-      <input id="ds" type="number" value="160" min="0" step="any" inputmode="decimal" placeholder="MMK">
-      <small class="hint">একক: <span class="unit">MMK</span> — Myanmar P2P-তে ১ DOGE-এর দাম কত MMK, সেটি লিখুন।</small>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>P2P ফি <span class="unit">(MMK)</span></label>
-        <input id="mf" type="number" value="0" min="0" step="any" inputmode="decimal">
-        <small class="hint">DOGE বিক্রির সময় কাটা ফি, MMK-এ।</small>
-      </div>
-      <div class="field">
-        <label>পেমেন্ট ফি <span class="unit">(MMK)</span></label>
-        <input id="pf" type="number" value="0" min="0" step="any" inputmode="decimal">
-        <small class="hint">MMK পাঠানোর সময় ব্যাংক/ওয়ালেট ফি।</small>
-      </div>
-    </div>
-  </section>
 
-  <section class="card">
-    <h2>🔹 ধাপ ২ · MMK → USDT</h2>
-    <div class="field">
-      <label>প্রতি ১ USDT-এর ক্রয়মূল্য</label>
-      <input id="ubm" type="number" value="4700" min="0" step="any" inputmode="decimal" placeholder="MMK">
-      <small class="hint">একক: <span class="unit">MMK</span> — ১ USDT কিনতে কত MMK লাগছে।</small>
+    <!-- ===== NAVIGATION ===== -->
+    <div class="nav-bar" id="navBar">
+        <button class="nav-btn active" data-section="dashboard">ড্যাশবোর্ড</button>
+        <button class="nav-btn" data-section="input">মার্কেট ডেটা</button>
+        <button class="nav-btn" data-section="analysis">বিশ্লেষণ</button>
+        <button class="nav-btn" data-section="snapshots">স্ন্যাপশট</button>
+        <button class="nav-btn" data-section="calculator">ক্যালকুলেটর</button>
+        <button class="nav-btn" data-section="settings">সেটিংস</button>
     </div>
-    <div class="row">
-      <div class="field">
-        <label>নেটওয়ার্ক/উইথড্রয়াল ফি <span class="unit">(USDT)</span></label>
-        <input id="nf" type="number" value="0" min="0" step="any" inputmode="decimal">
-        <small class="hint">USDT টোকেনে কাটা হবে।</small>
-      </div>
-      <div class="field">
-        <label>স্লিপেজ <span class="unit">(%)</span></label>
-        <input id="sl" type="number" value="0.2" min="0" step="any" inputmode="decimal">
-        <small class="hint">MMK → USDT রূপান্তরে দাম পতনের শতাংশ।</small>
-      </div>
-    </div>
-    <div class="field">
-      <label>USDT নেটওয়ার্ক যাচাই করা হয়েছে?</label>
-      <select id="net">
-        <option value="yes">হ্যাঁ — নেটওয়ার্ক কাজ করছে</option>
-        <option value="no">না / অজানা</option>
-      </select>
-      <small class="hint">"না" হলে রুটটি সম্পন্নযোগ্য নয় — ফলাফল অসম্পূর্ণ হিসেবে চিহ্নিত হবে।</small>
-    </div>
-    <div class="checkbox-field">
-      <input type="checkbox" id="limitOk">
-      <label for="limitOk">
-        আমি P2P অর্ডার বুকের min/max limit যাচাই করেছি
-        <small class="hint">DOGE, MMK ও USDT — তিনটি ধাপেই অর্ডার সীমা যাচাই করুন। টিক না দিলে ফলাফল "অসম্পূর্ণ" হিসেবে চিহ্নিত হবে।</small>
-      </label>
-    </div>
-  </section>
 
-  <section class="card">
-    <h2>🔹 ধাপ ৩ · USDT → BDT</h2>
-    <div class="field">
-      <label>প্রতি ১ USDT-এর বিক্রয়মূল্য</label>
-      <input id="ubs" type="number" value="130" min="0" step="any" inputmode="decimal" placeholder="BDT">
-      <small class="hint">একক: <span class="unit">BDT</span> — Bangladesh P2P-তে ১ USDT-এর দাম।</small>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label>P2P/পেমেন্ট ফি <span class="unit">(BDT)</span></label>
-        <input id="bfee" type="number" value="0" min="0" step="any" inputmode="decimal">
-        <small class="hint">USDT বিক্রির পর BDT ফি।</small>
-      </div>
-      <div class="field">
-        <label>অন্যান্য খরচ <span class="unit">(BDT)</span></label>
-        <input id="oth" type="number" value="0" min="0" step="any" inputmode="decimal">
-        <small class="hint">যেকোনো অতিরিক্ত BDT খরচ।</small>
-      </div>
-    </div>
-    <div class="field">
-      <label>DOGE কেনার সময় মোট কত BDT খরচ করেছিলেন?</label>
-      <input id="init" type="number" placeholder="যেমন 220" min="0" step="any" inputmode="decimal">
-      <small class="hint">এটি মোট বিনিয়োগের ভিত্তি। না দিলে লাভ/ক্ষতি নিশ্চিত নয়।</small>
-    </div>
-    <button class="btn" id="go">সম্পূর্ণ হিসাব আপডেট করুন</button>
-  </section>
+    <!-- ============================================================
+         SECTION: DASHBOARD
+         ============================================================ -->
+    <div class="section-panel active" id="section-dashboard">
+        <div class="card">
+            <div class="card-header">
+                <h2>📈 ড্যাশবোর্ড ওভারভিউ</h2>
+                <span class="badge" id="dashAdvCount">0 বিজ্ঞাপন</span>
+            </div>
+            <div class="metric-grid" id="dashMetrics">
+                <div class="metric-card">
+                    <div class="label">মোট বিজ্ঞাপন</div>
+                    <div class="value" id="dashTotalAdv">0</div>
+                    <div class="sub" id="dashTotalAdvSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">ইউনিক মার্চেন্ট</div>
+                    <div class="value" id="dashUniqueMerchants">0</div>
+                    <div class="sub" id="dashUniqueMerchantsSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">সর্বনিম্ন দাম</div>
+                    <div class="value" id="dashMinPrice">—</div>
+                    <div class="sub" id="dashMinPriceSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">সর্বোচ্চ দাম</div>
+                    <div class="value" id="dashMaxPrice">—</div>
+                    <div class="sub" id="dashMaxPriceSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">গড় দাম</div>
+                    <div class="value" id="dashAvgPrice">—</div>
+                    <div class="sub" id="dashAvgPriceSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">মিডিয়ান দাম</div>
+                    <div class="value" id="dashMedianPrice">—</div>
+                    <div class="sub" id="dashMedianPriceSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">দামের পরিসর</div>
+                    <div class="value" id="dashPriceRange">—</div>
+                    <div class="sub" id="dashPriceRangeSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">গড় মিন অর্ডার</div>
+                    <div class="value" id="dashAvgMin">—</div>
+                    <div class="sub" id="dashAvgMinSub">—</div>
+                </div>
+                <div class="metric-card">
+                    <div class="label">গড় ম্যাক্স অর্ডার</div>
+                    <div class="value" id="dashAvgMax">—</div>
+                    <div class="sub" id="dashAvgMaxSub">—</div>
+                </div>
+                <div class="metric-card span-2">
+                    <div class="label">ডেটা কোয়ালিটি স্কোর</div>
+                    <div class="value" id="dashDataQuality">—</div>
+                    <div class="sub" id="dashDataQualitySub">—</div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div class="flex">
+                <button class="btn-secondary" id="dashGoInput" style="flex:1;">➕ ডেটা যোগ করুন</button>
+                <button class="btn-primary blue" id="dashAnalyzeBtn" style="flex:1; margin-top:0;">🔍 ANALYZE MARKET</button>
+            </div>
+            <div class="text-small text-muted text-center mt-2" id="dashLastAnalysis">সর্বশেষ বিশ্লেষণ: —</div>
+        </div>
 
-  <!-- RESULTS -->
-  <section class="card results">
-    <h2>📊 ফলাফল <span id="incompleteBadge" class="badge-incomplete hidden">অসম্পূর্ণ</span></h2>
-    <div class="metrics">
-      <div class="metric wide"><b>নিট লাভ / ক্ষতি (BDT)</b><strong id="pro">—</strong></div>
-      <div class="metric"><b>মোট বিনিয়োগ<br><span style="font-weight:400">(DOGE ক্রয়মূল্য + BDT ফি)</span></b><strong id="inv">—</strong></div>
-      <div class="metric"><b>মোট আয়<br><span style="font-weight:400">(BDT ফি বাদে)</span></b><strong id="rev">—</strong></div>
-      <div class="metric"><b>মোট ফি ও ক্ষতি<br><span style="font-weight:400">(সব ধাপ + স্লিপেজ)</span></b><strong id="fee">—</strong></div>
-      <div class="metric"><b>ROI<br><span style="font-weight:400">(নিট লাভ ÷ মোট বিনিয়োগ)</span></b><strong id="roi">—</strong></div>
-      <div class="metric"><b>প্রতি DOGE-এ নিট লাভ/ক্ষতি</b><strong id="pd">—</strong></div>
+        <div class="card">
+            <div class="card-header">
+                <h2>📋 দ্রুত সারাংশ</h2>
+            </div>
+            <div class="report-text" id="dashQuickSummary">
+                <p class="text-muted text-small">এখনও কোনো ডেটা নেই। "মার্কেট ডেটা" ট্যাব থেকে বিজ্ঞাপন যোগ করুন।</p>
+            </div>
+        </div>
     </div>
-    <div id="warn" class="warn hidden"></div>
-    <div id="flow" class="flow"></div>
-    <div class="detail">
-      <div>
-        <h2>🔍 বিস্তারিত যাচাই</h2>
-        <table><tbody id="det"></tbody></table>
-      </div>
+
+    <!-- ============================================================
+         SECTION: MARKET DATA INPUT
+         ============================================================ -->
+    <div class="section-panel" id="section-input">
+        <div class="card">
+            <div class="card-header">
+                <h2>➕ বিজ্ঞাপন যোগ করুন</h2>
+                <span class="badge" id="advCountBadge">0</span>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>মার্কেটপ্লেস *</label>
+                    <input type="text" id="advMarketplace" placeholder="Binance" value="Binance">
+                </div>
+                <div class="input-group">
+                    <label>সাইড *</label>
+                    <select id="advSide">
+                        <option value="Buy">Buy</option>
+                        <option value="Sell">Sell</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>মার্চেন্ট *</label>
+                    <input type="text" id="advMerchant" placeholder="Merchant001">
+                </div>
+                <div class="input-group">
+                    <label>দাম (BDT) *</label>
+                    <input type="number" id="advPrice" placeholder="118.50" step="0.01" min="0">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>মিন অর্ডার (BDT)</label>
+                    <input type="number" id="advMin" placeholder="1000" step="1" min="0">
+                </div>
+                <div class="input-group">
+                    <label>ম্যাক্স অর্ডার (BDT)</label>
+                    <input type="number" id="advMax" placeholder="50000" step="1" min="0">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>উপলব্ধ পরিমাণ (USDT)</label>
+                    <input type="number" id="advQty" placeholder="500" step="1" min="0">
+                </div>
+                <div class="input-group">
+                    <label>সম্পন্ন অর্ডার</label>
+                    <input type="number" id="advCompleted" placeholder="150" step="1" min="0">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>কমপ্লিশন রেট (%)</label>
+                    <input type="number" id="advCompletion" placeholder="98.5" step="0.1" min="0" max="100">
+                </div>
+                <div class="input-group">
+                    <label>পেমেন্ট মেথড</label>
+                    <input type="text" id="advPayment" placeholder="bKash">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>তারিখ</label>
+                    <input type="date" id="advDate">
+                </div>
+                <div class="input-group">
+                    <label>সময়</label>
+                    <input type="time" id="advTime">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>নোট (ঐচ্ছিক)</label>
+                <input type="text" id="advNotes" placeholder="যেকোনো মন্তব্য...">
+            </div>
+
+            <div class="flex">
+                <button class="btn-primary blue" id="addAdvBtn" style="flex:2;">➕ Add Advertisement</button>
+                <button class="btn-secondary" id="clearAdvFormBtn" style="flex:1;">Clear</button>
+            </div>
+        </div>
+
+        <!-- Advertisement List -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📋 বিজ্ঞাপন তালিকা</h2>
+                <span class="badge" id="advListCount">0</span>
+            </div>
+            <div class="table-wrap" id="advListWrap">
+                <div class="empty-state">এখনও কোনো বিজ্ঞাপন নেই। উপরের ফর্ম থেকে যোগ করুন।</div>
+            </div>
+            <div class="flex mt-2">
+                <button class="btn-secondary small" id="exportAdvCsvBtn">📥 CSV Export</button>
+                <button class="btn-secondary small" id="importAdvCsvBtn">📤 CSV Import</button>
+                <button class="btn-secondary small danger" id="clearAllAdvBtn">🗑 সব মুছুন</button>
+            </div>
+            <div class="hidden" id="csvImportArea">
+                <textarea id="csvInput" placeholder="CSV ডেটা পেস্ট করুন (header: marketplace,side,merchant,price,minOrder,maxOrder,quantity,completed,completion,payment,date,time,notes)"></textarea>
+                <div class="flex mt-1">
+                    <button class="btn-secondary small" id="csvImportConfirm">✔ ইমপোর্ট</button>
+                    <button class="btn-secondary small" id="csvImportCancel">✖ বাতিল</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <p style="color:#657993;font-size:12px;margin:10px 0 0" id="time"></p>
-    <button class="btn copy" id="copy">📋 সম্পূর্ণ ফলাফল কপি</button>
-  </section>
 
-  <p class="footer">শুধু পরিকল্পনা ও শিক্ষার জন্য। <b>⚠️ বড় অর্ডার দেওয়ার আগে অবশ্যই P2P অর্ডার বুকের min/max limit যাচাই করুন</b> — নাহলে পুরো অর্ডার একবারে ফিল নাও হতে পারে। পেমেন্ট সুবিধা ও নেটওয়ার্কও যাচাই করুন। সব মূল্য ম্যানুয়াল — লাইভ API নয়।</p>
-</main>
+    <!-- ============================================================
+         SECTION: ANALYSIS REPORT
+         ============================================================ -->
+    <div class="section-panel" id="section-analysis">
+        <div class="card">
+            <div class="card-header">
+                <h2>🔍 মার্কেট বিশ্লেষণ রিপোর্ট</h2>
+                <button class="btn-primary blue" id="analyzeBtn" style="width:auto; padding:10px 18px; margin-top:0; font-size:13px;">ANALYZE MARKET</button>
+            </div>
+            <div id="analysisEmpty" class="empty-state">
+                বিশ্লেষণ করতে "ANALYZE MARKET" বাটনে ক্লিক করুন।
+            </div>
+            <div id="analysisContent" class="hidden"></div>
+        </div>
+    </div>
 
+    <!-- ============================================================
+         SECTION: SNAPSHOTS
+         ============================================================ -->
+    <div class="section-panel" id="section-snapshots">
+        <div class="card">
+            <div class="card-header">
+                <h2>📸 হিস্টোরিক্যাল স্ন্যাপশট</h2>
+                <span class="badge" id="snapshotCount">0</span>
+            </div>
+            <p class="text-small text-muted mb-2">বর্তমান ডেটা স্ন্যাপশট হিসেবে সংরক্ষণ করুন এবং পরবর্তীতে তুলনা করুন।</p>
+            <button class="btn-primary blue" id="saveSnapshotBtn" style="margin-top:0;">💾 Save Current Snapshot</button>
+            <div class="divider"></div>
+            <div id="snapshotList">
+                <div class="empty-state">এখনও কোনো স্ন্যাপশট নেই।</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>🔄 স্ন্যাপশট তুলনা</h2>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>প্রথম স্ন্যাপশট</label>
+                    <select id="compareSnapA"><option value="">— নির্বাচন করুন —</option></select>
+                </div>
+                <div class="input-group">
+                    <label>দ্বিতীয় স্ন্যাপশট</label>
+                    <select id="compareSnapB"><option value="">— নির্বাচন করুন —</option></select>
+                </div>
+            </div>
+            <button class="btn-secondary" id="compareSnapBtn" style="width:100%;">🔄 তুলনা করুন</button>
+            <div id="compareResult" class="mt-2"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SECTION: CALCULATOR
+         ============================================================ -->
+    <div class="section-panel" id="section-calculator">
+        <div class="card">
+            <div class="card-header">
+                <h2>🧮 P2P Trade Calculator</h2>
+                <span class="badge" id="tradeModeBadge">SPREAD · BUY → SELL</span>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Buy Price (BDT)</label>
+                    <input type="number" id="buyPrice" value="118.50" min="0" step="0.01" placeholder="118.50">
+                </div>
+                <div class="input-group">
+                    <label>Sell Price (BDT)</label>
+                    <input type="number" id="sellPrice" value="119.20" min="0" step="0.01" placeholder="119.20">
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>USDT পরিমাণ</label>
+                    <input type="number" id="usdtQty" value="1000" min="0" step="1" placeholder="1000">
+                </div>
+                <div class="input-group">
+                    <label>বিনিয়োগ (BDT)</label>
+                    <input type="number" id="investmentBdt" value="118500" min="0" step="100" placeholder="118500">
+                </div>
+            </div>
+
+            <div style="background: #f8faff; border-radius: 14px; padding: 12px 14px; margin: 8px 0 14px 0; border: 1px solid #e3eaf3;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="font-weight: 500; font-size: 13px;">ফি ও খরচ (BDT)</span>
+                    <span style="font-size: 11px; color: var(--gray-text);">শূন্য রাখুন যদি প্রযোজ্য না হয়</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px;" class="fee-grid">
+                    <div class="fee-item" style="display:flex; align-items:center; gap:6px; font-size:12px;">
+                        <span>Buy Fee</span> <input type="number" id="buyFee" value="0" min="0" step="0.01" style="width:70px; padding:6px; border-radius:10px; font-size:13px;">
+                    </div>
+                    <div class="fee-item" style="display:flex; align-items:center; gap:6px; font-size:12px;">
+                        <span>Sell Fee</span> <input type="number" id="sellFee" value="0" min="0" step="0.01" style="width:70px; padding:6px; border-radius:10px; font-size:13px;">
+                    </div>
+                    <div class="fee-item" style="display:flex; align-items:center; gap:6px; font-size:12px;">
+                        <span>Payment Fee</span> <input type="number" id="paymentFee" value="0" min="0" step="0.01" style="width:70px; padding:6px; border-radius:10px; font-size:13px;">
+                    </div>
+                    <div class="fee-item" style="display:flex; align-items:center; gap:6px; font-size:12px;">
+                        <span>Network/Transfer</span> <input type="number" id="networkFee" value="0" min="0" step="0.01" style="width:70px; padding:6px; border-radius:10px; font-size:13px;">
+                    </div>
+                    <div class="fee-item" style="display:flex; align-items:center; gap:6px; font-size:12px;">
+                        <span>Slippage (%)</span> <input type="number" id="slippagePct" value="0.2" min="0" max="99.99" step="0.1" style="width:70px; padding:6px; border-radius:10px; font-size:13px;">
+                    </div>
+                    <div class="fee-item" style="display:flex; align-items:center; gap:6px; font-size:12px;">
+                        <span>অন্যান্য (BDT)</span> <input type="number" id="otherCost" value="0" min="0" step="0.01" style="width:70px; padding:6px; border-radius:10px; font-size:13px;">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="calculateBtn">🔍 হিসাব করুন</button>
+
+            <div id="calcResultArea" class="hidden mt-2">
+                <div class="result-grid" id="calcResultGrid">
+                    <div class="result-item span-2" style="background: #f0f7ff; border: 1px solid #dbeafe;">
+                        <div class="label">নিট লাভ / ক্ষতি (Net Profit)</div>
+                        <div class="value" id="netProfitDisplay">৳ 0.00</div>
+                    </div>
+                    <div class="result-item"><div class="label">Profit / USDT</div><div class="value" id="profitPerUsdt">৳ 0.00</div></div>
+                    <div class="result-item"><div class="label">ROI (%)</div><div class="value" id="roiDisplay">0.00%</div></div>
+                    <div class="result-item"><div class="label">মোট বিনিয়োগ</div><div class="value" id="totalInvestmentDisplay">৳ 0</div></div>
+                    <div class="result-item"><div class="label">মোট আয়</div><div class="value" id="totalRevenueDisplay">৳ 0</div></div>
+                    <div class="result-item"><div class="label">মোট ফি ও খরচ</div><div class="value" id="totalCostDisplay">৳ 0</div></div>
+                    <div class="result-item"><div class="label">Break-even Sell</div><div class="value" id="beSellDisplay">৳ 0.00</div></div>
+                    <div class="result-item"><div class="label">Max Buy (break-even)</div><div class="value" id="beBuyDisplay">৳ 0.00</div></div>
+                </div>
+
+                <div id="calcWarningBox" class="warning-box hidden"></div>
+
+                <div class="breakdown" id="calcBreakdownArea">
+                    <div class="breakdown-row"><span>Gross Profit</span><span class="amount" id="grossProfitDisplay">৳ 0.00</span></div>
+                    <div class="breakdown-row"><span>মোট ফি (BDT)</span><span class="amount" id="totalFeesDisplay">৳ 0.00</span></div>
+                    <div class="breakdown-row"><span>Slippage cost</span><span class="amount" id="slippageCostDisplay">৳ 0.00</span></div>
+                    <div class="breakdown-row" style="font-weight: 600; border-top: 1px solid #dce2ec; padding-top: 8px; margin-top: 4px;">
+                        <span>নিট লাভ (Net Profit)</span>
+                        <span class="amount" id="netProfitBreakdown">৳ 0.00</span>
+                    </div>
+                </div>
+
+                <div class="flex mt-2">
+                    <button class="btn-secondary" id="resetCalcBtn">↺ রিসেট</button>
+                    <button class="btn-secondary" id="copyResultBtn">📋 কপি</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trade History -->
+        <div class="card">
+            <div class="card-header">
+                <h2>📋 ট্রেড হিস্টোরি</h2>
+                <span class="badge" id="historyCount">0</span>
+            </div>
+            <div id="historyList">
+                <div style="color: var(--gray-light); font-size: 13px; text-align: center; padding: 12px 0;">কোনো হিসাব নেই</div>
+            </div>
+            <button class="btn-secondary small danger" style="width:100%; margin-top:10px;" id="clearHistoryBtn">🗑 হিস্টোরি মুছুন</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SECTION: SETTINGS
+         ============================================================ -->
+    <div class="section-panel" id="section-settings">
+        <div class="card">
+            <div class="card-header">
+                <h2>⚙️ সেটিংস ও ডেটা ম্যানেজমেন্ট</h2>
+            </div>
+
+            <h3 class="mb-1">📦 ব্যাকআপ ও রিস্টোর</h3>
+            <p class="text-small text-muted mb-2">সম্পূর্ণ ডেটা (বিজ্ঞাপন, স্ন্যাপশট, ক্যালকুলেটর) JSON ফাইলে সংরক্ষণ করুন।</p>
+            <div class="flex">
+                <button class="btn-secondary" id="exportJsonBtn" style="flex:1;">📥 JSON Export</button>
+                <button class="btn-secondary" id="importJsonBtn" style="flex:1;">📤 JSON Import</button>
+            </div>
+            <input type="file" id="jsonFileInput" accept=".json" class="hidden">
+            <div id="importStatus" class="text-small mt-1"></div>
+
+            <div class="divider"></div>
+
+            <h3 class="mb-1">🧹 ডেটা রিসেট</h3>
+            <p class="text-small text-muted mb-2">সব ডেটা মুছে ফেলুন। এটি ফিরিয়ে আনা যাবে না।</p>
+            <button class="btn-secondary danger" id="resetAllBtn" style="width:100%;">🗑 সব ডেটা মুছুন</button>
+
+            <div class="divider"></div>
+
+            <h3 class="mb-1">ℹ️ অ্যাপ তথ্য</h3>
+            <div class="text-small text-muted" style="line-height:1.8;">
+                <div><strong>ভার্সন:</strong> 3.0.0 (Market Intelligence)</div>
+                <div><strong>ডেটা সোর্স:</strong> ম্যানুয়াল এন্ট্রি (কোনো লাইভ API নেই)</div>
+                <div><strong>স্টোরেজ:</strong> LocalStorage</div>
+                <div><strong>ভাষা:</strong> বাংলা + English</div>
+                <div><strong>উদ্দেশ্য:</strong> শিক্ষামূলক মার্কেট বিশ্লেষণ সিমুলেশন</div>
+                <div class="mt-1" style="color: var(--warning-text);">⚠️ এই অ্যাপটি কোনো ট্রেডিং প্ল্যাটফর্মের সাথে সংযুক্ত নয়।</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3 class="mb-1">📖 ডকুমেন্টেশন</h3>
+            <div class="text-small text-muted" style="line-height:1.8;">
+                <div><strong>ডেটা কোয়ালিটি স্কোর:</strong> কমপ্লিটনেস, ইউনিক মার্চেন্ট, ভ্যালিডিটি চেকের ভিত্তিতে (0-100)।</div>
+                <div><strong>প্রাইস ডিসপার্শন স্কোর:</strong> IQR / median-এর অনুপাতের ভিত্তিতে।</div>
+                <div><strong>মার্চেন্ট কনসেন্ট্রেশন স্কোর:</strong> টপ মার্চেন্টের বিজ্ঞাপন শেয়ারের ভিত্তিতে।</div>
+                <div><strong>হিস্টোরিক্যাল স্ট্যাবিলিটি:</strong> একাধিক স্ন্যাপশটের মধ্যে দামের পরিবর্তনের ভিত্তিতে।</div>
+                <div><strong>কম্পিটিশন ইন্ডিকেটর:</strong> বিজ্ঞাপন সংখ্যা, মার্চেন্ট সংখ্যা, প্রাইস ডিসপার্শন।</div>
+                <div><strong>মার্কেট ক্লাসিফিকেশন:</strong> একাধিক ক্যাটাগরি একসাথে থাকতে পারে।</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div style="font-size: 10px; color: var(--gray-text); text-align: center; margin-top: 20px; border-top: 1px solid var(--gray-border); padding-top: 14px;">
+        ⚠️ শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে · ম্যানুয়াল ডেটা · P2P মার্কেট ঝুঁকিপূর্ণ
+    </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================================
+     INLINE ICON + MANIFEST
+     ============================================================ -->
 <script>
-(()=>{
-  const $=x=>document.getElementById(x);
-  const raw=x=>$(x).value.trim();
-  const isEmpty=x=>raw(x)==="";
-  // খালি হলে 0, নাহলে সংখ্যা (ঋণাত্মক হলে 0)
-  const n=x=>{const v=parseFloat(raw(x));return isNaN(v)?0:Math.max(0,v);};
-  const F=(x,c)=>({BDT:"৳",MMK:"K",USDT:"₮",DOGE:"Ð"}[c]||"")+" "+Number(x||0).toLocaleString("en-US",{maximumFractionDigits:["USDT","DOGE"].includes(c)?8:2});
-  const P=x=>Number(x||0).toFixed(2)+"%";
+    (function buildIcon() {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <rect width="512" height="512" rx="96" fill="#0b1a33"/>
+            <text x="50%" y="42%" font-family="Segoe UI, Arial, sans-serif" font-size="120" font-weight="700"
+                  fill="#ffffff" text-anchor="middle" dominant-baseline="middle">P2P</text>
+            <text x="50%" y="58%" font-family="Segoe UI, Arial, sans-serif" font-size="64" font-weight="600"
+                  fill="#7fb2ff" text-anchor="middle" dominant-baseline="middle">INTEL</text>
+            <text x="50%" y="78%" font-family="Segoe UI, Arial, sans-serif" font-size="72" font-weight="600"
+                  fill="#3b82f6" text-anchor="middle" dominant-baseline="middle">৳</text>
+        </svg>`;
+        const dataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        const dataUriB64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
 
-  function out(){
-    // ---- ইনপুট পড়া ----
-    const q=n("q"), ds=n("ds"), ubm=n("ubm"), ubs=n("ubs");
-    const mf=n("mf"), pf=n("pf"), nf=n("nf"), sl=n("sl");
-    const bfee=n("bfee"), oth=n("oth"), init=n("init");
-    const fix=bfee+oth;
-    const netOk=$("net").value==="yes";
-    const limitOk=$("limitOk").checked;
-    const w=[];
+        document.getElementById('favIcon').href = dataUri;
+        document.getElementById('appleIcon').href = dataUriB64;
 
-    // ---- হিসাব ----
-    const sale=q*ds;                    // DOGE → MMK (মোট)
-    const m=mf+pf;                      // MMK ফি
-    const usable=Math.max(0,sale-m);    // ব্যবহারযোগ্য MMK
-    const before=Math.max(0,usable/(ubm||1)-nf); // USDT (ফির আগে/পরে, স্লিপেজের আগে)
-    const u=before*(1-sl/100);          // স্লিপেজের পরে USDT
-    const I=init+fix;                   // মোট বিনিয়োগ
-    const R=u*ubs-fix;                  // মোট আয় (BDT)
-    const slipLoss=(before-u)*ubs;      // স্লিপেজের কারণে BDT ক্ষতি
-    const C=m/(ubm||1)*ubs+nf*ubs+slipLoss+fix; // মোট ফি/ক্ষতি (BDT-তে)
-    const Z=R-I;                        // নিট লাভ/ক্ষতি
-    const roi=I?Z/I*100:0;
+        function svgToPngDataUrl(size, bgColor) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+                    if (bgColor) {
+                        ctx.fillStyle = bgColor;
+                        ctx.fillRect(0, 0, size, size);
+                    }
+                    ctx.drawImage(img, 0, 0, size, size);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = function () { resolve(dataUri); };
+                img.src = dataUri;
+            });
+        }
 
-    // ---- ইনপুট ভ্যালিডেশন ওয়ার্নিং ----
-    if(isEmpty("init"))w.push("⚠️ DOGE-এর প্রাথমিক ক্রয়মূল্য (BDT) দেওয়া হয়নি — লাভ/ক্ষতি নির্ভরযোগ্য নয়।");
-    if(isEmpty("q")||q<=0)w.push("⚠️ DOGE পরিমাণ শূন্য/খালি — কিছুই বিক্রি হচ্ছে না।");
-    if(isEmpty("ds")||ds<=0)w.push("⚠️ প্রতি DOGE-এর বিক্রয়মূল্য (MMK) শূন্য/খালি।");
-    if(isEmpty("ubm")||ubm<=0)w.push("⚠️ প্রতি USDT-এর ক্রয়মূল্য (MMK) শূন্য/খালি — MMK → USDT হিসাব করা যাচ্ছে না।");
-    if(isEmpty("ubs")||ubs<=0)w.push("⚠️ প্রতি USDT-এর বিক্রয়মূল্য (BDT) শূন্য/খালি।");
-    if(sl<0||sl>100)w.push("⚠️ স্লিপেজ ০–১০০% এর মধ্যে হওয়া উচিত।");
+        const manifest = {
+            name: "P2P Market Intelligence",
+            short_name: "P2P Intel",
+            description: "Manual P2P market analysis and trade calculator",
+            start_url: ".",
+            scope: ".",
+            display: "standalone",
+            orientation: "portrait",
+            background_color: "#f4f7fc",
+            theme_color: "#0b1a33",
+            lang: "bn",
+            icons: []
+        };
 
-    // ---- অর্ডার লিমিট যাচাই (চেকবক্স) ----
-    if(!limitOk)w.push("⚠️ P2P অর্ডার বুকের min/max limit যাচাই করা হয়নি — পুরো অর্ডার একবারে ফিল না-ও হতে পারে।");
+        (async function () {
+            const [png192, png512] = await Promise.all([
+                svgToPngDataUrl(192, '#0b1a33'),
+                svgToPngDataUrl(512, '#0b1a33')
+            ]);
 
-    // ---- নেটওয়ার্ক ----
-    if(!netOk)w.push("⛔ USDT নেটওয়ার্ক যাচাই করা হয়নি — এই রুট সম্পন্নযোগ্য নয় বলে ধরা হবে।");
+            manifest.icons = [
+                { src: png192, sizes: "192x192", type: "image/png", purpose: "any" },
+                { src: png512, sizes: "512x512", type: "image/png", purpose: "any" }
+            ];
 
-    // ---- ওয়ার্নিং রেন্ডার ----
-    const hasError=!netOk||!limitOk;
-    $("warn").className="warn"+(hasError?" err":"")+(w.length?"":" hidden");
-    $("warn").innerHTML=w.join("<br>");
-    $("incompleteBadge").classList.toggle("hidden",!hasError);
+            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+            const manifestUrl = URL.createObjectURL(manifestBlob);
+            document.getElementById('appManifest').href = manifestUrl;
+        })();
+    })();
+</script>
 
-    // ---- ফ্লো ----
-    const fl=[
-      ["1. DOGE বিক্রি",F(q,"DOGE"),F(sale,"MMK")],
-      ["2. MMK → USDT",F(usable,"MMK"),F(before,"USDT")],
-      ["3. USDT বিক্রি",F(u,"USDT"),F(R,"BDT")],
-      ["4. মোট বিনিয়োগ",F(init,"BDT")+(fix?" + "+F(fix,"BDT")+" ফি":""),F(I,"BDT")]
+<!-- ============================================================
+     GOOGLE TRANSLATE BAR REMOVER
+     ============================================================ -->
+<script>
+    (function killTranslate() {
+        const kill = () => {
+            document.querySelectorAll(
+                '.goog-te-banner-frame, .skiptranslate > iframe, iframe.goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame'
+            ).forEach(el => el.remove());
+            if (document.body) document.body.style.top = '0px';
+            document.documentElement.style.marginTop = '0px';
+        };
+        kill();
+        try {
+            const obs = new MutationObserver(kill);
+            obs.observe(document.documentElement, { childList: true, subtree: true });
+        } catch (e) {}
+        setTimeout(kill, 500);
+        setTimeout(kill, 1500);
+        setTimeout(kill, 3000);
+    })();
+</script>
+
+<!-- ============================================================
+     MAIN APPLICATION LOGIC
+     ============================================================ -->
+<script>
+(function() {
+    'use strict';
+
+    /* ============================================================
+       SECTION 1: CONSTANTS & STORAGE KEYS
+       ============================================================ */
+    const STORAGE_KEYS = {
+        CALC_STATE: 'p2pCalcState_v3',
+        CALC_HISTORY: 'p2pCalcHistory_v3',
+        ADV_DATA: 'p2pAdvData_v3',
+        SNAPSHOTS: 'p2pSnapshots_v3',
+        SETTINGS: 'p2pSettings_v3',
+        APP_VERSION: '3.0.0'
+    };
+
+    const INPUT_IDS = [
+        'buyPrice', 'sellPrice', 'usdtQty', 'investmentBdt',
+        'buyFee', 'sellFee', 'paymentFee', 'networkFee',
+        'slippagePct', 'otherCost'
     ];
-    const dt=[
-      ["DOGE বিক্রির মোট আয়",F(sale,"MMK")],
-      ["MMK ফি (P2P + পেমেন্ট)",F(m,"MMK")],
-      ["ব্যবহারযোগ্য MMK",F(usable,"MMK")],
-      ["প্রতি USDT-এর ক্রয়মূল্য",F(ubm,"MMK")+" / 1 USDT"],
-      ["নেটওয়ার্ক ফি",F(nf,"USDT")],
-      ["স্লিপেজ ক্ষতি",F(before-u,"USDT")+" ≈ "+F(slipLoss,"BDT")],
-      ["প্রাপ্ত USDT (স্লিপেজের পরে)",F(u,"USDT")],
-      ["প্রতি USDT-এর বিক্রয়মূল্য",F(ubs,"BDT")+" / 1 USDT"],
-      ["BD ফি + অন্যান্য খরচ",F(fix,"BDT")],
-      ["DOGE-এর প্রাথমিক ক্রয়মূল্য",F(init,"BDT")],
-      ["মোট বিনিয়োগ",F(I,"BDT")],
-      ["মোট আয়",F(R,"BDT")],
-      ["প্রতি DOGE-এ নিট ফল",F(q?Z/q:0,"BDT")]
-    ];
 
-    $("inv").textContent=F(I,"BDT");
-    $("rev").textContent=F(R,"BDT");
-    $("fee").textContent=F(C,"BDT");
-    $("pro").textContent=F(Z,"BDT");
-    $("pro").className=Z>=0?"pos":"neg";
-    $("roi").textContent=P(roi);
-    $("roi").className=roi>=0?"pos":"neg";
-    $("pd").textContent=F(q?Z/q:0,"BDT");
-    $("pd").className=(q?Z/q:0)>=0?"pos":"neg";
-    $("flow").innerHTML=fl.map(x=>`<div class="step"><b>${x[0]}</b><span>${x[1]}</span><strong>${x[2]}</strong></div>`).join("");
-    $("det").innerHTML=dt.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join("");
+    /* ============================================================
+       SECTION 2: STORAGE MANAGER
+       ============================================================ */
+    const StorageManager = (function() {
+        function get(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch (e) { return fallback; }
+        }
+        function set(key, val) {
+            try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+            catch (e) { return false; }
+        }
+        function remove(key) {
+            try { localStorage.removeItem(key); } catch (e) {}
+        }
+        function clearAll() {
+            Object.values(STORAGE_KEYS).forEach(k => remove(k));
+        }
+        return { get, set, remove, clearAll };
+    })();
 
-    const tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"local";
-    $("time").textContent="হিসাবের সময়: "+new Date().toLocaleString("bn-BD")+" ("+tz+") · সব মূল্য ম্যানুয়াল; API-ভিত্তিক লাইভ quote নয়";
+    /* ============================================================
+       SECTION 3: STATE
+       ============================================================ */
+    const AppState = {
+        advertisements: [],
+        snapshots: [],
+        calcHistory: [],
+        settings: {},
+        lastAnalysis: null,
+        analysisTimestamp: null
+    };
 
-    // কপি টেক্সট তৈরি করে রাখি
-    window.__copyText =
-      "DOGE → MMK → USDT → BDT\n"+
-      "-----------------------------\n"+
-      "ইনপুট:\n"+
-      "  DOGE পরিমাণ: "+q+" DOGE\n"+
-      "  প্রতি DOGE বিক্রয়মূল্য: "+ds+" MMK\n"+
-      "  প্রতি USDT ক্রয়মূল্য: "+ubm+" MMK\n"+
-      "  প্রতি USDT বিক্রয়মূল্য: "+ubs+" BDT\n"+
-      "  নেটওয়ার্ক যাচাই: "+(netOk?"হ্যাঁ":"না")+"\n"+
-      "  অর্ডার লিমিট যাচাই: "+(limitOk?"হ্যাঁ":"না")+"\n"+
-      "-----------------------------\n"+
-      "ফলাফল:\n"+
-      "  মোট বিনিয়োগ: "+$("inv").textContent+"\n"+
-      "  মোট আয়: "+$("rev").textContent+"\n"+
-      "  মোট ফি ও ক্ষতি: "+$("fee").textContent+"\n"+
-      "  নিট লাভ/ক্ষতি: "+$("pro").textContent+"\n"+
-      "  ROI: "+$("roi").textContent+"\n"+
-      "  প্রতি DOGE-এ ফল: "+$("pd").textContent+"\n"+
-      (w.length?"-----------------------------\nসতর্কতা:\n  "+w.join("\n  ")+"\n":"");
-  }
-
-  document.querySelectorAll("input,select").forEach(x=>{
-    x.addEventListener("input",out);
-    x.addEventListener("change",out);
-  });
-  $("go").onclick=out;
-  $("copy").onclick=()=>{
-    const txt=window.__copyText||"";
-    if(navigator.clipboard?.writeText){
-      navigator.clipboard.writeText(txt).then(
-        ()=>{$("copy").textContent="✅ কপি হয়েছে!";setTimeout(()=>$("copy").textContent="📋 সম্পূর্ণ ফলাফল কপি",1600);},
-        ()=>{$("copy").textContent="⚠️ কপি ব্যর্থ — ম্যানুয়ালি কপি করুন";setTimeout(()=>$("copy").textContent="📋 সম্পূর্ণ ফলাফল কপি",2000);}
-      );
-    }else{
-      // ফলব্যাক
-      const ta=document.createElement("textarea");
-      ta.value=txt;document.body.appendChild(ta);ta.select();
-      try{document.execCommand("copy");$("copy").textContent="✅ কপি হয়েছে!";}catch(e){$("copy").textContent="⚠️ কপি ব্যর্থ";}
-      document.body.removeChild(ta);
-      setTimeout(()=>$("copy").textContent="📋 সম্পূর্ণ ফলাফল কপি",1600);
+    /* ============================================================
+       SECTION 4: UTILITY HELPERS
+       ============================================================ */
+    function fmt(n) {
+        if (!Number.isFinite(n)) return '—';
+        return '৳ ' + n.toFixed(2);
     }
-  };
-  out();
+    function fmtInt(n) {
+        if (!Number.isFinite(n)) return '—';
+        return '৳ ' + Math.round(n).toLocaleString('en-IN');
+    }
+    function fmtPct(n) {
+        if (!Number.isFinite(n)) return '—';
+        return n.toFixed(2) + '%';
+    }
+    function fmtNum(n, d = 2) {
+        if (!Number.isFinite(n)) return '—';
+        return n.toFixed(d);
+    }
+    function fmtDate(iso) {
+        if (!iso) return '—';
+        try {
+            const d = new Date(iso);
+            return d.toLocaleDateString('bn-BD', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        } catch (e) { return iso; }
+    }
+    function uid() {
+        return 'id_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    let toastTimer = null;
+    function showToast(msg, isError) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast show' + (isError ? ' error' : '');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+    }
+
+    /* Statistical helpers */
+    function mean(arr) {
+        if (!arr.length) return null;
+        return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+    function median(arr) {
+        if (!arr.length) return null;
+        const s = [...arr].sort((a, b) => a - b);
+        const mid = Math.floor(s.length / 2);
+        return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+    }
+    function stdDev(arr) {
+        if (arr.length < 2) return 0;
+        const m = mean(arr);
+        const sq = arr.reduce((a, b) => a + (b - m) ** 2, 0);
+        return Math.sqrt(sq / (arr.length - 1));
+    }
+    function quartiles(arr) {
+        if (!arr.length) return { q1: null, q3: null, iqr: null };
+        const s = [...arr].sort((a, b) => a - b);
+        const q1 = s[Math.floor(s.length * 0.25)];
+        const q3 = s[Math.floor(s.length * 0.75)];
+        return { q1, q3, iqr: q3 - q1 };
+    }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    /* ============================================================
+       SECTION 5: PERSISTENCE
+       ============================================================ */
+    function saveAdvertisements() {
+        StorageManager.set(STORAGE_KEYS.ADV_DATA, AppState.advertisements);
+    }
+    function loadAdvertisements() {
+        const d = StorageManager.get(STORAGE_KEYS.ADV_DATA, []);
+        AppState.advertisements = Array.isArray(d) ? d : [];
+    }
+    function saveSnapshots() {
+        StorageManager.set(STORAGE_KEYS.SNAPSHOTS, AppState.snapshots);
+    }
+    function loadSnapshots() {
+        const d = StorageManager.get(STORAGE_KEYS.SNAPSHOTS, []);
+        AppState.snapshots = Array.isArray(d) ? d : [];
+    }
+    function saveCalcHistory() {
+        StorageManager.set(STORAGE_KEYS.CALC_HISTORY, AppState.calcHistory);
+    }
+    function loadCalcHistory() {
+        const d = StorageManager.get(STORAGE_KEYS.CALC_HISTORY, []);
+        AppState.calcHistory = Array.isArray(d) ? d : [];
+    }
+    function saveCalcState() {
+        const state = {};
+        INPUT_IDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) state[id] = el.value;
+        });
+        StorageManager.set(STORAGE_KEYS.CALC_STATE, state);
+    }
+    function loadCalcState() {
+        const state = StorageManager.get(STORAGE_KEYS.CALC_STATE, null);
+        if (!state) return false;
+        INPUT_IDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && state[id] !== undefined) el.value = state[id];
+        });
+        return true;
+    }
+
+    /* ============================================================
+       SECTION 6: ADVERTISEMENT MANAGER
+       ============================================================ */
+    function addAdvertisement(adv) {
+        if (!adv.merchant || !adv.price || adv.price <= 0) {
+            showToast('মার্চেন্ট এবং বৈধ দাম আবশ্যক।', true);
+            return false;
+        }
+        if (!['Buy', 'Sell'].includes(adv.side)) {
+            showToast('সাইড Buy অথবা Sell হতে হবে।', true);
+            return false;
+        }
+        adv.id = uid();
+        adv.createdAt = new Date().toISOString();
+        AppState.advertisements.push(adv);
+        saveAdvertisements();
+        renderAdvertisementList();
+        updateDashboard();
+        showToast('বিজ্ঞাপন যোগ হয়েছে ✓');
+        return true;
+    }
+
+    function deleteAdvertisement(id) {
+        AppState.advertisements = AppState.advertisements.filter(a => a.id !== id);
+        saveAdvertisements();
+        renderAdvertisementList();
+        updateDashboard();
+        showToast('বিজ্ঞাপন মুছে ফেলা হয়েছে');
+    }
+
+    function duplicateAdvertisement(id) {
+        const src = AppState.advertisements.find(a => a.id === id);
+        if (!src) return;
+        const copy = { ...src, id: uid(), createdAt: new Date().toISOString() };
+        AppState.advertisements.push(copy);
+        saveAdvertisements();
+        renderAdvertisementList();
+        updateDashboard();
+        showToast('বিজ্ঞাপন ডুপ্লিকেট হয়েছে');
+    }
+
+    function clearAdvertisementForm() {
+        ['advMarketplace','advMerchant','advPrice','advMin','advMax','advQty','advCompleted','advCompletion','advPayment','advNotes','advDate','advTime'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        document.getElementById('advSide').value = 'Buy';
+        document.getElementById('advMarketplace').value = 'Binance';
+    }
+
+    function renderAdvertisementList() {
+        const wrap = document.getElementById('advListWrap');
+        const countBadge = document.getElementById('advListCount');
+        const advCountBadge = document.getElementById('advCountBadge');
+        const count = AppState.advertisements.length;
+        if (countBadge) countBadge.textContent = count;
+        if (advCountBadge) advCountBadge.textContent = count;
+
+        if (!count) {
+            wrap.innerHTML = '<div class="empty-state">এখনও কোনো বিজ্ঞাপন নেই। উপরের ফর্ম থেকে যোগ করুন।</div>';
+            return;
+        }
+
+        const table = document.createElement('table');
+        table.className = 'adv-table';
+        table.innerHTML = `
+            <thead><tr>
+                <th>সাইড</th><th>মার্চেন্ট</th><th>দাম</th><th>মিন/ম্যাক্স</th><th>Qty</th><th>Actions</th>
+            </tr></thead>
+        `;
+        const tbody = document.createElement('tbody');
+        AppState.advertisements.forEach(adv => {
+            const tr = document.createElement('tr');
+            const sideCls = adv.side === 'Buy' ? 'adv-side-buy' : 'adv-side-sell';
+            const qtyText = adv.quantity != null ? fmtNum(adv.quantity, 0) : '—';
+            const minMax = (adv.minOrder != null ? fmtNum(adv.minOrder, 0) : '—') + ' / ' + (adv.maxOrder != null ? fmtNum(adv.maxOrder, 0) : '—');
+
+            const tdSide = document.createElement('td');
+            tdSide.innerHTML = `<span class="${sideCls}">${adv.side}</span>`;
+            const tdMerchant = document.createElement('td');
+            tdMerchant.textContent = adv.merchant || '—';
+            const tdPrice = document.createElement('td');
+            tdPrice.textContent = adv.price != null ? fmtNum(adv.price) : '—';
+            const tdMinMax = document.createElement('td');
+            tdMinMax.textContent = minMax;
+            const tdQty = document.createElement('td');
+            tdQty.textContent = qtyText;
+
+            const tdActions = document.createElement('td');
+            tdActions.className = 'actions';
+            const dupBtn = document.createElement('button');
+            dupBtn.className = 'btn-icon';
+            dupBtn.textContent = '📋';
+            dupBtn.title = 'Duplicate';
+            dupBtn.addEventListener('click', () => duplicateAdvertisement(adv.id));
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-icon danger';
+            delBtn.textContent = '✕';
+            delBtn.title = 'Delete';
+            delBtn.addEventListener('click', () => deleteAdvertisement(adv.id));
+            tdActions.appendChild(dupBtn);
+            tdActions.appendChild(delBtn);
+
+            tr.appendChild(tdSide);
+            tr.appendChild(tdMerchant);
+            tr.appendChild(tdPrice);
+            tr.appendChild(tdMinMax);
+            tr.appendChild(tdQty);
+            tr.appendChild(tdActions);
+            tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        wrap.innerHTML = '';
+        wrap.appendChild(table);
+    }
+
+    /* ============================================================
+       SECTION 7: SNAPSHOT MANAGER
+       ============================================================ */
+    function saveSnapshot() {
+        if (!AppState.advertisements.length) {
+            showToast('স্ন্যাপশট সংরক্ষণের জন্য কমপক্ষে একটি বিজ্ঞাপন প্রয়োজন।', true);
+            return;
+        }
+        const snap = {
+            id: uid(),
+            timestamp: new Date().toISOString(),
+            label: 'Snapshot ' + new Date().toLocaleString('bn-BD'),
+            advertisements: JSON.parse(JSON.stringify(AppState.advertisements))
+        };
+        AppState.snapshots.unshift(snap);
+        if (AppState.snapshots.length > 50) AppState.snapshots.pop();
+        saveSnapshots();
+        renderSnapshotList();
+        showToast('স্ন্যাপশট সংরক্ষিত ✓');
+    }
+
+    function deleteSnapshot(id) {
+        AppState.snapshots = AppState.snapshots.filter(s => s.id !== id);
+        saveSnapshots();
+        renderSnapshotList();
+        showToast('স্ন্যাপশট মুছে ফেলা হয়েছে');
+    }
+
+    function renderSnapshotList() {
+        const wrap = document.getElementById('snapshotList');
+        const count = document.getElementById('snapshotCount');
+        if (count) count.textContent = AppState.snapshots.length;
+
+        if (!AppState.snapshots.length) {
+            wrap.innerHTML = '<div class="empty-state">এখনও কোনো স্ন্যাপশট নেই।</div>';
+            return;
+        }
+
+        wrap.innerHTML = '';
+        AppState.snapshots.forEach(snap => {
+            const div = document.createElement('div');
+            div.className = 'snapshot-item';
+            const advCount = snap.advertisements.length;
+            const merchants = new Set(snap.advertisements.map(a => a.merchant)).size;
+
+            const meta = document.createElement('div');
+            meta.className = 'meta';
+            const title = document.createElement('div');
+            title.className = 'title';
+            title.textContent = snap.label;
+            const detail = document.createElement('div');
+            detail.className = 'detail';
+            detail.textContent = `${advCount} বিজ্ঞাপন · ${merchants} মার্চেন্ট`;
+            meta.appendChild(title);
+            meta.appendChild(detail);
+
+            const actions = document.createElement('div');
+            actions.className = 'flex';
+            const restoreBtn = document.createElement('button');
+            restoreBtn.className = 'btn-secondary small';
+            restoreBtn.textContent = '↩ রিস্টোর';
+            restoreBtn.addEventListener('click', () => {
+                if (!confirm('এই স্ন্যাপশট রিস্টোর করলে বর্তমান ডেটা প্রতিস্থাপিত হবে। চালিয়ে যাবেন?')) return;
+                AppState.advertisements = JSON.parse(JSON.stringify(snap.advertisements));
+                saveAdvertisements();
+                renderAdvertisementList();
+                updateDashboard();
+                showToast('স্ন্যাপশট রিস্টোর হয়েছে ✓');
+            });
+            const delBtn = document.createElement('button');
+            delBtn.className = 'btn-icon danger';
+            delBtn.textContent = '✕';
+            delBtn.title = 'Delete snapshot';
+            delBtn.addEventListener('click', () => deleteSnapshot(snap.id));
+            actions.appendChild(restoreBtn);
+            actions.appendChild(delBtn);
+
+            div.appendChild(meta);
+            div.appendChild(actions);
+            wrap.appendChild(div);
+        });
+
+        // Update compare selects
+        const selA = document.getElementById('compareSnapA');
+        const selB = document.getElementById('compareSnapB');
+        [selA, selB].forEach(sel => {
+            if (!sel) return;
+            const currentVal = sel.value;
+            sel.innerHTML = '<option value="">— নির্বাচন করুন —</option>';
+            AppState.snapshots.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.label;
+                sel.appendChild(opt);
+            });
+            if (currentVal) sel.value = currentVal;
+        });
+    }
+
+    /* ============================================================
+       SECTION 8: PRICE ANALYSIS ENGINE
+       ============================================================ */
+    const PriceAnalysis = (function() {
+        function analyzeSide(advertisements, side) {
+            const filtered = advertisements.filter(a => a.side === side && a.price > 0);
+            if (!filtered.length) return { side, count: 0, prices: [], stats: null, outliers: [] };
+
+            const prices = filtered.map(a => a.price);
+            const meanV = mean(prices);
+            const medianV = median(prices);
+            const minV = Math.min(...prices);
+            const maxV = Math.max(...prices);
+            const sd = stdDev(prices);
+            const { q1, q3, iqr } = quartiles(prices);
+
+            // Outlier detection using IQR method
+            const outliers = filtered.filter(a => {
+                if (iqr === null || iqr === 0) return false;
+                return a.price < q1 - 1.5 * iqr || a.price > q3 + 1.5 * iqr;
+            });
+
+            return {
+                side, count: filtered.length,
+                prices, stats: { mean: meanV, median: medianV, min: minV, max: maxV, stdDev: sd, q1, q3, iqr, range: maxV - minV },
+                outliers: outliers.map(a => ({ merchant: a.merchant, price: a.price }))
+            };
+        }
+
+        function analyze(advertisements) {
+            const buy = analyzeSide(advertisements, 'Buy');
+            const sell = analyzeSide(advertisements, 'Sell');
+
+            let spread = null;
+            if (buy.count > 0 && sell.count > 0) {
+                const bestBuy = Math.min(...buy.prices);
+                const bestSell = Math.max(...sell.prices);
+                const diff = bestSell - bestBuy;
+                spread = {
+                    bestBuy, bestSell, difference: diff,
+                    medianBuy: buy.stats.median, medianSell: sell.stats.median,
+                    medianDifference: sell.stats.median - buy.stats.median,
+                    avgDifference: sell.stats.mean - buy.stats.mean,
+                    note: 'এটি শুধুমাত্র বিজ্ঞাপনে দৃশ্যমান দামের পার্থক্য; গ্যারান্টিযুক্ত লাভ নয়।'
+                };
+            }
+            return { buy, sell, spread };
+        }
+
+        return { analyze };
+    })();
+
+    /* ============================================================
+       SECTION 9: MERCHANT ANALYSIS ENGINE
+       ============================================================ */
+    const MerchantAnalysis = (function() {
+        function analyze(advertisements) {
+            const merchants = {};
+            advertisements.forEach(a => {
+                const key = a.merchant || 'Unknown';
+                if (!merchants[key]) merchants[key] = { name: key, ads: [], prices: [] };
+                merchants[key].ads.push(a);
+                if (a.price > 0) merchants[key].prices.push(a.price);
+            });
+
+            const allPrices = advertisements.filter(a => a.price > 0).map(a => a.price);
+            const globalMedian = allPrices.length ? median(allPrices) : null;
+
+            const list = Object.values(merchants).map(m => {
+                const mMedian = m.prices.length ? median(m.prices) : null;
+                return {
+                    name: m.name,
+                    adCount: m.ads.length,
+                    medianPrice: mMedian,
+                    deviation: (mMedian != null && globalMedian != null) ? ((mMedian - globalMedian) / globalMedian) * 100 : null,
+                    totalQty: m.ads.reduce((s, a) => s + (a.quantity || 0), 0)
+                };
+            }).sort((a, b) => b.adCount - a.adCount);
+
+            // Concentration: top merchant ad share
+            const totalAds = advertisements.length;
+            const topShare = totalAds > 0 ? (list[0]?.adCount || 0) / totalAds : 0;
+
+            // Outlier merchants (price deviation > 2x IQR)
+            const allMerchantMedians = list.filter(m => m.medianPrice != null).map(m => m.medianPrice);
+            const { iqr } = quartiles(allMerchantMedians);
+            const outlierMerchants = list.filter(m => {
+                if (m.medianPrice == null || globalMedian == null || iqr === 0 || iqr === null) return false;
+                return Math.abs(m.medianPrice - globalMedian) > 2 * iqr;
+            });
+
+            return {
+                totalUnique: list.length,
+                list,
+                topShare,
+                globalMedian,
+                outlierMerchants,
+                missingMerchantInfo: advertisements.filter(a => !a.merchant).length
+            };
+        }
+        return { analyze };
+    })();
+
+    /* ============================================================
+       SECTION 10: LIQUIDITY ANALYSIS ENGINE
+       ============================================================ */
+    const LiquidityAnalysis = (function() {
+        function analyze(advertisements) {
+            const withQty = advertisements.filter(a => a.quantity != null && a.quantity > 0);
+            const withoutQty = advertisements.filter(a => a.quantity == null || a.quantity <= 0);
+            const qtys = withQty.map(a => a.quantity);
+
+            const minOrders = advertisements.filter(a => a.minOrder != null).map(a => a.minOrder);
+            const maxOrders = advertisements.filter(a => a.maxOrder != null).map(a => a.maxOrder);
+
+            return {
+                knownQtyCount: withQty.length,
+                unknownQtyCount: withoutQty.length,
+                totalReportedQty: qtys.reduce((s, q) => s + q, 0),
+                medianQty: qtys.length ? median(qtys) : null,
+                avgMinOrder: minOrders.length ? mean(minOrders) : null,
+                avgMaxOrder: maxOrders.length ? mean(maxOrders) : null,
+                minOrderCount: minOrders.length,
+                maxOrderCount: maxOrders.length,
+                note: withQty.length === 0 ? 'পর্যাপ্ত ডেটা নেই উপলব্ধ লিকুইডিটি অনুমান করার জন্য।' : null
+            };
+        }
+        return { analyze };
+    })();
+
+    /* ============================================================
+       SECTION 11: HISTORICAL COMPARISON ENGINE
+       ============================================================ */
+    const HistoricalComparison = (function() {
+        function compare(snapA, snapB) {
+            if (!snapA || !snapB) return null;
+            const adsA = snapA.advertisements || [];
+            const adsB = snapB.advertisements || [];
+
+            const pricesA = adsA.filter(a => a.price > 0).map(a => a.price);
+            const pricesB = adsB.filter(a => a.price > 0).map(a => a.price);
+
+            const medianA = pricesA.length ? median(pricesA) : null;
+            const medianB = pricesB.length ? median(pricesB) : null;
+            const change = (medianA != null && medianB != null) ? medianB - medianA : null;
+            const pctChange = (medianA != null && medianA !== 0 && change != null) ? (change / medianA) * 100 : null;
+
+            const merchantsA = new Set(adsA.map(a => a.merchant).filter(Boolean)).size;
+            const merchantsB = new Set(adsB.map(a => a.merchant).filter(Boolean)).size;
+
+            // Volatility: stddev of prices in each snapshot
+            const volA = pricesA.length > 1 ? stdDev(pricesA) : 0;
+            const volB = pricesB.length > 1 ? stdDev(pricesB) : 0;
+
+            let direction = 'insufficient';
+            if (change != null) {
+                if (change > 0.01 * (medianA || 1)) direction = 'increasing';
+                else if (change < -0.01 * (medianA || 1)) direction = 'decreasing';
+                else direction = 'stable';
+            }
+
+            const warning = (adsA.length !== adsB.length || merchantsA !== merchantsB)
+                ? 'বিজ্ঞাপন বা মার্চেন্ট সংখ্যা ভিন্ন — তুলনা সম্পূর্ণ প্রতিনিধিত্বমূলক নাও হতে পারে।'
+                : null;
+
+            return {
+                snapA: snapA.label, snapB: snapB.label,
+                adsCountA: adsA.length, adsCountB: adsB.length,
+                merchantsA, merchantsB,
+                medianA, medianB, change, pctChange, direction,
+                volatilityA: volA, volatilityB: volB,
+                warning
+            };
+        }
+        return { compare };
+    })();
+
+    /* ============================================================
+       SECTION 12: MARKET CLASSIFICATION ENGINE
+       ============================================================ */
+    const MarketClassifier = (function() {
+        const THRESHOLDS = {
+            competitionHigh: 10,     // unique merchants
+            competitionModerate: 5,
+            dispersionHigh: 0.05,    // IQR/median
+            dispersionModerate: 0.02,
+            dataQualityGood: 60,
+            dataQualityFair: 35,
+            volatilityHigh: 0.03,    // stddev/mean
+            historicalMinSnapshots: 2
+        };
+
+        function classify(priceResult, merchantResult, liquidityResult, historicalResult, advCount) {
+            const tags = [];
+            const evidence = [];
+            const limitations = [];
+
+            // 1. Data sufficiency
+            if (advCount < 2) {
+                tags.push({ label: 'অপর্যাপ্ত ডেটা', type: 'warning' });
+                limitations.push('বিশ্লেষণের জন্য কমপক্ষে ২টি বিজ্ঞাপন প্রয়োজন।');
+                return { primary: 'অপর্যাপ্ত ডেটা', tags, evidence, limitations, confidence: 'low' };
+            }
+
+            // 2. Competition
+            const uniqueMerchants = merchantResult.totalUnique;
+            if (uniqueMerchants >= THRESHOLDS.competitionHigh) {
+                tags.push({ label: 'উচ্চ প্রতিযোগিতা', type: 'success' });
+                evidence.push(`${uniqueMerchants} জন ইউনিক মার্চেন্ট — উচ্চ প্রতিযোগিতা।`);
+            } else if (uniqueMerchants >= THRESHOLDS.competitionModerate) {
+                tags.push({ label: 'মাঝারি প্রতিযোগিতা', type: 'info' });
+                evidence.push(`${uniqueMerchants} জন ইউনিক মার্চেন্ট — মাঝারি প্রতিযোগিতা।`);
+            } else {
+                tags.push({ label: 'কম প্রতিযোগিতা', type: 'warning' });
+                evidence.push(`${uniqueMerchants} জন ইউনিক মার্চেন্ট — সীমিত প্রতিযোগিতা।`);
+            }
+
+            // 3. Price dispersion (using Buy side median if available, else Sell)
+            const sideStats = priceResult.buy.stats || priceResult.sell.stats;
+            if (sideStats && sideStats.median && sideStats.iqr != null) {
+                const relDisp = sideStats.iqr / sideStats.median;
+                if (relDisp > THRESHOLDS.dispersionHigh) {
+                    tags.push({ label: 'উচ্চ দামের বিচ্ছুরণ', type: 'danger' });
+                    evidence.push(`IQR/Median = ${fmtNum(relDisp * 100, 1)}% — দামে বড় পার্থক্য।`);
+                } else if (relDisp > THRESHOLDS.dispersionModerate) {
+                    tags.push({ label: 'মাঝারি দামের বিচ্ছুরণ', type: 'info' });
+                } else {
+                    tags.push({ label: 'স্থিতিশীল দাম', type: 'success' });
+                    evidence.push(`IQR/Median = ${fmtNum(relDisp * 100, 1)}% — দাম তুলনামূলকভাবে ঘনিষ্ঠ।`);
+                }
+            } else {
+                limitations.push('দামের বিচ্ছুরণ গণনার জন্য পর্যাপ্ত ডেটা নেই।');
+            }
+
+            // 4. Liquidity
+            if (liquidityResult.knownQtyCount === 0) {
+                tags.push({ label: 'লিকুইডিটি অজানা', type: 'warning' });
+                limitations.push('কোনো বিজ্ঞাপনে উপলব্ধ পরিমাণ দেওয়া হয়নি।');
+            } else if (liquidityResult.totalReportedQty > 0) {
+                evidence.push(`মোট রিপোর্টেড পরিমাণ: ${fmtNum(liquidityResult.totalReportedQty, 0)} USDT (${liquidityResult.knownQtyCount}টি বিজ্ঞাপন থেকে)।`);
+            }
+
+            // 5. Historical stability
+            if (historicalResult && historicalResult.direction !== 'insufficient') {
+                if (historicalResult.direction === 'increasing') {
+                    tags.push({ label: 'ক্রমবর্ধমান দাম', type: 'warning' });
+                    evidence.push(`মিডিয়ান দাম ${fmtNum(historicalResult.pctChange, 2)}% বেড়েছে।`);
+                } else if (historicalResult.direction === 'decreasing') {
+                    tags.push({ label: 'ক্রমহ্রাসমান দাম', type: 'info' });
+                    evidence.push(`মিডিয়ান দাম ${fmtNum(historicalResult.pctChange, 2)}% কমেছে।`);
+                } else if (historicalResult.direction === 'stable') {
+                    tags.push({ label: 'স্থিতিশীল দাম', type: 'success' });
+                    evidence.push('স্ন্যাপশটগুলির মধ্যে দাম স্থিতিশীল।');
+                }
+            } else {
+                limitations.push('ঐতিহাসিক তুলনার জন্য কমপক্ষে ২টি স্ন্যাপশট প্রয়োজন।');
+            }
+
+            // 6. Volatility (current)
+            const currentPrices = (priceResult.buy.stats || priceResult.sell.stats)
+                ? (priceResult.buy.prices.length > 0 ? priceResult.buy.prices : priceResult.sell.prices) : [];
+            if (currentPrices.length > 2) {
+                const cv = stdDev(currentPrices) / (mean(currentPrices) || 1);
+                if (cv > THRESHOLDS.volatilityHigh) {
+                    tags.push({ label: 'উচ্চ দামের অস্থিরতা', type: 'danger' });
+                    evidence.push(`সহগুনমান বিচ্যুতি: ${fmtNum(cv * 100, 1)}%।`);
+                }
+            }
+
+            // Primary classification
+            let primary = 'মিশ্র মার্কেট অবস্থা';
+            if (tags.some(t => t.label === 'অপর্যাপ্ত ডেটা')) primary = 'অপর্যাপ্ত ডেটা';
+            else if (tags.some(t => t.label === 'উচ্চ দামের বিচ্ছুরণ')) primary = 'উচ্চ দামের বিচ্ছুরণ';
+            else if (tags.some(t => t.label === 'উচ্চ প্রতিযোগিতা')) primary = 'উচ্চ প্রতিযোগিতামূলক মার্কেট';
+            else if (tags.some(t => t.label === 'ক্রমবর্ধমান দাম')) primary = 'ক্রমবর্ধমান দামের প্রবণতা';
+            else if (tags.some(t => t.label === 'ক্রমহ্রাসমান দাম')) primary = 'ক্রমহ্রাসমান দামের প্রবণতা';
+            else if (tags.some(t => t.label === 'স্থিতিশীল দাম')) primary = 'স্থিতিশীল মার্কেট';
+            else if (tags.some(t => t.label === 'কম প্রতিযোগিতা')) primary = 'কম প্রতিযোগিতা';
+
+            // Confidence
+            let confidence = 'medium';
+            if (advCount < 4) confidence = 'low';
+            else if (advCount >= 8 && uniqueMerchants >= 5) confidence = 'high';
+
+            return { primary, tags, evidence, limitations, confidence, thresholds: THRESHOLDS };
+        }
+
+        return { classify, THRESHOLDS };
+    })();
+
+    /* ============================================================
+       SECTION 13: SCORING SYSTEM
+       ============================================================ */
+    const Scoring = (function() {
+        function dataQualityScore(advertisements) {
+            if (!advertisements.length) return { score: 0, basis: 'কোনো ডেটা নেই' };
+            let points = 0;
+            const total = advertisements.length;
+            // Completeness
+            const withMerchant = advertisements.filter(a => a.merchant).length;
+            const withPrice = advertisements.filter(a => a.price > 0).length;
+            const withLimits = advertisements.filter(a => a.minOrder != null || a.maxOrder != null).length;
+            const withQty = advertisements.filter(a => a.quantity != null && a.quantity > 0).length;
+            const withPayment = advertisements.filter(a => a.payment).length;
+            const withSide = advertisements.filter(a => ['Buy','Sell'].includes(a.side)).length;
+
+            points += (withMerchant / total) * 20;
+            points += (withPrice / total) * 20;
+            points += (withLimits / total) * 15;
+            points += (withQty / total) * 15;
+            points += (withPayment / total) * 10;
+            points += (withSide / total) * 10;
+
+            // Volume bonus
+            if (total >= 5) points += 5;
+            if (total >= 10) points += 5;
+
+            const score = Math.round(clamp(points, 0, 100));
+            let label = 'দুর্বল';
+            if (score >= 70) label = 'ভালো';
+            else if (score >= 40) label = 'মাঝারি';
+            return { score, label, basis: `${total}টি বিজ্ঞাপন, ${withMerchant}টি মার্চেন্ট আইডি, ${withQty}টি পরিমাণসহ` };
+        }
+
+        function dispersionScore(priceResult) {
+            const stats = priceResult.buy.stats || priceResult.sell.stats;
+            if (!stats || stats.median == null || stats.iqr == null) return { score: null, basis: 'পর্যাপ্ত ডেটা নেই' };
+            const relDisp = stats.iqr / stats.median;
+            const score = Math.round(clamp(100 - (relDisp / 0.1) * 100, 0, 100));
+            return { score, basis: `IQR/Median = ${fmtNum(relDisp * 100, 1)}% (কম = ভালো)` };
+        }
+
+        function concentrationScore(merchantResult) {
+            if (!merchantResult.totalUnique || merchantResult.topShare == null) return { score: null, basis: 'পর্যাপ্ত ডেটা নেই' };
+            const score = Math.round(clamp((1 - merchantResult.topShare) * 100, 0, 100));
+            return { score, basis: `টপ মার্চেন্টের শেয়ার = ${fmtNum(merchantResult.topShare * 100, 1)}% (কম = কম কেন্দ্রীভূত)` };
+        }
+
+        function competitionScore(advertisements, merchantResult) {
+            if (!advertisements.length) return { score: null, basis: 'পর্যাপ্ত ডেটা নেই' };
+            const unique = merchantResult.totalUnique;
+            const count = advertisements.length;
+            let score = clamp((unique / 8) * 60 + (count / 12) * 40, 0, 100);
+            return { score: Math.round(score), basis: `${unique} মার্চেন্ট, ${count} বিজ্ঞাপন` };
+        }
+
+        function historicalStabilityScore(historicalResult) {
+            if (!historicalResult || historicalResult.direction === 'insufficient') return { score: null, basis: 'পর্যাপ্ত স্ন্যাপশট নেই' };
+            const vol = Math.abs(historicalResult.pctChange || 0);
+            const score = Math.round(clamp(100 - (vol / 10) * 100, 0, 100));
+            return { score, basis: `দামের পরিবর্তন: ${fmtNum(historicalResult.pctChange, 2)}% (কম = স্থিতিশীল)` };
+        }
+
+        return { dataQualityScore, dispersionScore, concentrationScore, competitionScore, historicalStabilityScore };
+    })();
+
+    /* ============================================================
+       SECTION 14: CHART RENDERER
+       ============================================================ */
+    const ChartRenderer = (function() {
+        const COLORS = {
+            buy: '#0b7e3b',
+            sell: '#b91c1c',
+            blue: '#2563eb',
+            gray: '#9aabbf',
+            navy: '#0b1a33',
+            lightBlue: '#7fb2ff'
+        };
+
+        function renderPriceHistogram(container, prices, color, title) {
+            if (!prices.length) {
+                container.innerHTML = '<div class="text-small text-muted">কোনো ডেটা নেই</div>';
+                return;
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 180;
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            const ctx = canvas.getContext('2d');
+
+            const minV = Math.min(...prices);
+            const maxV = Math.max(...prices);
+            const range = maxV - minV || 1;
+            const bins = 8;
+            const binWidth = range / bins;
+            const counts = Array(bins).fill(0);
+            prices.forEach(p => {
+                let idx = Math.floor((p - minV) / binWidth);
+                if (idx >= bins) idx = bins - 1;
+                counts[idx]++;
+            });
+            const maxCount = Math.max(...counts, 1);
+
+            const W = canvas.width, H = canvas.height;
+            const pad = { top: 20, right: 10, bottom: 30, left: 30 };
+            const plotW = W - pad.left - pad.right;
+            const plotH = H - pad.top - pad.bottom;
+            const barW = plotW / bins;
+
+            ctx.clearRect(0, 0, W, H);
+            ctx.font = '10px Segoe UI, sans-serif';
+            ctx.fillStyle = '#6b7f9b';
+
+            // Y-axis labels
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.top + plotH - (i / 4) * plotH;
+                ctx.fillStyle = '#9aabbf';
+                ctx.fillText(Math.round((i / 4) * maxCount), 2, y + 3);
+                ctx.strokeStyle = '#eef2f6';
+                ctx.beginPath();
+                ctx.moveTo(pad.left, y);
+                ctx.lineTo(W - pad.right, y);
+                ctx.stroke();
+            }
+
+            // Bars
+            counts.forEach((c, i) => {
+                const x = pad.left + i * barW;
+                const barH = (c / maxCount) * plotH;
+                const y = pad.top + plotH - barH;
+                ctx.fillStyle = color;
+                ctx.globalAlpha = 0.85;
+                ctx.fillRect(x + 1, y, barW - 2, barH);
+                ctx.globalAlpha = 1;
+
+                // X labels
+                const priceLabel = minV + i * binWidth;
+                ctx.fillStyle = '#6b7f9b';
+                ctx.font = '8px Segoe UI, sans-serif';
+                ctx.fillText(priceLabel.toFixed(1), x, H - 8);
+            });
+
+            // Title
+            ctx.fillStyle = '#0b1a33';
+            ctx.font = 'bold 11px Segoe UI, sans-serif';
+            ctx.fillText(title, pad.left, 12);
+
+            container.innerHTML = '';
+            container.appendChild(canvas);
+        }
+
+        function renderScatter(container, advertisements, title) {
+            const withPrice = advertisements.filter(a => a.price > 0);
+            if (!withPrice.length) {
+                container.innerHTML = '<div class="text-small text-muted">কোনো ডেটা নেই</div>';
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 180;
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            const ctx = canvas.getContext('2d');
+
+            const prices = withPrice.map(a => a.price);
+            const minV = Math.min(...prices);
+            const maxV = Math.max(...prices);
+            const range = maxV - minV || 1;
+
+            const W = canvas.width, H = canvas.height;
+            const pad = { top: 20, right: 15, bottom: 30, left: 40 };
+            const plotW = W - pad.left - pad.right;
+            const plotH = H - pad.top - pad.bottom;
+
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#0b1a33';
+            ctx.font = 'bold 11px Segoe UI, sans-serif';
+            ctx.fillText(title, pad.left, 12);
+
+            // Y-axis
+            ctx.font = '9px Segoe UI, sans-serif';
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.top + plotH - (i / 4) * plotH;
+                const val = minV + (i / 4) * range;
+                ctx.fillStyle = '#9aabbf';
+                ctx.fillText(val.toFixed(1), 2, y + 3);
+                ctx.strokeStyle = '#eef2f6';
+                ctx.beginPath();
+                ctx.moveTo(pad.left, y);
+                ctx.lineTo(W - pad.right, y);
+                ctx.stroke();
+            }
+
+            // Points
+            withPrice.forEach((a, i) => {
+                const x = pad.left + (i / (withPrice.length - 1 || 1)) * plotW;
+                const y = pad.top + plotH - ((a.price - minV) / range) * plotH;
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = a.side === 'Buy' ? COLORS.buy : COLORS.sell;
+                ctx.globalAlpha = 0.8;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            });
+
+            // Legend
+            ctx.fillStyle = COLORS.buy;
+            ctx.fillRect(pad.left, H - 14, 8, 8);
+            ctx.fillStyle = '#6b7f9b';
+            ctx.font = '9px Segoe UI, sans-serif';
+            ctx.fillText('Buy', pad.left + 12, H - 7);
+            ctx.fillStyle = COLORS.sell;
+            ctx.fillRect(pad.left + 50, H - 14, 8, 8);
+            ctx.fillStyle = '#6b7f9b';
+            ctx.fillText('Sell', pad.left + 62, H - 7);
+
+            container.innerHTML = '';
+            container.appendChild(canvas);
+        }
+
+        function renderMerchantComparison(container, merchantResult) {
+            if (!merchantResult.list.length) {
+                container.innerHTML = '<div class="text-small text-muted">কোনো ডেটা নেই</div>';
+                return;
+            }
+
+            const topMerchants = merchantResult.list.slice(0, 8).filter(m => m.medianPrice != null);
+            if (!topMerchants.length) {
+                container.innerHTML = '<div class="text-small text-muted">দামের তথ্য নেই</div>';
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = Math.max(180, topMerchants.length * 28 + 40);
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            const ctx = canvas.getContext('2d');
+
+            const W = canvas.width, H = canvas.height;
+            const pad = { top: 20, right: 15, bottom: 10, left: 90 };
+            const plotW = W - pad.left - pad.right;
+
+            const prices = topMerchants.map(m => m.medianPrice);
+            const minV = Math.min(...prices);
+            const maxV = Math.max(...prices);
+            const range = maxV - minV || 1;
+
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#0b1a33';
+            ctx.font = 'bold 11px Segoe UI, sans-serif';
+            ctx.fillText('মার্চেন্ট দাম তুলনা (মিডিয়ান)', pad.left, 13);
+
+            topMerchants.forEach((m, i) => {
+                const y = pad.top + i * 28;
+                // Merchant name
+                ctx.fillStyle = '#2c3e66';
+                ctx.font = '9px Segoe UI, sans-serif';
+                const name = (m.name || 'Unknown').substring(0, 12);
+                ctx.fillText(name, 4, y + 10);
+                // Bar
+                const barW = ((m.medianPrice - minV) / range) * plotW;
+                ctx.fillStyle = COLORS.blue;
+                ctx.globalAlpha = 0.7;
+                ctx.fillRect(pad.left, y + 2, barW, 14);
+                ctx.globalAlpha = 1;
+                // Value
+                ctx.fillStyle = '#0b1a33';
+                ctx.font = '9px Segoe UI, sans-serif';
+                ctx.fillText(m.medianPrice.toFixed(2), pad.left + barW + 4, y + 13);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(canvas);
+        }
+
+        function renderSnapshotTrend(container, snapshots) {
+            if (snapshots.length < 2) {
+                container.innerHTML = '<div class="text-small text-muted">প্রবণতা দেখানোর জন্য কমপক্ষে ২টি স্ন্যাপশট প্রয়োজন।</div>';
+                return;
+            }
+
+            const sorted = [...snapshots].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            const points = sorted.map(s => {
+                const ads = s.advertisements.filter(a => a.price > 0);
+                return {
+                    label: s.label.substring(0, 15),
+                    price: ads.length ? median(ads.map(a => a.price)) : null
+                };
+            }).filter(p => p.price != null);
+
+            if (points.length < 2) {
+                container.innerHTML = '<div class="text-small text-muted">পর্যাপ্ত ডেটা নেই।</div>';
+                return;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 400;
+            canvas.height = 180;
+            canvas.style.width = '100%';
+            canvas.style.height = 'auto';
+            const ctx = canvas.getContext('2d');
+
+            const prices = points.map(p => p.price);
+            const minV = Math.min(...prices);
+            const maxV = Math.max(...prices);
+            const range = maxV - minV || 1;
+
+            const W = canvas.width, H = canvas.height;
+            const pad = { top: 20, right: 15, bottom: 30, left: 40 };
+            const plotW = W - pad.left - pad.right;
+            const plotH = H - pad.top - pad.bottom;
+
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#0b1a33';
+            ctx.font = 'bold 11px Segoe UI, sans-serif';
+            ctx.fillText('মিডিয়ান দামের প্রবণতা', pad.left, 12);
+
+            // Grid
+            ctx.font = '9px Segoe UI, sans-serif';
+            for (let i = 0; i <= 4; i++) {
+                const y = pad.top + plotH - (i / 4) * plotH;
+                const val = minV + (i / 4) * range;
+                ctx.fillStyle = '#9aabbf';
+                ctx.fillText(val.toFixed(1), 2, y + 3);
+                ctx.strokeStyle = '#eef2f6';
+                ctx.beginPath();
+                ctx.moveTo(pad.left, y);
+                ctx.lineTo(W - pad.right, y);
+                ctx.stroke();
+            }
+
+            // Line
+            ctx.strokeStyle = COLORS.blue;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            points.forEach((p, i) => {
+                const x = pad.left + (i / (points.length - 1)) * plotW;
+                const y = pad.top + plotH - ((p.price - minV) / range) * plotH;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Points
+            points.forEach((p, i) => {
+                const x = pad.left + (i / (points.length - 1)) * plotW;
+                const y = pad.top + plotH - ((p.price - minV) / range) * plotH;
+                ctx.beginPath();
+                ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+                ctx.fillStyle = COLORS.blue;
+                ctx.fill();
+            });
+
+            container.innerHTML = '';
+            container.appendChild(canvas);
+        }
+
+        return { renderPriceHistogram, renderScatter, renderMerchantComparison, renderSnapshotTrend, COLORS };
+    })();
+
+    /* ============================================================
+       SECTION 15: REPORT GENERATOR
+       ============================================================ */
+    const ReportGenerator = (function() {
+        function generate(analysis) {
+            const { priceResult, merchantResult, liquidityResult, historicalResult, classification, scores } = analysis;
+            const container = document.getElementById('analysisContent');
+
+            let html = '';
+
+            // ===== Market Overview =====
+            html += `<div class="report-section">`;
+            html += `<h3>📊 মার্কেট ওভারভিউ</h3>`;
+            html += `<div class="report-text">`;
+            html += `<p>বর্তমান ডেটাসেটে <strong>${analysis.advCount}টি বিজ্ঞাপন</strong> এবং <strong>${merchantResult.totalUnique} জন ইউনিক মার্চেন্ট</strong> রয়েছে।</p>`;
+            html += `<p><strong>প্রাইমারি কন্ডিশন:</strong> ${classification.primary}</p>`;
+            html += `<div class="tag-list">`;
+            classification.tags.forEach(t => {
+                html += `<span class="tag ${t.type}">${t.label}</span>`;
+            });
+            html += `</div>`;
+            html += `<p class="mt-1 text-small text-muted">কনফিডেন্স লেভেল: <strong>${classification.confidence}</strong></p>`;
+            html += `</div></div>`;
+
+            // ===== Price Structure =====
+            html += `<div class="report-section">`;
+            html += `<h3>💰 দামের কাঠামো</h3>`;
+            html += `<div class="report-text">`;
+            if (priceResult.buy.stats) {
+                const s = priceResult.buy.stats;
+                html += `<p><strong>Buy side (${priceResult.buy.count}টি):</strong> মিডিয়ান ৳${fmtNum(s.median)}, গড় ৳${fmtNum(s.mean)}, পরিসর ৳${fmtNum(s.min)}–৳${fmtNum(s.max)}, স্ট্যান্ডার্ড ডেভিয়েশন ৳${fmtNum(s.stdDev)}।</p>`;
+            } else {
+                html += `<p><strong>Buy side:</strong> কোনো বৈধ ডেটা নেই।</p>`;
+            }
+            if (priceResult.sell.stats) {
+                const s = priceResult.sell.stats;
+                html += `<p><strong>Sell side (${priceResult.sell.count}টি):</strong> মিডিয়ান ৳${fmtNum(s.median)}, গড় ৳${fmtNum(s.mean)}, পরিসর ৳${fmtNum(s.min)}–৳${fmtNum(s.max)}, স্ট্যান্ডার্ড ডেভিয়েশন ৳${fmtNum(s.stdDev)}।</p>`;
+            } else {
+                html += `<p><strong>Sell side:</strong> কোনো বৈধ ডেটা নেই।</p>`;
+            }
+            if (priceResult.spread) {
+                const sp = priceResult.spread;
+                html += `<p><strong>দৃশ্যমান স্প্রেড:</strong> সর্বোচ্চ Buy ৳${fmtNum(sp.bestBuy)} এবং সর্বনিম্ন Sell ৳${fmtNum(sp.bestSell)} এর মধ্যে পার্থক্য ৳${fmtNum(sp.difference)}।</p>`;
+                html += `<p class="text-small text-muted">${sp.note}</p>`;
+            }
+            const outliers = [...priceResult.buy.outliers, ...priceResult.sell.outliers];
+            if (outliers.length) {
+                html += `<p><strong>আউটলায়ার:</strong> ${outliers.length}টি অস্বাভাবিক দাম পাওয়া গেছে (${outliers.map(o => o.merchant + ': ৳' + fmtNum(o.price)).join(', ')})।</p>`;
+            }
+            html += `</div>`;
+
+            // Chart: Buy histogram
+            if (priceResult.buy.prices.length) {
+                const chartDiv = document.createElement('div');
+                chartDiv.className = 'chart-container';
+                container.appendChild(chartDiv);
+                ChartRenderer.renderPriceHistogram(chartDiv, priceResult.buy.prices, ChartRenderer.COLORS.buy, 'Buy দামের ডিস্ট্রিবিউশন');
+                html = html.replace('<div class="chart-container" id="tempBuy"></div>', '');
+            }
+            html += `</div>`;
+
+            // ===== Competition =====
+            html += `<div class="report-section">`;
+            html += `<h3>🏁 প্রতিযোগিতা</h3>`;
+            html += `<div class="report-text">`;
+            html += `<p><strong>${merchantResult.totalUnique} জন ইউনিক মার্চেন্ট</strong> পাওয়া গেছে। টপ মার্চেন্টের বিজ্ঞাপন শেয়ার <strong>${fmtNum(merchantResult.topShare * 100, 1)}%</strong>।</p>`;
+            if (merchantResult.topShare > 0.5) {
+                html += `<p>মার্কেটে একটি মার্চেন্টের প্রাধান্য বেশি — প্রতিযোগিতা সীমিত হতে পারে।</p>`;
+            } else {
+                html += `<p>মার্চেন্টদের মধ্যে বিজ্ঞাপন বিতরণ তুলনামূলকভাবে ছড়ানো।</p>`;
+            }
+            html += `</div>`;
+
+            // Chart: Merchant comparison
+            html += `<div class="chart-container" id="merchantChart"></div>`;
+            html += `</div>`;
+
+            // ===== Liquidity =====
+            html += `<div class="report-section">`;
+            html += `<h3>💧 লিকুইডিটি</h3>`;
+            html += `<div class="report-text">`;
+            html += `<p><strong>${liquidityResult.knownQtyCount}টি বিজ্ঞাপনে</strong> উপলব্ধ পরিমাণ দেওয়া আছে; <strong>${liquidityResult.unknownQtyCount}টিতে</strong> নেই।</p>`;
+            if (liquidityResult.knownQtyCount > 0) {
+                html += `<p>মোট রিপোর্টেড পরিমাণ: <strong>${fmtNum(liquidityResult.totalReportedQty, 0)} USDT</strong>; মিডিয়ান: <strong>${fmtNum(liquidityResult.medianQty, 0)} USDT</strong>।</p>`;
+            } else {
+                html += `<p>${liquidityResult.note}</p>`;
+            }
+            if (liquidityResult.avgMinOrder != null) {
+                html += `<p>গড় মিন অর্ডার: ৳${fmtNum(liquidityResult.avgMinOrder, 0)}; গড় ম্যাক্স অর্ডার: ৳${fmtNum(liquidityResult.avgMaxOrder, 0)}।</p>`;
+            }
+            html += `<p class="text-small text-muted">বিজ্ঞাপন সর্বোচ্চ সীমা প্রকৃত উপলব্ধ ব্যালেন্স নয়।</p>`;
+            html += `</div></div>`;
+
+            // ===== Price Movement =====
+            html += `<div class="report-section">`;
+            html += `<h3>📈 দামের গতিবিধি</h3>`;
+            html += `<div class="report-text">`;
+            if (historicalResult && historicalResult.direction !== 'insufficient') {
+                html += `<p><strong>${historicalResult.snapA}</strong> → <strong>${historicalResult.snapB}</strong></p>`;
+                html += `<p>মিডিয়ান দামের পরিবর্তন: <strong>${fmtNum(historicalResult.change)} ৳ (${fmtNum(historicalResult.pctChange)}%)</strong></p>`;
+                html += `<p>প্রবণতা: <strong>${historicalResult.direction === 'increasing' ? 'বর্ধমান' : historicalResult.direction === 'decreasing' ? 'হ্রাসমান' : 'স্থিতিশীল'}</strong></p>`;
+                if (historicalResult.warning) {
+                    html += `<div class="warning-box info">${historicalResult.warning}</div>`;
+                }
+            } else {
+                html += `<p>ঐতিহাসিক তুলনার জন্য কমপক্ষে ২টি স্ন্যাপশট প্রয়োজন।</p>`;
+            }
+            html += `</div>`;
+            // Chart: Snapshot trend
+            html += `<div class="chart-container" id="trendChart"></div>`;
+            html += `</div>`;
+
+            // ===== Anomalies =====
+            html += `<div class="report-section">`;
+            html += `<h3>⚠️ অস্বাভাবিকতা</h3>`;
+            html += `<div class="report-text">`;
+            let anomalyCount = 0;
+            if (priceResult.buy.outliers.length || priceResult.sell.outliers.length) {
+                anomalyCount += priceResult.buy.outliers.length + priceResult.sell.outliers.length;
+                html += `<p>${anomalyCount}টি দামের আউটলায়ার সনাক্ত হয়েছে।</p>`;
+            }
+            if (merchantResult.missingMerchantInfo > 0) {
+                html += `<p>${merchantResult.missingMerchantInfo}টি বিজ্ঞাপনে মার্চেন্ট আইডি নেই।</p>`;
+                anomalyCount++;
+            }
+            if (anomalyCount === 0) {
+                html += `<p>কোনো বড় অস্বাভাবিকতা পাওয়া যায়নি।</p>`;
+            }
+            html += `</div></div>`;
+
+            // ===== Data Reliability =====
+            html += `<div class="report-section">`;
+            html += `<h3>📋 ডেটা নির্ভরযোগ্যতা</h3>`;
+            html += `<div class="report-text">`;
+            html += `<div class="score-bar-wrap">`;
+            html += `<div class="score-bar-label"><span>ডেটা কোয়ালিটি</span><strong>${scores.dataQuality.score ?? '—'}/100</strong></div>`;
+            html += `<div class="score-bar-bg"><div class="score-bar-fill" style="width:${scores.dataQuality.score ?? 0}%; background:${(scores.dataQuality.score ?? 0) > 60 ? 'var(--positive)' : (scores.dataQuality.score ?? 0) > 35 ? 'var(--warning)' : 'var(--negative)'};"></div></div>`;
+            html += `<div class="text-small text-muted mt-1">${scores.dataQuality.basis}</div>`;
+            html += `</div>`;
+
+            if (scores.dispersion.score != null) {
+                html += `<div class="score-bar-wrap">`;
+                html += `<div class="score-bar-label"><span>প্রাইস ডিসপার্শন</span><strong>${scores.dispersion.score}/100</strong></div>`;
+                html += `<div class="score-bar-bg"><div class="score-bar-fill" style="width:${scores.dispersion.score}%; background:${scores.dispersion.score > 60 ? 'var(--positive)' : 'var(--warning)'};"></div></div>`;
+                html += `<div class="text-small text-muted mt-1">${scores.dispersion.basis}</div>`;
+                html += `</div>`;
+            }
+
+            if (scores.concentration.score != null) {
+                html += `<div class="score-bar-wrap">`;
+                html += `<div class="score-bar-label"><span>মার্চেন্ট কনসেন্ট্রেশন</span><strong>${scores.concentration.score}/100</strong></div>`;
+                html += `<div class="score-bar-bg"><div class="score-bar-fill" style="width:${scores.concentration.score}%; background:${scores.concentration.score > 60 ? 'var(--positive)' : 'var(--warning)'};"></div></div>`;
+                html += `<div class="text-small text-muted mt-1">${scores.concentration.basis}</div>`;
+                html += `</div>`;
+            }
+
+            if (classification.limitations.length) {
+                html += `<div class="warning-box info mt-2"><strong>সীমাবদ্ধতা:</strong><ul class="evidence-list">`;
+                classification.limitations.forEach(l => { html += `<li>${l}</li>`; });
+                html += `</ul></div>`;
+            }
+            html += `</div></div>`;
+
+            // ===== Final Interpretation (Bengali) =====
+            html += `<div class="report-section">`;
+            html += `<h3>📝 চূড়ান্ত ব্যাখ্যা</h3>`;
+            html += `<div class="report-text">`;
+            html += `<p>সংগৃহীত ম্যানুয়াল ডেটা অনুযায়ী, এই মুহূর্তে মার্কেটে <strong>${classification.primary}</strong> অবস্থা দেখা যাচ্ছে। `;
+            if (classification.tags.some(t => t.label === 'উচ্চ প্রতিযোগিতা')) {
+                html += `একাধিক মার্চেন্ট সক্রিয় থাকায় প্রতিযোগিতা বেশি এবং দাম তুলনামূলকভাবে প্রতিযোগিতামূলক। `;
+            }
+            if (classification.tags.some(t => t.label === 'উচ্চ দামের বিচ্ছুরণ')) {
+                html += `বিজ্ঞাপনগুলির মধ্যে দামের পার্থক্য বেশি, তাই একটি নির্দিষ্ট দামকে "মার্কেট প্রাইস" ধরা উচিত নয়। `;
+            }
+            if (classification.tags.some(t => t.label === 'লিকুইডিটি অজানা')) {
+                html += `বেশিরভাগ বিজ্ঞাপনে উপলব্ধ পরিমাণ উল্লেখ নেই, তাই প্রকৃত লিকুইডিটি সম্পর্কে নিশ্চিত হওয়া যাচ্ছে না। `;
+            }
+            html += `এটি কোনো ভবিষ্যৎবাণী নয় — শুধুমাত্র বর্তমান ম্যানুয়াল ডেটার ভিত্তিতে একটি শিক্ষামূলক বিশ্লেষণ।</p>`;
+            html += `</div></div>`;
+
+            container.innerHTML = html;
+            container.classList.remove('hidden');
+            document.getElementById('analysisEmpty').classList.add('hidden');
+
+            // Render charts after HTML is inserted
+            const merchantChartDiv = document.getElementById('merchantChart');
+            if (merchantChartDiv) ChartRenderer.renderMerchantComparison(merchantChartDiv, merchantResult);
+
+            const trendChartDiv = document.getElementById('trendChart');
+            if (trendChartDiv) ChartRenderer.renderSnapshotTrend(trendChartDiv, AppState.snapshots);
+
+            // Buy histogram — insert after container already has content
+            const buyChartContainer = document.createElement('div');
+            buyChartContainer.className = 'chart-container';
+            ChartRenderer.renderPriceHistogram(buyChartContainer, priceResult.buy.prices, ChartRenderer.COLORS.buy, 'Buy দামের ডিস্ট্রিবিউশন');
+            const buySection = container.querySelector('.report-section');
+            if (buySection) buySection.appendChild(buyChartContainer);
+
+            const sellChartContainer = document.createElement('div');
+            sellChartContainer.className = 'chart-container';
+            ChartRenderer.renderPriceHistogram(sellChartContainer, priceResult.sell.prices, ChartRenderer.COLORS.sell, 'Sell দামের ডিস্ট্রিবিউশন');
+            if (buySection) buySection.appendChild(sellChartContainer);
+        }
+
+        return { generate };
+    })();
+
+    /* ============================================================
+       SECTION 16: MAIN ANALYSIS PIPELINE
+       ============================================================ */
+    function runAnalysis() {
+        const advs = AppState.advertisements;
+        if (!advs.length) {
+            showToast('বিশ্লেষণ করতে প্রথমে ডেটা যোগ করুন।', true);
+            document.getElementById('analysisEmpty').classList.remove('hidden');
+            document.getElementById('analysisContent').classList.add('hidden');
+            return;
+        }
+
+        showToast('বিশ্লেষণ চলছে...');
+
+        setTimeout(() => {
+            const priceResult = PriceAnalysis.analyze(advs);
+            const merchantResult = MerchantAnalysis.analyze(advs);
+            const liquidityResult = LiquidityAnalysis.analyze(advs);
+
+            // Historical comparison with the most recent previous snapshot
+            let historicalResult = null;
+            if (AppState.snapshots.length >= 1) {
+                const currentSnap = {
+                    label: 'বর্তমান ডেটা',
+                    advertisements: advs
+                };
+                const prevSnap = AppState.snapshots[0];
+                historicalResult = HistoricalComparison.compare(prevSnap, currentSnap);
+            }
+
+            const classification = MarketClassifier.classify(
+                priceResult, merchantResult, liquidityResult, historicalResult, advs.length
+            );
+
+            const scores = {
+                dataQuality: Scoring.dataQualityScore(advs),
+                dispersion: Scoring.dispersionScore(priceResult),
+                concentration: Scoring.concentrationScore(merchantResult),
+                competition: Scoring.competitionScore(advs, merchantResult),
+                historicalStability: Scoring.historicalStabilityScore(historicalResult)
+            };
+
+            const analysis = {
+                advCount: advs.length,
+                priceResult, merchantResult, liquidityResult,
+                historicalResult, classification, scores
+            };
+
+            AppState.lastAnalysis = analysis;
+            AppState.analysisTimestamp = new Date().toISOString();
+
+            ReportGenerator.generate(analysis);
+            updateDashboard();
+
+            showToast('বিশ্লেষণ সম্পন্ন ✓');
+        }, 300);
+    }
+
+    /* ============================================================
+       SECTION 17: DASHBOARD UPDATES
+       ============================================================ */
+    function updateDashboard() {
+        const advs = AppState.advertisements;
+        const count = advs.length;
+
+        document.getElementById('dashTotalAdv').textContent = count;
+        document.getElementById('dashTotalAdvSub').textContent = count ? `${advs.filter(a => a.side === 'Buy').length} Buy / ${advs.filter(a => a.side === 'Sell').length} Sell` : '—';
+        document.getElementById('dashAdvCount').textContent = count + ' বিজ্ঞাপন';
+
+        const merchants = new Set(advs.map(a => a.merchant).filter(Boolean));
+        document.getElementById('dashUniqueMerchants').textContent = merchants.size;
+        document.getElementById('dashUniqueMerchantsSub').textContent = merchants.size ? 'ইউনিক মার্চেন্ট' : '—';
+
+        const validPrices = advs.filter(a => a.price > 0).map(a => a.price);
+        if (validPrices.length) {
+            const minV = Math.min(...validPrices);
+            const maxV = Math.max(...validPrices);
+            const avgV = mean(validPrices);
+            const medV = median(validPrices);
+            document.getElementById('dashMinPrice').textContent = '৳' + fmtNum(minV);
+            document.getElementById('dashMinPriceSub').textContent = `সর্বনিম্ন`;
+            document.getElementById('dashMaxPrice').textContent = '৳' + fmtNum(maxV);
+            document.getElementById('dashMaxPriceSub').textContent = `সর্বোচ্চ`;
+            document.getElementById('dashAvgPrice').textContent = '৳' + fmtNum(avgV);
+            document.getElementById('dashAvgPriceSub').textContent = `গড়`;
+            document.getElementById('dashMedianPrice').textContent = '৳' + fmtNum(medV);
+            document.getElementById('dashMedianPriceSub').textContent = `মিডিয়ান`;
+            document.getElementById('dashPriceRange').textContent = '৳' + fmtNum(maxV - minV);
+            document.getElementById('dashPriceRangeSub').textContent = `${fmtNum(minV)} — ${fmtNum(maxV)}`;
+        } else {
+            ['dashMinPrice','dashMaxPrice','dashAvgPrice','dashMedianPrice','dashPriceRange'].forEach(id => {
+                document.getElementById(id).textContent = '—';
+            });
+            ['dashMinPriceSub','dashMaxPriceSub','dashAvgPriceSub','dashMedianPriceSub','dashPriceRangeSub'].forEach(id => {
+                document.getElementById(id).textContent = '—';
+            });
+        }
+
+        const minOrders = advs.filter(a => a.minOrder != null).map(a => a.minOrder);
+        const maxOrders = advs.filter(a => a.maxOrder != null).map(a => a.maxOrder);
+        document.getElementById('dashAvgMin').textContent = minOrders.length ? '৳' + fmtNum(mean(minOrders), 0) : '—';
+        document.getElementById('dashAvgMinSub').textContent = minOrders.length ? `${minOrders.length}টি বিজ্ঞাপন` : '—';
+        document.getElementById('dashAvgMax').textContent = maxOrders.length ? '৳' + fmtNum(mean(maxOrders), 0) : '—';
+        document.getElementById('dashAvgMaxSub').textContent = maxOrders.length ? `${maxOrders.length}টি বিজ্ঞাপন` : '—';
+
+        const dq = Scoring.dataQualityScore(advs);
+        document.getElementById('dashDataQuality').textContent = dq.score + '/100';
+        document.getElementById('dashDataQualitySub').textContent = dq.label + ' · ' + dq.basis;
+        const dqEl = document.getElementById('dashDataQuality');
+        dqEl.className = 'value ' + (dq.score >= 60 ? 'positive' : dq.score >= 35 ? '' : 'negative');
+
+        document.getElementById('dashLastAnalysis').textContent = AppState.analysisTimestamp
+            ? 'সর্বশেষ বিশ্লেষণ: ' + fmtDate(AppState.analysisTimestamp)
+            : 'সর্বশেষ বিশ্লেষণ: —';
+
+        // Quick summary
+        const summaryEl = document.getElementById('dashQuickSummary');
+        if (!advs.length) {
+            summaryEl.innerHTML = '<p class="text-muted text-small">এখনও কোনো ডেটা নেই। "মার্কেট ডেটা" ট্যাব থেকে বিজ্ঞাপন যোগ করুন।</p>';
+        } else {
+            const spread = (() => {
+                const buys = advs.filter(a => a.side === 'Buy' && a.price > 0).map(a => a.price);
+                const sells = advs.filter(a => a.side === 'Sell' && a.price > 0).map(a => a.price);
+                if (!buys.length || !sells.length) return null;
+                return { bestBuy: Math.min(...buys), bestSell: Math.max(...sells) };
+            })();
+            let s = `<p><strong>${count}টি বিজ্ঞাপন</strong>, <strong>${merchants.size} মার্চেন্ট</strong>। `;
+            if (validPrices.length) s += `দাম পরিসর: ৳${fmtNum(Math.min(...validPrices))} – ৳${fmtNum(Math.max(...validPrices))}। `;
+            if (spread) s += `সর্বোচ্চ Buy ৳${fmtNum(spread.bestBuy)}, সর্বনিম্ন Sell ৳${fmtNum(spread.bestSell)} (দৃশ্যমান পার্থক্য ৳${fmtNum(spread.bestSell - spread.bestBuy)})।`;
+            s += `</p>`;
+            summaryEl.innerHTML = s;
+        }
+    }
+
+    /* ============================================================
+       SECTION 18: TRADE CALCULATOR
+       ============================================================ */
+    function readNonNegative(id, label) {
+        const el = document.getElementById(id);
+        const raw = el.value.trim();
+        if (raw === '') throw new Error(`${label} পূরণ করুন।`);
+        const value = Number(raw);
+        if (!Number.isFinite(value) || value < 0) throw new Error(`${label} অবশ্যই শূন্য বা তার বেশি হতে হবে।`);
+        return value;
+    }
+
+    function readPositive(id, label) {
+        const value = readNonNegative(id, label);
+        if (value <= 0) throw new Error(`${label} শূন্যের বেশি হতে হবে।`);
+        return value;
+    }
+
+    function calculateTrade() {
+        const buyPrice = readPositive('buyPrice', 'Buy Price');
+        const sellPrice = readPositive('sellPrice', 'Sell Price');
+        const usdtQty = readPositive('usdtQty', 'USDT পরিমাণ');
+        const buyFee = readNonNegative('buyFee', 'Buy Fee');
+        const sellFee = readNonNegative('sellFee', 'Sell Fee');
+        const paymentFee = readNonNegative('paymentFee', 'Payment Fee');
+        const networkFee = readNonNegative('networkFee', 'Network Fee');
+        const otherCost = readNonNegative('otherCost', 'অন্যান্য খরচ');
+        const slippageRateRaw = readNonNegative('slippagePct', 'Slippage');
+        if (slippageRateRaw >= 100) throw new Error('Slippage 100% এর কম হতে হবে।');
+        const slippageRate = slippageRateRaw / 100;
+
+        const buyCost = usdtQty * buyPrice;
+        const sellRevenue = usdtQty * sellPrice;
+        const grossProfit = sellRevenue - buyCost;
+        const totalFixedFees = buyFee + sellFee + paymentFee + networkFee + otherCost;
+        const slippageCost = sellRevenue * slippageRate;
+        const totalCost = totalFixedFees + slippageCost;
+        const netProfit = grossProfit - totalCost;
+        const capitalUsed = buyCost + totalFixedFees;
+        const roi = capitalUsed > 0 ? (netProfit / capitalUsed) * 100 : 0;
+        const profitPerUsdt = netProfit / usdtQty;
+        const beSell = (buyCost + totalFixedFees) / (usdtQty * (1 - slippageRate));
+        const beBuy = Math.max(0, sellPrice * (1 - slippageRate) - totalFixedFees / usdtQty);
+
+        return {
+            buyPrice, sellPrice, usdtQty, buyCost, sellRevenue, grossProfit,
+            totalFixedFees, slippageCost, totalCost, capitalUsed, netProfit, roi, profitPerUsdt, beSell, beBuy
+        };
+    }
+
+    function renderCalcResult(saveToHistory = false) {
+        let result;
+        try { result = calculateTrade(); }
+        catch (error) {
+            document.getElementById('calcResultArea').classList.add('hidden');
+            showToast(error.message, true);
+            return;
+        }
+
+        document.getElementById('calcResultArea').classList.remove('hidden');
+        const isProfit = result.netProfit >= 0;
+
+        const netEl = document.getElementById('netProfitDisplay');
+        netEl.textContent = fmt(result.netProfit);
+        netEl.className = 'value ' + (isProfit ? 'positive' : 'negative');
+
+        const perUsdtEl = document.getElementById('profitPerUsdt');
+        perUsdtEl.textContent = fmt(result.profitPerUsdt);
+        perUsdtEl.className = 'value ' + (isProfit ? 'positive' : 'negative');
+
+        const roiEl = document.getElementById('roiDisplay');
+        roiEl.textContent = fmtPct(result.roi);
+        roiEl.className = 'value ' + (isProfit ? 'positive' : 'negative');
+
+        document.getElementById('totalInvestmentDisplay').textContent = fmtInt(result.capitalUsed);
+        document.getElementById('totalRevenueDisplay').textContent = fmtInt(result.sellRevenue);
+        document.getElementById('totalCostDisplay').textContent = fmt(result.totalCost);
+        document.getElementById('beSellDisplay').textContent = fmt(result.beSell);
+        document.getElementById('beBuyDisplay').textContent = fmt(result.beBuy);
+        document.getElementById('grossProfitDisplay').textContent = fmt(result.grossProfit);
+        document.getElementById('totalFeesDisplay').textContent = fmt(result.totalFixedFees);
+        document.getElementById('slippageCostDisplay').textContent = fmt(result.slippageCost);
+        document.getElementById('netProfitBreakdown').textContent = fmt(result.netProfit);
+
+        const warningBox = document.getElementById('calcWarningBox');
+        warningBox.classList.add('hidden');
+        if (result.netProfit < 0) {
+            warningBox.textContent = '⚠️ এই ট্রেডে সম্ভাব্য ক্ষতি হবে। Break-even price দেখে নিন।';
+            warningBox.classList.remove('hidden');
+        } else if (result.netProfit < 50 && result.capitalUsed > 1000) {
+            warningBox.textContent = 'ℹ️ মুনাফা খুব কম। ফি বা স্লিপেজ পরীক্ষা করুন।';
+            warningBox.classList.remove('hidden');
+        } else if (result.grossProfit > 0 && result.totalCost > Math.abs(result.grossProfit) * 0.3) {
+            warningBox.textContent = '🧾 ফি ও খরচ মুনাফার তুলনায় বেশি। নেট লাভ কম হতে পারে।';
+            warningBox.classList.remove('hidden');
+        }
+
+        document.getElementById('tradeModeBadge').textContent = 'SPREAD · BUY → SELL';
+
+        if (saveToHistory) addCalcHistory(result);
+    }
+
+    function addCalcHistory(result) {
+        const entry = {
+            time: new Date().toLocaleTimeString('bn-BD'),
+            buy: result.buyPrice, sell: result.sellPrice,
+            qty: result.usdtQty, net: result.netProfit, roi: result.roi
+        };
+        AppState.calcHistory.unshift(entry);
+        if (AppState.calcHistory.length > 20) AppState.calcHistory.pop();
+        saveCalcHistory();
+        renderCalcHistory();
+    }
+
+    function renderCalcHistory() {
+        const list = document.getElementById('historyList');
+        const count = document.getElementById('historyCount');
+        count.textContent = AppState.calcHistory.length;
+        if (!AppState.calcHistory.length) {
+            list.innerHTML = '<div style="color: var(--gray-light); font-size: 13px; text-align: center; padding: 12px 0;">কোনো হিসাব নেই</div>';
+            return;
+        }
+        list.innerHTML = '';
+        AppState.calcHistory.forEach((h, idx) => {
+            const div = document.createElement('div');
+            div.className = 'snapshot-item';
+            const sign = h.net >= 0 ? 'text-positive' : 'text-negative';
+            div.innerHTML = `<div class="meta"><div class="title">#${idx + 1} ${h.buy.toFixed(2)} → ${h.sell.toFixed(2)}</div><div class="detail">${h.qty.toFixed(0)} USDT · ${h.time}</div></div><span class="${sign}" style="font-weight:600; font-size:13px;">${h.net >= 0 ? '+' : ''}${h.net.toFixed(2)} ৳ (${h.roi.toFixed(2)}%)</span>`;
+            list.appendChild(div);
+        });
+    }
+
+    function syncInvestmentFromQty() {
+        const buyPrice = Number(document.getElementById('buyPrice').value);
+        const qty = Number(document.getElementById('usdtQty').value);
+        if (Number.isFinite(buyPrice) && buyPrice > 0 && Number.isFinite(qty) && qty > 0) {
+            document.getElementById('investmentBdt').value = (qty * buyPrice).toFixed(2);
+        }
+    }
+    function syncQtyFromInvestment() {
+        const buyPrice = Number(document.getElementById('buyPrice').value);
+        const inv = Number(document.getElementById('investmentBdt').value);
+        if (Number.isFinite(buyPrice) && buyPrice > 0 && Number.isFinite(inv) && inv > 0) {
+            document.getElementById('usdtQty').value = (inv / buyPrice).toFixed(4);
+        }
+    }
+
+    function resetCalculator() {
+        document.getElementById('buyPrice').value = '118.50';
+        document.getElementById('sellPrice').value = '119.20';
+        document.getElementById('usdtQty').value = '1000';
+        document.getElementById('investmentBdt').value = '118500';
+        document.getElementById('buyFee').value = '0';
+        document.getElementById('sellFee').value = '0';
+        document.getElementById('paymentFee').value = '0';
+        document.getElementById('networkFee').value = '0';
+        document.getElementById('slippagePct').value = '0.2';
+        document.getElementById('otherCost').value = '0';
+        document.getElementById('calcResultArea').classList.add('hidden');
+        AppState.calcHistory = [];
+        saveCalcHistory();
+        renderCalcHistory();
+        saveCalcState();
+        showToast('ক্যালকুলেটর রিসেট হয়েছে');
+    }
+
+    function copyCalcResult() {
+        let result;
+        try { result = calculateTrade(); }
+        catch (error) { showToast(error.message, true); return; }
+        const text = [
+            'P2P Trade Result',
+            `Buy: ${result.buyPrice.toFixed(2)} BDT | Sell: ${result.sellPrice.toFixed(2)} BDT`,
+            `USDT: ${result.usdtQty.toFixed(2)} | Capital Used: ${result.capitalUsed.toFixed(2)} BDT`,
+            `Gross Profit: ${result.grossProfit.toFixed(2)} BDT`,
+            `Fixed Fees: ${result.totalFixedFees.toFixed(2)} BDT`,
+            `Slippage Cost: ${result.slippageCost.toFixed(2)} BDT`,
+            `Total Cost: ${result.totalCost.toFixed(2)} BDT`,
+            `Net Profit: ${result.netProfit.toFixed(2)} BDT`,
+            `ROI: ${result.roi.toFixed(2)}%`,
+            `Profit/USDT: ${result.profitPerUsdt.toFixed(2)} BDT`,
+            `Break-even Sell: ${result.beSell.toFixed(2)} BDT`,
+            `Max Buy (break-even): ${result.beBuy.toFixed(2)} BDT`
+        ].join('\n');
+        navigator.clipboard.writeText(text).then(() => showToast('ফলাফল কপি করা হয়েছে!'))
+            .catch(() => showToast('কপি করতে ব্যর্থ, ম্যানুয়ালি কপি করুন।', true));
+    }
+
+    /* ============================================================
+       SECTION 19: CSV IMPORT / EXPORT
+       ============================================================ */
+    function exportAdvertisementsCSV() {
+        if (!AppState.advertisements.length) { showToast('এক্সপোর্ট করার জন্য কোনো ডেটা নেই।', true); return; }
+        const headers = ['marketplace','side','merchant','price','minOrder','maxOrder','quantity','completed','completion','payment','date','time','notes'];
+        const rows = AppState.advertisements.map(a => headers.map(h => {
+            const val = a[h] != null ? a[h] : '';
+            return String(val).includes(',') ? '"' + String(val).replace(/"/g, '""') + '"' : val;
+        }).join(','));
+        const csv = [headers.join(','), ...rows].join('\n');
+        downloadFile('p2p_advertisements.csv', csv, 'text/csv');
+    }
+
+    function importAdvertisementsCSV(text) {
+        const lines = text.trim().split('\n').filter(l => l.trim());
+        if (lines.length < 2) { showToast('CSV-এ কমপক্ষে একটি হেডার এবং একটি ডেটা সারি থাকতে হবে।', true); return; }
+        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+        let imported = 0;
+        for (let i = 1; i < lines.length; i++) {
+            const vals = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+            const obj = {};
+            headers.forEach((h, idx) => {
+                if (vals[idx] !== undefined && vals[idx] !== '') {
+                    if (['price','minOrder','maxOrder','quantity','completed','completion'].includes(h)) {
+                        obj[h] = Number(vals[idx]);
+                    } else {
+                        obj[h] = vals[idx];
+                    }
+                }
+            });
+            if (obj.price && obj.price > 0 && obj.merchant) {
+                obj.side = (obj.side || 'Buy').charAt(0).toUpperCase() + (obj.side || 'Buy').slice(1).toLowerCase();
+                if (!['Buy','Sell'].includes(obj.side)) obj.side = 'Buy';
+                obj.id = uid();
+                obj.createdAt = new Date().toISOString();
+                AppState.advertisements.push(obj);
+                imported++;
+            }
+        }
+        saveAdvertisements();
+        renderAdvertisementList();
+        updateDashboard();
+        showToast(`${imported}টি বিজ্ঞাপন ইমপোর্ট হয়েছে ✓`);
+    }
+
+    /* ============================================================
+       SECTION 20: JSON BACKUP / RESTORE
+       ============================================================ */
+    function exportJSON() {
+        const backup = {
+            version: STORAGE_KEYS.APP_VERSION,
+            timestamp: new Date().toISOString(),
+            advertisements: AppState.advertisements,
+            snapshots: AppState.snapshots,
+            calcHistory: AppState.calcHistory,
+            settings: AppState.settings
+        };
+        downloadFile('p2p_market_backup.json', JSON.stringify(backup, null, 2), 'application/json');
+        showToast('ব্যাকআপ ডাউনলোড হয়েছে ✓');
+    }
+
+    function importJSON(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (!data.advertisements && !data.snapshots) {
+                    throw new Error('অবৈধ ব্যাকআপ ফাইল।');
+                }
+                const msg = `ব্যাকআপে ${(data.advertisements || []).length}টি বিজ্ঞাপন, ${(data.snapshots || []).length}টি স্ন্যাপশট রয়েছে। বর্তমান ডেটা প্রতিস্থাপিত হবে — চালিয়ে যাবেন?`;
+                if (!confirm(msg)) { showToast('ইমপোর্ট বাতিল হয়েছে।'); return; }
+                AppState.advertisements = data.advertisements || [];
+                AppState.snapshots = data.snapshots || [];
+                AppState.calcHistory = data.calcHistory || [];
+                AppState.settings = data.settings || {};
+                saveAdvertisements();
+                saveSnapshots();
+                saveCalcHistory();
+                renderAdvertisementList();
+                renderSnapshotList();
+                renderCalcHistory();
+                updateDashboard();
+                document.getElementById('importStatus').innerHTML = '<span class="text-positive">✓ ব্যাকআপ সফলভাবে রিস্টোর হয়েছে।</span>';
+                showToast('ব্যাকআপ রিস্টোর সফল ✓');
+            } catch (err) {
+                document.getElementById('importStatus').innerHTML = '<span class="text-negative">✕ ' + err.message + '</span>';
+                showToast('ইমপোর্ট ব্যর্থ: ' + err.message, true);
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    /* ============================================================
+       SECTION 21: FILE DOWNLOAD HELPER
+       ============================================================ */
+    function downloadFile(filename, content, mimeType) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    /* ============================================================
+       SECTION 22: NAVIGATION
+       ============================================================ */
+    function switchSection(sectionName) {
+        document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const panel = document.getElementById('section-' + sectionName);
+        if (panel) panel.classList.add('active');
+        const btn = document.querySelector(`.nav-btn[data-section="${sectionName}"]`);
+        if (btn) btn.classList.add('active');
+    }
+
+    /* ============================================================
+       SECTION 23: EVENT BINDING
+       ============================================================ */
+    function bindEvents() {
+        // Navigation
+        document.getElementById('navBar').addEventListener('click', (e) => {
+            const btn = e.target.closest('.nav-btn');
+            if (!btn) return;
+            switchSection(btn.dataset.section);
+        });
+
+        // Dashboard buttons
+        document.getElementById('dashGoInput').addEventListener('click', () => switchSection('input'));
+        document.getElementById('dashAnalyzeBtn').addEventListener('click', () => {
+            switchSection('analysis');
+            runAnalysis();
+        });
+
+        // Add advertisement
+        document.getElementById('addAdvBtn').addEventListener('click', () => {
+            const adv = {
+                marketplace: document.getElementById('advMarketplace').value.trim() || 'Binance',
+                side: document.getElementById('advSide').value,
+                merchant: document.getElementById('advMerchant').value.trim(),
+                price: Number(document.getElementById('advPrice').value),
+                minOrder: document.getElementById('advMin').value ? Number(document.getElementById('advMin').value) : null,
+                maxOrder: document.getElementById('advMax').value ? Number(document.getElementById('advMax').value) : null,
+                quantity: document.getElementById('advQty').value ? Number(document.getElementById('advQty').value) : null,
+                completed: document.getElementById('advCompleted').value ? Number(document.getElementById('advCompleted').value) : null,
+                completion: document.getElementById('advCompletion').value ? Number(document.getElementById('advCompletion').value) : null,
+                payment: document.getElementById('advPayment').value.trim() || null,
+                date: document.getElementById('advDate').value || null,
+                time: document.getElementById('advTime').value || null,
+                notes: document.getElementById('advNotes').value.trim() || null
+            };
+            if (!adv.merchant) { showToast('মার্চেন্ট আইডি আবশ্যক।', true); return; }
+            if (!adv.price || adv.price <= 0) { showToast('বৈধ দাম আবশ্যক।', true); return; }
+            if (addAdvertisement(adv)) clearAdvertisementForm();
+        });
+
+        document.getElementById('clearAdvFormBtn').addEventListener('click', clearAdvertisementForm);
+
+        document.getElementById('clearAllAdvBtn').addEventListener('click', () => {
+            if (!AppState.advertisements.length) return;
+            if (!confirm('সব বিজ্ঞাপন মুছে ফেলবেন?')) return;
+            AppState.advertisements = [];
+            saveAdvertisements();
+            renderAdvertisementList();
+            updateDashboard();
+            showToast('সব বিজ্ঞাপন মুছে ফেলা হয়েছে');
+        });
+
+        // CSV
+        document.getElementById('exportAdvCsvBtn').addEventListener('click', exportAdvertisementsCSV);
+        document.getElementById('importAdvCsvBtn').addEventListener('click', () => {
+            document.getElementById('csvImportArea').classList.toggle('hidden');
+        });
+        document.getElementById('csvImportConfirm').addEventListener('click', () => {
+            const text = document.getElementById('csvInput').value;
+            if (text.trim()) importAdvertisementsCSV(text);
+            document.getElementById('csvImportArea').classList.add('hidden');
+            document.getElementById('csvInput').value = '';
+        });
+        document.getElementById('csvImportCancel').addEventListener('click', () => {
+            document.getElementById('csvImportArea').classList.add('hidden');
+            document.getElementById('csvInput').value = '';
+        });
+
+        // Analysis
+        document.getElementById('analyzeBtn').addEventListener('click', runAnalysis);
+
+        // Snapshots
+        document.getElementById('saveSnapshotBtn').addEventListener('click', saveSnapshot);
+        document.getElementById('compareSnapBtn').addEventListener('click', () => {
+            const aId = document.getElementById('compareSnapA').value;
+            const bId = document.getElementById('compareSnapB').value;
+            if (!aId || !bId) { showToast('দুটি স্ন্যাপশট নির্বাচন করুন।', true); return; }
+            const snapA = AppState.snapshots.find(s => s.id === aId);
+            const snapB = AppState.snapshots.find(s => s.id === bId);
+            if (!snapA || !snapB) { showToast('স্ন্যাপশট পাওয়া যায়নি।', true); return; }
+            const result = HistoricalComparison.compare(snapA, snapB);
+            const container = document.getElementById('compareResult');
+            if (!result) { container.innerHTML = '<p class="text-muted">তুলনা করা সম্ভব হয়নি।</p>'; return; }
+            container.innerHTML = `
+                <div class="report-section">
+                    <h3>🔄 তুলনা ফলাফল</h3>
+                    <div class="report-text">
+                        <p><strong>${result.snapA}</strong> → <strong>${result.snapB}</strong></p>
+                        <p>বিজ্ঞাপন: ${result.adsCountA} → ${result.adsCountB}</p>
+                        <p>মার্চেন্ট: ${result.merchantsA} → ${result.merchantsB}</p>
+                        <p>মিডিয়ান দাম: ৳${fmtNum(result.medianA)} → ৳${fmtNum(result.medianB)}</p>
+                        <p>পরিবর্তন: ৳${fmtNum(result.change)} (${fmtNum(result.pctChange)}%)</p>
+                        <p>প্রবণতা: <strong>${result.direction === 'increasing' ? 'বর্ধমান' : result.direction === 'decreasing' ? 'হ্রাসমান' : 'স্থিতিশীল'}</strong></p>
+                        ${result.warning ? `<div class="warning-box info mt-1">${result.warning}</div>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+
+        // Calculator
+        document.getElementById('calculateBtn').addEventListener('click', () => renderCalcResult(true));
+        document.getElementById('resetCalcBtn').addEventListener('click', resetCalculator);
+        document.getElementById('copyResultBtn').addEventListener('click', copyCalcResult);
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            AppState.calcHistory = [];
+            saveCalcHistory();
+            renderCalcHistory();
+            showToast('হিস্টোরি মুছে ফেলা হয়েছে');
+        });
+
+        document.getElementById('usdtQty').addEventListener('input', () => { syncInvestmentFromQty(); saveCalcState(); });
+        document.getElementById('investmentBdt').addEventListener('input', () => { syncQtyFromInvestment(); saveCalcState(); });
+        document.getElementById('buyPrice').addEventListener('input', () => { syncInvestmentFromQty(); saveCalcState(); });
+
+        INPUT_IDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.addEventListener('input', saveCalcState); el.addEventListener('change', saveCalcState); }
+        });
+
+        // Settings
+        document.getElementById('exportJsonBtn').addEventListener('click', exportJSON);
+        document.getElementById('importJsonBtn').addEventListener('click', () => {
+            document.getElementById('jsonFileInput').click();
+        });
+        document.getElementById('jsonFileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) importJSON(file);
+            e.target.value = '';
+        });
+        document.getElementById('resetAllBtn').addEventListener('click', () => {
+            if (!confirm('সব ডেটা (বিজ্ঞাপন, স্ন্যাপশট, ক্যালকুলেটর হিস্টোরি) মুছে ফেলবেন?')) return;
+            AppState.advertisements = [];
+            AppState.snapshots = [];
+            AppState.calcHistory = [];
+            StorageManager.clearAll();
+            renderAdvertisementList();
+            renderSnapshotList();
+            renderCalcHistory();
+            updateDashboard();
+            document.getElementById('analysisContent').classList.add('hidden');
+            document.getElementById('analysisEmpty').classList.remove('hidden');
+            showToast('সব ডেটা মুছে ফেলা হয়েছে');
+        });
+
+        // Auto-save calc state before unload
+        window.addEventListener('beforeunload', saveCalcState);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') saveCalcState();
+        });
+    }
+
+    /* ============================================================
+       SECTION 24: INIT
+       ============================================================ */
+    function init() {
+        // Load persisted data
+        loadAdvertisements();
+        loadSnapshots();
+        loadCalcHistory();
+        const restored = loadCalcState();
+
+        // Render initial UI
+        renderAdvertisementList();
+        renderSnapshotList();
+        renderCalcHistory();
+        updateDashboard();
+
+        // Bind all events
+        bindEvents();
+
+        // Initial calculator display
+        if (restored) renderCalcResult(false);
+        else setTimeout(() => renderCalcResult(false), 100);
+
+        // Set default date/time in advertisement form
+        const now = new Date();
+        document.getElementById('advDate').value = now.toISOString().split('T')[0];
+        document.getElementById('advTime').value = now.toTimeString().slice(0, 5);
+
+        // If there's existing advertisement data, show dashboard summary
+        if (AppState.advertisements.length > 0) {
+            updateDashboard();
+        }
+    }
+
+    /* ============================================================
+       SECTION 25: SERVICE WORKER (Blob URL)
+       ============================================================ */
+    (function registerSW() {
+        if (!('serviceWorker' in navigator)) return;
+        if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+        const swCode = `
+            const CACHE = 'p2p-intel-v3';
+            self.addEventListener('install', e => { self.skipWaiting(); });
+            self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });
+            self.addEventListener('fetch', e => {
+                if (e.request.method !== 'GET') return;
+                e.respondWith(
+                    caches.match(e.request).then(cached => {
+                        const fetchPromise = fetch(e.request).then(res => {
+                            const copy = res.clone();
+                            caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
+                            return res;
+                        }).catch(() => cached);
+                        return cached || fetchPromise;
+                    })
+                );
+            });
+        `;
+        try {
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (e) {}
+    })();
+
+    /* ============================================================
+       BOOT
+       ============================================================ */
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
 })();
 </script>
 </body>
