@@ -113,10 +113,12 @@ input.invalid, select.invalid { border-color:#dc2626; background:#fef2f2; }
 .risk-na { background:#e5e7eb; color:#374151; }
 .risk-range { background:#fde68a; color:#78350f; }
 
-/* Simple grid for key facts — COMPACT */
-.key-grid { display:grid; grid-template-columns:1fr 1fr;
-    gap:1px 8px; font-size:10.5px; margin-bottom:4px; }
-.key-grid .k { color:#5b6f8c; }
+/* --- NEW: line-by-line key facts for ads (compact, no grid) --- */
+.key-grid { display:flex; flex-direction:column;
+    gap:2px; font-size:11px; margin-bottom:4px; }
+.key-grid .kv-row { display:flex; justify-content:space-between;
+    align-items:baseline; gap:8px; padding:1px 0; }
+.key-grid .k { color:#5b6f8c; flex:0 0 auto; }
 .key-grid .v { font-weight:700; color:#0b1a33; text-align:right;
     font-variant-numeric:tabular-nums; }
 .v.pos { color:#15803d; }
@@ -200,7 +202,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
     .card { padding:9px 9px; border-radius:12px; }
     .input-row { flex-direction:row; gap:4px; }
     .summary-grid { grid-template-columns:1fr 1fr; }
-    .key-grid { grid-template-columns:1fr 1fr; }
     .detail-grid { grid-template-columns:1fr 1fr; }
     .input-group label { font-size:9.5px; }
     input, select { padding:5px 7px; font-size:11px; height:30px; }
@@ -210,7 +211,7 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
     .ads-section { padding:7px; }
     .ad-card { padding:6px 7px; }
     .summary-row { font-size:9.5px; }
-    .key-grid .v { font-size:10px; }
+    .key-grid { font-size:10.5px; gap:1px; }
     .detail-grid { font-size:9px; }
     .ads-header h3 { font-size:11px; }
     .card-header h2 { font-size:12px; }
@@ -226,8 +227,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
 @media (max-width:380px) {
     .input-row { flex-direction:column; gap:0; }
     .summary-grid { grid-template-columns:1fr; }
-    .key-grid { grid-template-columns:1fr; }
-    .key-grid .v { text-align:left; }
     .detail-grid { grid-template-columns:1fr; }
     .detail-grid .v { text-align:left; }
 }
@@ -543,7 +542,7 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
     /* ============================================
        CONSTANTS & STORAGE
        ============================================ */
-    const STORAGE_KEY = 'p2pPlan_v4';
+    const STORAGE_KEY = 'p2pPlan_v5';
     const INPUT_IDS = [
         'minPrice','maxPrice','buyCount','sellCount',
         'buyInterval','sellInterval','gap',
@@ -643,7 +642,7 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
     }
 
     /* ============================================
-       PURE CALCULATION ENGINE (UNCHANGED - NO MODIFICATIONS)
+       PURE CALCULATION ENGINE (UNCHANGED)
        ============================================ */
 
     function buildBuyWeights(n, profile) {
@@ -693,7 +692,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
         const errors = [];
         const warnings = [];
 
-        // Basic checks
         if (inp.minPrice >= inp.maxPrice) {
             errors.push('সর্বনিম্ন মার্কেট মূল্য অবশ্যই সর্বোচ্চ মূল্যের চেয়ে কম হতে হবে।');
         }
@@ -706,7 +704,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
         }
         if (errors.length) return { ok: false, errors, warnings, inputs: inp };
 
-        // Buy price range check (highest buy must be ≤ maxPrice)
         const highestBuyPlanned = round2(inp.minPrice + (inp.buyCount - 1) * inp.buyInterval);
         if (highestBuyPlanned > inp.maxPrice + 1e-9) {
             errors.push(
@@ -716,34 +713,29 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
             );
         }
 
-        // Fee split — two-sided
         const totalFeeRate = inp.costPct / 100;
         const buyFeeRate = totalFeeRate / 2;
         const sellFeeRate = totalFeeRate / 2;
         const targetProfitRate = inp.netProfitPct / 100;
 
-        // Capital split
         const totalInvestment = round2(inp.totalInvestment);
         const deployed = round2(totalInvestment * inp.deployPct / 100);
         const reserve = round2(totalInvestment - deployed);
         const buyBudget = round2(deployed * inp.buyAllocPct / 100);
         const sellWorkingCash = round2(deployed - buyBudget);
 
-        // Buy ladder prices: minPrice + i*interval
         const N = inp.buyCount;
         const buyPrices = [];
         for (let i = 0; i < N; i++) {
             buyPrices.push(round2(inp.minPrice + i * inp.buyInterval));
         }
 
-        // Minimum viable sell per buy ad:
         const minViableSell = buyPrices.map(bp => {
             const num = bp * (1 + buyFeeRate + targetProfitRate);
             const den = Math.max(1e-9, 1 - sellFeeRate);
             return round2(num / den);
         });
 
-        // Buy allocation weights (capped)
         const rawWeights = buildBuyWeights(N, inp.riskProfile);
         const capped = applyPerAdCap(rawWeights, inp.maxPerAdPct / 100);
         if (capped.capped) {
@@ -751,7 +743,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
         }
         const weights = capped.weights;
 
-        // Allocate BDT
         let allocs = weights.map(w => round2(w * buyBudget));
         let allocSum = allocs.reduce((a,b)=>a+b,0);
         const diff = round2(buyBudget - allocSum);
@@ -761,7 +752,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
             allocs[idx] = round2(allocs[idx] + diff);
         }
 
-        // Build buy ads with per-ad economics
         const buyAds = [];
         for (let i = 0; i < N; i++) {
             const bp = buyPrices[i];
@@ -777,7 +767,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
             });
         }
 
-        // ---- SELL mapping ----
         const M = inp.sellCount;
         const sellBaseDesc = [];
         for (let j = 0; j < M; j++) {
@@ -961,7 +950,7 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
     }
 
     /* ============================================
-       RENDER (compact)
+       RENDER (compact, line-by-line ads)
        ============================================ */
     const resultWrap = document.getElementById('resultWrap');
     const errorBox   = document.getElementById('errorBox');
@@ -993,6 +982,12 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
                esc(k) + '</span><span class="v">' + v + '</span></div>';
     }
 
+    // Build one kv-row line
+    function kvRow(label, value, cls) {
+        return '<div class="kv-row"><span class="k">' + esc(label) + '</span>' +
+               '<span class="v ' + (cls||'') + '">' + value + '</span></div>';
+    }
+
     function renderBuyAd(a, inp, plan) {
         const st = statusLabel(a.status);
         const div = document.createElement('div');
@@ -1009,14 +1004,14 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
         html +=   '</div>';
         html += '</div>';
 
+        // ---- LINE-BY-LINE KEY FACTS (compact) ----
         html += '<div class="key-grid">';
-        html +=   '<span class="k">ক্রয় মূল্য</span><span class="v">' + fmtBDT(a.buyPrice) + '</span>';
-        html +=   '<span class="k">বরাদ্দ টাকা</span><span class="v">' + fmtBDT(a.allocation) + '</span>';
-        html +=   '<span class="k">USDT</span><span class="v">' + fmtUSDT(a.usdt) + '</span>';
-        html +=   '<span class="k">বিক্রয় মূল্য</span><span class="v">' + fmtBDT(a.plannedSell || 0) + '</span>';
-        html +=   '<span class="k">নিট লাভ</span><span class="v ' +
-                    (a.netProfit >= 0 ? 'pos' : 'neg') + '">' + fmtBDT(a.netProfit) + '</span>';
-        html +=   '<span class="k">দরপতনে ক্ষতি</span><span class="v neg">' + fmtBDT(a.stressLoss) + '</span>';
+        html +=   kvRow('ক্রয় মূল্য', fmtBDT(a.buyPrice));
+        html +=   kvRow('বরাদ্দ টাকা', fmtBDT(a.allocation));
+        html +=   kvRow('USDT', fmtUSDT(a.usdt));
+        html +=   kvRow('বিক্রয় মূল্য', fmtBDT(a.plannedSell || 0));
+        html +=   kvRow('নিট লাভ', fmtBDT(a.netProfit), a.netProfit >= 0 ? 'pos' : 'neg');
+        html +=   kvRow('দরপতনে ক্ষতি', fmtBDT(a.stressLoss), 'neg');
         html += '</div>';
 
         html += '<details class="detail"><summary>বিস্তারিত</summary><div class="detail-body">';
@@ -1062,14 +1057,13 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
         html +=   '</div>';
         html += '</div>';
 
+        // ---- LINE-BY-LINE KEY FACTS (compact) ----
         html += '<div class="key-grid">';
-        html +=   '<span class="k">বিক্রয় মূল্য</span><span class="v">' + fmtBDT(s.sellPrice) + '</span>';
-        html +=   '<span class="k">প্রয়োজনীয় USDT</span><span class="v">' + fmtUSDT(s.totalUsdt) + '</span>';
-        html +=   '<span class="k">যুক্ত ক্রয়</span><span class="v">' +
-                  (s.linkedBuyIndices.length ? s.linkedBuyIndices.map(i => '#' + i).join(', ') : '—') + '</span>';
-        html +=   '<span class="k">গড় ক্রয় মূল্য</span><span class="v">' + fmtBDT(s.weightedBuy) + '</span>';
-        html +=   '<span class="k">নিট লাভ</span><span class="v ' +
-                  (s.groupNetProfit >= 0 ? 'pos' : 'neg') + '">' + fmtBDT(s.groupNetProfit) + '</span>';
+        html +=   kvRow('বিক্রয় মূল্য', fmtBDT(s.sellPrice));
+        html +=   kvRow('প্রয়োজনীয় USDT', fmtUSDT(s.totalUsdt));
+        html +=   kvRow('যুক্ত ক্রয়', s.linkedBuyIndices.length ? s.linkedBuyIndices.map(i => '#' + i).join(', ') : '—');
+        html +=   kvRow('গড় ক্রয় মূল্য', fmtBDT(s.weightedBuy));
+        html +=   kvRow('নিট লাভ', fmtBDT(s.groupNetProfit), s.groupNetProfit >= 0 ? 'pos' : 'neg');
         html += '</div>';
 
         html += '<details class="detail"><summary>বিস্তারিত</summary><div class="detail-body">';
@@ -1414,7 +1408,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
        ============================================ */
     restoreState();
     // Do NOT auto-run calculation. User must click "হিসাব করুন".
-    // But we clear the result area initially.
     resultWrap.classList.remove('show');
 
     /* ============================================
@@ -1425,7 +1418,7 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
         if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
 
         const swCode = `
-            const CACHE = 'p2p-plan-v4';
+            const CACHE = 'p2p-plan-v5';
             const PRECACHE = [
                 location.href.split('?')[0]
             ];
@@ -1445,7 +1438,6 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
             });
             self.addEventListener('fetch', e => {
                 if (e.request.method !== 'GET') return;
-                // Only handle same-origin
                 if (!e.request.url.startsWith(self.location.origin)) return;
                 e.respondWith(
                     caches.match(e.request).then(cached => {
@@ -1470,13 +1462,8 @@ details.detail[open] > summary::before { transform:rotate(90deg); }
         } catch (e) {}
     })();
 
-    // Optional: Add install prompt handling
     window.addEventListener('beforeinstallprompt', (e) => {
-        // Don't prevent default so browser can show its own UI
-        // e.preventDefault();
-        // Store event for later if needed
         window.__deferredPrompt = e;
-        // Could show a custom install button here, but we keep it simple.
     });
 
 })();
