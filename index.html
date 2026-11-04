@@ -1,260 +1,382 @@
 <!DOCTYPE html>
 <html lang="bn" translate="no" class="notranslate">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Binance P2P — Buy & Sell Ad Price Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Binance P2P — Risk-Aware Ad Price & Trading Plan Calculator</title>
 
-    <meta name="google" content="notranslate">
-    <meta name="theme-color" content="#0b1a33">
-    <meta name="description" content="Binance P2P Dynamic Buy & Sell Ad Price Calculator">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="P2P Ad Price">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="P2P Ad Price">
+<meta name="google" content="notranslate">
+<meta name="theme-color" content="#0b1a33">
+<meta name="description" content="Binance P2P Risk-Aware Buy & Sell Ad Price and Capital Allocation Calculator">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="P2P Plan">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="P2P Plan">
 
-    <link rel="manifest" id="appManifest">
-    <link rel="apple-touch-icon" id="appleIcon">
-    <link rel="icon" id="favIcon">
+<link rel="manifest" id="appManifest">
+<link rel="apple-touch-icon" id="appleIcon">
+<link rel="icon" id="favIcon">
 
-    <style>
-        .notranslate, .notranslate * { translate: no !important; }
-        * { margin:0; padding:0; box-sizing:border-box;
-            font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
-            -webkit-tap-highlight-color:transparent; }
-        body { background:#f4f7fc; padding:16px; min-height:100vh;
-            display:flex; justify-content:center; align-items:flex-start; }
-        .app-container { max-width:640px; width:100%; margin:0 auto; }
+<style>
+.notranslate, .notranslate * { translate: no !important; }
+* { margin:0; padding:0; box-sizing:border-box;
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color:transparent; }
+body { background:#f4f7fc; padding:16px; min-height:100vh;
+    display:flex; justify-content:center; align-items:flex-start; }
+.app-container { max-width:820px; width:100%; margin:0 auto; }
 
-        .card { background:#fff; border-radius:24px; padding:20px 18px;
-            margin-bottom:18px; box-shadow:0 8px 24px rgba(0,20,50,0.06);
-            border:1px solid #eef2f6; }
-        .card-header { display:flex; justify-content:space-between; align-items:center;
-            margin-bottom:16px; }
-        .card-header h2 { font-size:18px; font-weight:600; color:#0b1a33; letter-spacing:-0.3px; }
-        .badge { background:#e9edf4; padding:4px 12px; border-radius:40px;
-            font-size:11px; font-weight:600; color:#2c3e66; }
+.card { background:#fff; border-radius:24px; padding:20px 18px;
+    margin-bottom:18px; box-shadow:0 8px 24px rgba(0,20,50,0.06);
+    border:1px solid #eef2f6; }
+.card-header { display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+.card-header h2 { font-size:18px; font-weight:600; color:#0b1a33; letter-spacing:-0.3px; }
+.badge { background:#e9edf4; padding:4px 12px; border-radius:40px;
+    font-size:11px; font-weight:600; color:#2c3e66; }
+.badge.warn { background:#fff7ed; color:#9a3412; }
 
-        .input-group { margin-bottom:14px; }
-        .input-group label { display:block; font-size:13px; font-weight:500;
-            color:#1f344f; margin-bottom:5px; }
-        .input-row { display:flex; gap:10px; }
-        .input-row .input-group { flex:1; }
+.input-group { margin-bottom:14px; }
+.input-group label { display:block; font-size:13px; font-weight:500;
+    color:#1f344f; margin-bottom:5px; }
+.input-row { display:flex; gap:10px; }
+.input-row .input-group { flex:1; }
 
-        input { width:100%; padding:12px 14px; border:1.5px solid #dce2ec;
-            border-radius:14px; font-size:15px; background:#fafcff;
-            transition:border 0.2s; color:#0b1a33; }
-        input:focus { border-color:#2563eb; outline:none; background:#fff; }
-        input::placeholder { color:#9aabbf; font-weight:400; }
-        input.invalid { border-color:#dc2626; background:#fef2f2; }
+input, select { width:100%; padding:12px 14px; border:1.5px solid #dce2ec;
+    border-radius:14px; font-size:15px; background:#fafcff;
+    transition:border 0.2s; color:#0b1a33; }
+input:focus, select:focus { border-color:#2563eb; outline:none; background:#fff; }
+input::placeholder { color:#9aabbf; font-weight:400; }
+input.invalid, select.invalid { border-color:#dc2626; background:#fef2f2; }
 
-        .hint { font-size:11px; color:#6b7f9b; margin-top:3px; }
+.hint { font-size:11px; color:#6b7f9b; margin-top:3px; line-height:1.45; }
 
-        .section-block { background:#f8faff; border-radius:16px;
-            padding:14px; margin:8px 0 4px 0; border:1px solid #e3eaf3; }
-        .section-title { font-size:14px; font-weight:600; color:#0b1a33;
-            margin-bottom:10px; display:flex; align-items:center; gap:6px; }
-        .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
-        .dot-buy { background:#16a34a; }
-        .dot-sell { background:#dc2626; }
+.flex { display:flex; gap:8px; flex-wrap:wrap; }
+.btn-primary { width:100%; padding:14px; background:#0b1a33; color:#fff;
+    border:none; border-radius:60px; font-weight:600; font-size:16px;
+    cursor:pointer; transition:background 0.2s; margin-top:6px; }
+.btn-primary:hover { background:#1c3152; }
+.btn-secondary { flex:1; min-width:120px; padding:11px 14px;
+    background:#eef2f6; border:none; border-radius:40px;
+    font-weight:500; font-size:13px; cursor:pointer; color:#1f344f;
+    transition:background 0.2s; }
+.btn-secondary:hover { background:#dce2ec; }
 
-        .flex { display:flex; gap:8px; flex-wrap:wrap; }
-        .btn-primary { width:100%; padding:14px; background:#0b1a33; color:#fff;
-            border:none; border-radius:60px; font-weight:600; font-size:16px;
-            cursor:pointer; transition:background 0.2s; margin-top:6px; }
-        .btn-primary:hover { background:#1c3152; }
-        .btn-secondary { flex:1; min-width:120px; padding:11px 14px;
-            background:#eef2f6; border:none; border-radius:40px;
-            font-weight:500; font-size:13px; cursor:pointer; color:#1f344f;
-            transition:background 0.2s; }
-        .btn-secondary:hover { background:#dce2ec; }
+.error-box { background:#fef2f2; border-left:4px solid #dc2626;
+    padding:12px 14px; border-radius:12px; margin:12px 0 6px;
+    font-size:13px; color:#991b1b; display:none; line-height:1.5; }
+.error-box.show { display:block; }
 
-        .error-box { background:#fef2f2; border-left:4px solid #dc2626;
-            padding:12px 14px; border-radius:12px; margin:12px 0 6px;
-            font-size:13px; color:#991b1b; display:none; }
-        .error-box.show { display:block; }
+.result-wrap { display:none; }
+.result-wrap.show { display:block; }
 
-        .result-wrap { display:none; }
-        .result-wrap.show { display:block; }
+.section-block { background:#f8faff; border-radius:16px;
+    padding:14px; margin:8px 0 4px 0; border:1px solid #e3eaf3; }
 
-        .ads-section { border-radius:20px; padding:16px; margin-bottom:14px; }
-        .ads-buy { background:#f0fdf4; border:1px solid #bbf7d0; }
-        .ads-sell { background:#fef2f2; border:1px solid #fecaca; }
+.ads-section { border-radius:20px; padding:16px; margin-bottom:14px; }
+.ads-buy { background:#f0fdf4; border:1px solid #bbf7d0; }
+.ads-sell { background:#fef2f2; border:1px solid #fecaca; }
 
-        .ads-header { display:flex; justify-content:space-between;
-            align-items:center; margin-bottom:10px; }
-        .ads-header h3 { font-size:16px; font-weight:700; }
-        .ads-buy .ads-header h3 { color:#166534; }
-        .ads-sell .ads-header h3 { color:#991b1b; }
+.ads-header { display:flex; justify-content:space-between;
+    align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; }
+.ads-header h3 { font-size:16px; font-weight:700; }
+.ads-buy .ads-header h3 { color:#166534; }
+.ads-sell .ads-header h3 { color:#991b1b; }
 
-        .ads-summary { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-        .sum-pill { font-size:11px; font-weight:600; padding:4px 10px;
-            border-radius:30px; background:rgba(255,255,255,0.8); }
-        .ads-buy .sum-pill { color:#166534; }
-        .ads-sell .sum-pill { color:#991b1b; }
+.ads-summary { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.sum-pill { font-size:11px; font-weight:600; padding:4px 10px;
+    border-radius:30px; background:rgba(255,255,255,0.85); border:1px solid rgba(0,0,0,0.04); }
+.ads-buy .sum-pill { color:#166534; }
+.ads-sell .sum-pill { color:#991b1b; }
 
-        .ad-list { display:flex; flex-direction:column; gap:6px; }
-        .ad-item { display:flex; align-items:center; justify-content:space-between;
-            background:#fff; border-radius:12px; padding:9px 12px;
-            border:1px solid rgba(0,0,0,0.05); }
-        .ad-label { font-size:13px; font-weight:500; color:#1f344f;
-            display:flex; align-items:center; gap:8px; }
-        .ad-serial { font-size:11px; font-weight:700; width:22px; height:22px;
-            border-radius:50%; display:flex; align-items:center;
-            justify-content:center; color:#fff; }
-        .ads-buy .ad-serial { background:#16a34a; }
-        .ads-sell .ad-serial { background:#dc2626; }
-        .ad-price { font-size:15px; font-weight:700; color:#0b1a33;
-            display:flex; align-items:center; gap:8px; }
-        .copy-btn { background:#eef2f6; border:none; border-radius:8px;
-            padding:5px 8px; font-size:12px; cursor:pointer; color:#1f344f;
-            transition:background 0.15s; }
-        .copy-btn:hover { background:#dce2ec; }
-        .copy-btn:active { transform:scale(0.95); }
+/* Responsive ad card table */
+.ad-card { background:#fff; border-radius:14px; padding:12px;
+    margin-bottom:8px; border:1px solid rgba(0,0,0,0.06); }
+.ad-card-top { display:flex; justify-content:space-between;
+    align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+.ad-card-title { font-size:14px; font-weight:700; color:#0b1a33;
+    display:flex; align-items:center; gap:8px; }
+.ad-serial { font-size:11px; font-weight:700; width:24px; height:24px;
+    border-radius:50%; display:flex; align-items:center;
+    justify-content:center; color:#fff; flex-shrink:0; }
+.ads-buy .ad-serial { background:#16a34a; }
+.ads-sell .ad-serial { background:#dc2626; }
 
-        .gap-info { background:#fff7ed; border:1px solid #fed7aa;
-            border-radius:16px; padding:14px; margin-bottom:14px; }
-        .gap-info h4 { font-size:14px; font-weight:700; color:#9a3412;
-            margin-bottom:10px; }
-        .gap-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; }
-        .gap-row { display:flex; justify-content:space-between; font-size:12px;
-            color:#7c2d12; padding:3px 0; }
-        .gap-row .v { font-weight:700; color:#431407; }
-        .gap-row .ok { color:#15803d; }
-        .gap-row .bad { color:#b91c1c; }
+.risk-tag { font-size:10px; font-weight:700; padding:3px 9px;
+    border-radius:30px; white-space:nowrap; }
+.risk-low { background:#dcfce7; color:#166534; }
+.risk-medium { background:#fef3c7; color:#92400e; }
+.risk-high { background:#fee2e2; color:#991b1b; }
+.risk-na { background:#e5e7eb; color:#374151; }
 
-        .toast { position:fixed; left:50%; bottom:24px;
-            transform:translateX(-50%) translateY(80px); background:#0b1a33;
-            color:#fff; padding:10px 20px; border-radius:40px; font-size:13px;
-            font-weight:500; box-shadow:0 8px 24px rgba(0,20,50,0.25);
-            opacity:0; transition:all 0.3s ease; z-index:9999;
-            pointer-events:none; max-width:90%; text-align:center; }
-        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.ad-grid { display:grid; grid-template-columns:repeat(2, 1fr);
+    gap:6px 12px; font-size:12px; }
+.ad-grid .k { color:#5b6f8c; }
+.ad-grid .v { font-weight:600; color:#0b1a33; text-align:right;
+    font-variant-numeric:tabular-nums; }
+.v.pos { color:#15803d; }
+.v.neg { color:#b91c1c; }
+.v.warn { color:#b45309; }
 
-        @media (max-width:480px) {
-            .input-row { flex-direction:column; gap:0; }
-            .gap-grid { grid-template-columns:1fr; }
-        }
-    </style>
+.ad-reason { margin-top:8px; font-size:11.5px; line-height:1.5;
+    color:#475569; background:#f8fafc; border-radius:8px; padding:7px 10px;
+    border-left:3px solid #cbd5e1; }
+.ad-reason.bad { border-left-color:#dc2626; background:#fef2f2; color:#7f1d1d; }
+.ad-reason.good { border-left-color:#16a34a; background:#f0fdf4; color:#14532d; }
+
+.copy-btn { background:#eef2f6; border:none; border-radius:8px;
+    padding:5px 9px; font-size:11px; cursor:pointer; color:#1f344f;
+    transition:background 0.15s; font-weight:600; }
+.copy-btn:hover { background:#dce2ec; }
+.copy-btn:active { transform:scale(0.95); }
+
+/* Summary grid */
+.summary-card { background:#fff; border:1px solid #e3eaf3;
+    border-radius:18px; padding:16px; margin-bottom:14px; }
+.summary-card h4 { font-size:14px; font-weight:700; color:#0b1a33;
+    margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+.summary-grid { display:grid; grid-template-columns:repeat(2, 1fr);
+    gap:8px 16px; }
+.summary-row { display:flex; justify-content:space-between;
+    font-size:12.5px; padding:3px 0; gap:8px; }
+.summary-row .k { color:#5b6f8c; }
+.summary-row .v { font-weight:700; color:#0b1a33; text-align:right;
+    font-variant-numeric:tabular-nums; }
+.summary-row .v.pos { color:#15803d; }
+.summary-row .v.neg { color:#b91c1c; }
+.summary-row .v.warn { color:#b45309; }
+
+.warn-box { background:#fff7ed; border:1px solid #fed7aa;
+    border-radius:14px; padding:12px 14px; margin-bottom:10px;
+    font-size:12.5px; color:#7c2d12; line-height:1.55; }
+.warn-box strong { color:#9a3412; }
+.info-box { background:#eff6ff; border:1px solid #bfdbfe;
+    border-radius:14px; padding:12px 14px; margin-bottom:10px;
+    font-size:12.5px; color:#1e3a8a; line-height:1.55; }
+
+.disclaimer { background:#f1f5f9; border:1px dashed #cbd5e1;
+    border-radius:14px; padding:14px; font-size:12px; color:#475569;
+    line-height:1.6; }
+
+.toast { position:fixed; left:50%; bottom:24px;
+    transform:translateX(-50%) translateY(80px); background:#0b1a33;
+    color:#fff; padding:10px 20px; border-radius:40px; font-size:13px;
+    font-weight:500; box-shadow:0 8px 24px rgba(0,20,50,0.25);
+    opacity:0; transition:all 0.3s ease; z-index:9999;
+    pointer-events:none; max-width:90%; text-align:center; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.field-note { font-size:11px; color:#6b7f9b; margin-top:3px; }
+.opt-tag { font-size:10px; color:#2563eb; font-weight:600; }
+
+@media (max-width:600px) {
+    .input-row { flex-direction:column; gap:0; }
+    .summary-grid { grid-template-columns:1fr; }
+    .ad-grid { grid-template-columns:1fr; }
+    .ad-grid .v { text-align:left; }
+}
+</style>
 </head>
 <body class="notranslate">
 <div class="app-container">
 
     <div style="margin-bottom:16px; text-align:center;">
-        <h1 style="font-size:22px; color:#0b1a33; letter-spacing:-0.5px;">
-            Binance P2P Ad Price Calculator</h1>
-        <p style="color:#4a5b7a; font-size:14px; margin-top:4px;">
-            Dynamic Buy &amp; Sell Ad Price Distribution</p>
+        <h1 style="font-size:21px; color:#0b1a33; letter-spacing:-0.5px;">
+            Binance P2P Trading Plan Calculator</h1>
+        <p style="color:#4a5b7a; font-size:13px; margin-top:4px;">
+            Risk-aware Buy / Sell Ad Pricing &amp; Capital Allocation</p>
+        <p style="color:#94a3b8; font-size:11px; margin-top:6px;">
+            Market range manually entered; this tool does not fetch live Binance P2P prices.</p>
     </div>
 
-    <!-- INPUT CARD -->
+    <!-- ================= INPUT CARD ================= -->
     <div class="card">
         <div class="card-header">
             <h2>📥 ইনপুট</h2>
-            <span class="badge">Live</span>
+            <span class="badge">Offline · Deterministic</span>
         </div>
 
-        <!-- Market range -->
-        <div class="input-row">
-            <div class="input-group">
-                <label>Minimum Market Price</label>
-                <input type="number" id="minPrice" value="100" min="0" step="any" placeholder="100">
+        <div class="section-block">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Minimum Market Price (BDT)</label>
+                    <input type="number" id="minPrice" value="125" min="0" step="any" placeholder="125">
+                </div>
+                <div class="input-group">
+                    <label>Maximum Market Price (BDT)</label>
+                    <input type="number" id="maxPrice" value="127" min="0" step="any" placeholder="127">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total Buy Ads</label>
+                    <input type="number" id="buyCount" value="5" min="1" max="50" step="1" placeholder="5">
+                </div>
+                <div class="input-group">
+                    <label>Total Sell Ads</label>
+                    <input type="number" id="sellCount" value="5" min="1" max="50" step="1" placeholder="5">
+                </div>
+            </div>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Buy Price Interval (BDT)</label>
+                    <input type="number" id="buyInterval" value="0.3" min="0" step="any" placeholder="0.3">
+                </div>
+                <div class="input-group">
+                    <label>Sell Price Interval (BDT)</label>
+                    <input type="number" id="sellInterval" value="0.3" min="0" step="any" placeholder="0.3">
+                </div>
             </div>
             <div class="input-group">
-                <label>Maximum Market Price</label>
-                <input type="number" id="maxPrice" value="200" min="0" step="any" placeholder="200">
+                <label>Buy–Sell Minimum Gross Spread (BDT)</label>
+                <input type="number" id="gap" value="0.5" min="0" step="any" placeholder="0.5">
+                <div class="hint">সর্বোচ্চ buy price ও সর্বনিম্ন planned sell price-এর মধ্যে ন্যূনতম gross spread।</div>
             </div>
         </div>
 
-        <!-- Ad counts -->
-        <div class="input-row">
-            <div class="input-group">
-                <label>Total Buy Ads</label>
-                <input type="number" id="buyCount" value="4" min="1" step="1" placeholder="4">
+        <div class="section-block">
+            <h4 style="font-size:13px; color:#0b1a33; margin-bottom:10px;">💰 Capital &amp; Risk</h4>
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Total Investment (BDT)</label>
+                    <input type="number" id="totalInvestment" value="100000" min="0" step="any" placeholder="100000">
+                </div>
+                <div class="input-group">
+                    <label>Capital Deployment (%)</label>
+                    <input type="number" id="deployPct" value="80" min="1" max="100" step="any" placeholder="80">
+                </div>
             </div>
-            <div class="input-group">
-                <label>Total Sell Ads</label>
-                <input type="number" id="sellCount" value="4" min="1" step="1" placeholder="4">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Buy Allocation of Deployed (%)</label>
+                    <input type="number" id="buyAllocPct" value="60" min="1" max="100" step="any" placeholder="60">
+                </div>
+                <div class="input-group">
+                    <label>Risk Preference</label>
+                    <select id="riskProfile">
+                        <option value="conservative">Conservative</option>
+                        <option value="balanced" selected>Balanced</option>
+                        <option value="aggressive">Aggressive</option>
+                    </select>
+                </div>
             </div>
-        </div>
-
-        <!-- Intervals -->
-        <div class="input-row">
-            <div class="input-group">
-                <label>Buy Price Interval</label>
-                <input type="number" id="buyInterval" value="10" min="0" step="any" placeholder="10">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Expected Min Net Profit Margin (%)</label>
+                    <input type="number" id="netProfitPct" value="1.0" min="0" step="any" placeholder="1.0">
+                </div>
+                <div class="input-group">
+                    <label>Estimated Trading Cost / Fee (%)</label>
+                    <input type="number" id="costPct" value="0.20" min="0" step="any" placeholder="0.20">
+                </div>
             </div>
-            <div class="input-group">
-                <label>Sell Price Interval</label>
-                <input type="number" id="sellInterval" value="10" min="0" step="any" placeholder="10">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Downside Stress Move (%)</label>
+                    <input type="number" id="stressPct" value="2" min="0" step="any" placeholder="2">
+                </div>
+                <div class="input-group">
+                    <label>Max Allocation / Ad (%) <span class="opt-tag">optional</span></label>
+                    <input type="number" id="maxPerAdPct" value="30" min="1" max="100" step="any" placeholder="30">
+                </div>
             </div>
-        </div>
-
-        <!-- Gap -->
-        <div class="input-group">
-            <label>Buy–Sell Price Gap</label>
-            <input type="number" id="gap" value="10" min="0" step="any" placeholder="10">
-            <div class="hint">Buy-এর সর্বোচ্চ প্রাইস ও Sell-এর সর্বনিম্ন প্রাইসের প্রকৃত পার্থক্য</div>
+            <div class="hint">Buy ও Sell allocation একই cash দুইবার হিসেবে যোগ করা হয় না। Buy budget deployed capital-এর একটি অংশ; Sell-side USDT inventory আগে থেকে থাকতে হবে।</div>
         </div>
 
         <button class="btn-primary" id="calcBtn">⚡ হিসাব করুন</button>
         <div class="flex" style="margin-top:10px;">
             <button class="btn-secondary" id="resetBtn">↺ Reset</button>
-            <button class="btn-secondary" id="copyAllBtn">📋 সব কপি (Buy + Sell)</button>
+            <button class="btn-secondary" id="copyAllBtn">📋 সম্পূর্ণ Plan কপি</button>
         </div>
 
         <div class="error-box" id="errorBox"></div>
     </div>
 
-    <!-- RESULT -->
+    <!-- ================= RESULT ================= -->
     <div class="result-wrap" id="resultWrap">
 
-        <!-- BUY -->
+        <!-- 1. EXECUTIVE SUMMARY -->
+        <div class="summary-card">
+            <h4>📊 Executive Summary</h4>
+            <div class="summary-grid" id="execSummary"></div>
+            <div id="execWarnings" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- 2. BUY PLAN -->
         <div class="ads-section ads-buy">
             <div class="ads-header">
-                <h3>🟢 Buy Ads</h3>
+                <h3>🟢 Buy Ad Plan</h3>
                 <button class="copy-btn" id="copyAllBuy">📋 সব Buy কপি</button>
             </div>
             <div class="ads-summary" id="buySummary"></div>
-            <div class="ad-list" id="buyList"></div>
+            <div id="buyList"></div>
         </div>
 
-        <!-- SELL -->
+        <!-- 3. SELL / EXIT PLAN -->
         <div class="ads-section ads-sell">
             <div class="ads-header">
-                <h3>🔴 Sell Ads</h3>
+                <h3>🔴 Sell / Exit Plan</h3>
                 <button class="copy-btn" id="copyAllSell">📋 সব Sell কপি</button>
             </div>
             <div class="ads-summary" id="sellSummary"></div>
-            <div class="ad-list" id="sellList"></div>
+            <div id="sellList"></div>
+            <div class="info-box" style="margin-top:12px;">
+                ℹ️ <strong>Inventory funding note:</strong> Sell ads চালাতে আগে থেকে USDT inventory লাগবে।
+                এই USDT মূলত Buy plan থেকে আলাদা — একই BDT cash কে Buy ও Sell দুই জায়গায় গণনা করা হয়নি।
+            </div>
         </div>
 
-        <!-- GAP INFO -->
-        <div class="gap-info">
-            <h4>📊 Market Gap Information</h4>
-            <div class="gap-grid" id="gapGrid"></div>
+        <!-- 4. CAPITAL ALLOCATION -->
+        <div class="summary-card">
+            <h4>💰 Capital Allocation Breakdown</h4>
+            <div class="summary-grid" id="capitalSummary"></div>
+        </div>
+
+        <!-- 5. RISK & STRESS TEST -->
+        <div class="summary-card">
+            <h4>⚠️ Risk &amp; Stress-Test Analysis</h4>
+            <div class="summary-grid" id="riskSummary"></div>
+            <div id="riskWarnings" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- 6. ASSUMPTIONS & DISCLAIMER -->
+        <div class="summary-card">
+            <h4>📋 Assumptions &amp; Disclaimer</h4>
+            <div class="disclaimer">
+                <strong>Assumptions:</strong>
+                <ul style="margin:8px 0 0 16px; line-height:1.7;">
+                    <li>Market range manually entered; live Binance P2P price fetch করা হয় না।</li>
+                    <li>Estimated cost/fee = payment, operational, slippage-এর conservative estimate।</li>
+                    <li>USDT quantity = allocated BDT ÷ buy price (simplified; actual Binance fee structure ভিন্ন হতে পারে)।</li>
+                    <li>Sell-side inventory আগে থেকে funded ধরে নেওয়া হয়েছে — Buy cash এর সাথে double-count করা হয়নি।</li>
+                    <li>Stress test = buy price থেকে downside move প্রয়োগ করে unrealized loss estimate।</li>
+                </ul>
+                <div style="margin-top:10px; color:#991b1b; font-weight:600;">
+                    ⚠️ এটি শুধুমাত্র শিক্ষামূলক planning tool। কোনো profit/loss নিশ্চিত করে না। P2P trading ঝুঁকিপূর্ণ; বাস্তব execution-এ liquidity, counterparty risk, payment risk ও fee ভিন্ন হতে পারে।
+                </div>
+            </div>
         </div>
     </div>
 
     <div style="font-size:11px; color:#6b7f9b; text-align:center;
         margin-top:20px; border-top:1px solid #e3eaf3; padding-top:14px;">
-        ⚠️ শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে · P2P মার্কেট ঝুঁকিপূর্ণ
+        ⚠️ শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে · P2P মার্কেট ঝুঁকিপূর্ণ · Live price fetch করা হয় না
     </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- ICON + MANIFEST -->
+<!-- ================= ICON + MANIFEST ================= -->
 <script>
 (function buildIcon() {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         <rect width="512" height="512" rx="96" fill="#0b1a33"/>
         <text x="50%" y="44%" font-family="Segoe UI, Arial, sans-serif"
-              font-size="120" font-weight="700" fill="#ffffff"
+              font-size="110" font-weight="700" fill="#ffffff"
               text-anchor="middle" dominant-baseline="middle">P2P</text>
         <text x="50%" y="72%" font-family="Segoe UI, Arial, sans-serif"
-              font-size="90" font-weight="600" fill="#7fb2ff"
+              font-size="86" font-weight="600" fill="#7fb2ff"
               text-anchor="middle" dominant-baseline="middle">৳</text>
     </svg>`;
     const dataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
@@ -278,9 +400,9 @@
         });
     }
     const manifest = {
-        name: "P2P Ad Price Calculator",
-        short_name: "P2P Ad Price",
-        description: "Binance P2P Dynamic Buy & Sell Ad Price Calculator",
+        name: "P2P Trading Plan Calculator",
+        short_name: "P2P Plan",
+        description: "Binance P2P Risk-Aware Buy & Sell Ad Price and Capital Allocation Calculator",
         start_url: ".", scope: ".", display: "standalone",
         orientation: "portrait", background_color: "#f4f7fc",
         theme_color: "#0b1a33", lang: "bn", icons: []
@@ -299,7 +421,7 @@
 })();
 </script>
 
-<!-- KILL GOOGLE TRANSLATE -->
+<!-- ================= KILL GOOGLE TRANSLATE ================= -->
 <script>
 (function killTranslate() {
     const kill = () => {
@@ -315,14 +437,30 @@
 })();
 </script>
 
-<!-- MAIN LOGIC -->
+<!-- ================= MAIN LOGIC ================= -->
 <script>
 (function () {
     'use strict';
 
-    const STORAGE_KEY = 'p2pAdCalcState_v1';
-    const INPUT_IDS = ['minPrice','maxPrice','buyCount','sellCount',
-                       'buyInterval','sellInterval','gap'];
+    /* ============================================================
+       CONSTANTS & STORAGE
+       ============================================================ */
+    const STORAGE_KEY = 'p2pTradingPlan_v2';
+    const INPUT_IDS = [
+        'minPrice','maxPrice','buyCount','sellCount',
+        'buyInterval','sellInterval','gap',
+        'totalInvestment','deployPct','buyAllocPct','riskProfile',
+        'netProfitPct','costPct','stressPct','maxPerAdPct'
+    ];
+
+    const DEFAULTS = {
+        minPrice: '125', maxPrice: '127',
+        buyCount: '5', sellCount: '5',
+        buyInterval: '0.3', sellInterval: '0.3', gap: '0.5',
+        totalInvestment: '100000', deployPct: '80', buyAllocPct: '60',
+        riskProfile: 'balanced',
+        netProfitPct: '1.0', costPct: '0.20', stressPct: '2', maxPerAdPct: '30'
+    };
 
     const storage = {
         get(k, f){ try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : f; } catch(e){ return f; } },
@@ -330,8 +468,38 @@
         remove(k){ try { localStorage.removeItem(k); } catch(e){} }
     };
 
-    let lastResult = null;
+    let lastPlan = null;
 
+    /* ============================================================
+       UTILITIES: ROUNDING, FORMATTING
+       ============================================================ */
+    // Round to 2 decimals for BDT / USDT display & storage of prices
+    function round2(n) {
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+    }
+    // Round to 2 decimals with half-up (money)
+    function roundMoney(n) {
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+    }
+    function fmtNum(n, digits) {
+        if (!Number.isFinite(n)) return '—';
+        const d = digits === undefined ? 2 : digits;
+        // Use Intl for grouping, but keep deterministic
+        try {
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: d, maximumFractionDigits: d
+            }).format(n);
+        } catch(e) {
+            return n.toFixed(d);
+        }
+    }
+    function fmtBDT(n) { return '৳' + fmtNum(n, 2); }
+    function fmtUSDT(n) { return fmtNum(n, 4) + ' USDT'; }
+    function fmtPct(n) { return fmtNum(n, 2) + '%'; }
+
+    /* ============================================================
+       TOAST
+       ============================================================ */
     const toastEl = document.getElementById('toast');
     function showToast(msg) {
         toastEl.textContent = msg;
@@ -340,253 +508,735 @@
         showToast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
     }
 
-    function fmtPrice(n) {
-        // 2 দশমিক পর্যন্ত, trailing zero সরানো
-        const v = Math.round(n * 1e8) / 1e8;
-        return String(v);
-    }
-
     function copyText(text, label) {
-        if (!navigator.clipboard) {
-            showToast('কপি সমর্থিত নয়'); return;
-        }
+        if (!navigator.clipboard) { showToast('কপি সমর্থিত নয়'); return; }
         navigator.clipboard.writeText(text).then(() => {
             showToast((label || 'কপি') + ' হয়েছে!');
         }).catch(() => showToast('কপি ব্যর্থ, ম্যানুয়ালি কপি করুন'));
     }
 
-    /* ========================
+    /* ============================================================
        VALIDATION
-       ======================== */
-    function readNum(id, label, { min = -Infinity, integer = false } = {}) {
+       ============================================================ */
+    function readNum(id, label, opts) {
+        opts = opts || {};
+        const min = opts.min === undefined ? -Infinity : opts.min;
+        const max = opts.max === undefined ? Infinity : opts.max;
+        const integer = !!opts.integer;
         const el = document.getElementById(id);
-        const raw = el.value.trim();
+        const raw = (el.value || '').trim();
         el.classList.remove('invalid');
         if (raw === '') {
             el.classList.add('invalid');
-            throw new Error(`${label} পূরণ করুন।`);
+            throw new Error(label + ' পূরণ করুন।');
         }
         const v = Number(raw);
         if (!Number.isFinite(v)) {
             el.classList.add('invalid');
-            throw new Error(`${label} সঠিক সংখ্যা নয়।`);
+            throw new Error(label + ' সঠিক সংখ্যা নয়।');
         }
         if (v < min) {
             el.classList.add('invalid');
-            throw new Error(`${label} অবশ্যই ${min}-এর সমান বা বেশি হতে হবে।`);
+            throw new Error(label + ' অবশ্যই ' + min + '-এর সমান বা বেশি হতে হবে।');
+        }
+        if (v > max) {
+            el.classList.add('invalid');
+            throw new Error(label + ' অবশ্যই ' + max + '-এর সমান বা কম হতে হবে।');
         }
         if (integer && !Number.isInteger(v)) {
             el.classList.add('invalid');
-            throw new Error(`${label} পূর্ণসংখ্যা হতে হবে।`);
+            throw new Error(label + ' পূর্ণসংখ্যা হতে হবে।');
         }
         return v;
     }
 
-    /* ========================
-       CALCULATION ENGINE
-       ======================== */
-    function calculate() {
-        const minP   = readNum('minPrice', 'Minimum Market Price', { min: 0 });
-        const maxP   = readNum('maxPrice', 'Maximum Market Price', { min: 0 });
-        const buyCnt = readNum('buyCount', 'Total Buy Ads',   { min: 1, integer: true });
-        const sellCnt= readNum('sellCount','Total Sell Ads',  { min: 1, integer: true });
-        const buyIv  = readNum('buyInterval',  'Buy Price Interval',  { min: 0 });
-        const sellIv = readNum('sellInterval', 'Sell Price Interval', { min: 0 });
-        const gap    = readNum('gap',          'Buy–Sell Price Gap',  { min: 0 });
+    /* ============================================================
+       PURE CALCULATION ENGINE (DOM-independent)
+       ============================================================ */
 
-        if (minP >= maxP) {
-            throw new Error('Minimum Price অবশ্যই Maximum Price-এর চেয়ে কম হতে হবে।');
+    // Risk profile → weight distribution for buy ladder.
+    // Returns array of weights (sum to 1) length N, lowest price index first.
+    // Conservative: heavy on lower levels.
+    // Balanced: moderate skew.
+    // Aggressive: mild skew (more balanced, slightly lower still favored for entry).
+    function buildBuyWeights(n, profile) {
+        if (n <= 0) return [];
+        // raw weight for level i (0 = lowest price): decreasing with i
+        // Choose exponent by profile.
+        // Conservative: steepest decay; Aggressive: shallowest.
+        const exponents = { conservative: 2.2, balanced: 1.4, aggressive: 0.9 };
+        const e = exponents[profile] || 1.4;
+        let raw = [];
+        for (let i = 0; i < n; i++) {
+            // normalize i to 0..1
+            const t = n === 1 ? 0 : i / (n - 1);
+            // weight = (1 - t)^e + small floor
+            raw.push(Math.pow(1 - t, e) + 0.05);
+        }
+        const sum = raw.reduce((a,b) => a+b, 0);
+        return raw.map(w => w / sum);
+    }
+
+    // Apply max-per-ad cap to weights, then renormalize.
+    // Returns { weights, capped } — capped=true if any cap applied.
+    function applyPerAdCap(weights, capFraction) {
+        // capFraction is fraction of total buy budget for a single ad (e.g. 0.30)
+        let w = weights.slice();
+        let capped = false;
+        // Iteratively cap and redistribute
+        for (let iter = 0; iter < 20; iter++) {
+            let anyOver = false;
+            let excess = 0;
+            const overIdx = [];
+            for (let i = 0; i < w.length; i++) {
+                if (w[i] > capFraction + 1e-12) {
+                    excess += w[i] - capFraction;
+                    w[i] = capFraction;
+                    anyOver = true;
+                    overIdx.push(i);
+                }
+            }
+            if (!anyOver) break;
+            capped = true;
+            // redistribute excess to non-capped ads proportionally to remaining capacity
+            const underIdx = [];
+            let underCapacity = 0;
+            for (let i = 0; i < w.length; i++) {
+                if (w[i] < capFraction - 1e-12) {
+                    underIdx.push(i);
+                    underCapacity += (capFraction - w[i]);
+                }
+            }
+            if (underIdx.length === 0 || underCapacity <= 1e-12) break;
+            const scale = Math.min(1, excess / underCapacity);
+            underIdx.forEach(i => {
+                w[i] += (capFraction - w[i]) * scale;
+            });
+            // renormalize to 1
+            const s = w.reduce((a,b)=>a+b,0);
+            if (s > 0) w = w.map(x => x/s);
+        }
+        return { weights: w, capped: capped };
+    }
+
+    // Main pure function
+    function buildTradingPlan(inputs) {
+        const warnings = [];
+        const errors = [];
+
+        // --- Basic range check ---
+        if (inputs.minPrice >= inputs.maxPrice) {
+            errors.push('Minimum Market Price অবশ্যই Maximum Market Price-এর চেয়ে কম হতে হবে।');
+        }
+        if (inputs.buyCount < 1) errors.push('Buy Ad সংখ্যা অন্তত ১ হতে হবে।');
+        if (inputs.sellCount < 1) errors.push('Sell Ad সংখ্যা অন্তত ১ হতে হবে।');
+        if (inputs.buyCount > 50 || inputs.sellCount > 50) {
+            errors.push('Ad সংখ্যা সর্বোচ্চ ৫০ পর্যন্ত অনুমোদিত।');
+        }
+        if (inputs.buyInterval === 0) {
+            warnings.push('Buy Interval = 0: একাধিক Buy Ad একই price-এ থাকবে।');
+        }
+        if (inputs.sellInterval === 0) {
+            warnings.push('Sell Interval = 0: একাধিক Sell Ad একই price-এ থাকবে।');
+        }
+        if (inputs.totalInvestment <= 0) {
+            errors.push('Total Investment অবশ্যই ০-এর বেশি হতে হবে।');
+        }
+        if (inputs.deployPct <= 0 || inputs.deployPct > 100) {
+            errors.push('Capital Deployment ১–১০০%-এর মধ্যে হতে হবে।');
+        }
+        if (inputs.buyAllocPct <= 0 || inputs.buyAllocPct > 100) {
+            errors.push('Buy Allocation ১–১০০%-এর মধ্যে হতে হবে।');
+        }
+        if (inputs.costPct < 0 || inputs.netProfitPct < 0 || inputs.stressPct < 0) {
+            errors.push('Cost, Profit margin ও Stress % ঋণাত্মক হতে পারে না।');
+        }
+        if (inputs.maxPerAdPct <= 0 || inputs.maxPerAdPct > 100) {
+            errors.push('Max Allocation Per Ad ১–১০০%-এর মধ্যে হতে হবে।');
         }
 
-        // Buy block natural placement (from minP upward)
-        const highestBuyNatural = minP + buyCnt * buyIv;
-        // Sell block natural placement (from maxP downward)
-        const lowestSellNatural = maxP - sellCnt * sellIv;
-
-        if (lowestSellNatural <= highestBuyNatural) {
-            throw new Error(
-                'নির্ধারিত Ad সংখ্যা ও Interval অনুযায়ী মার্কেট রেঞ্জে সব Ad বসানো সম্ভব নয় ' +
-                '(Buy ব্লক ও Sell ব্লক ওভারল্যাপ করছে)। Interval/Gap কমিয়ে দেখুন।'
-            );
+        if (errors.length) {
+            return { ok: false, errors, warnings, inputs };
         }
 
-        // Actual natural gap between the two blocks
-        const naturalGap = lowestSellNatural - highestBuyNatural;
-        // Free space to redistribute so that gap matches user input
-        const freeSpace = naturalGap - gap;
+        // --- Capital breakdown ---
+        const totalInvestment = roundMoney(inputs.totalInvestment);
+        const deployedCapital = roundMoney(totalInvestment * inputs.deployPct / 100);
+        const reserveCapital = roundMoney(totalInvestment - deployedCapital);
+        const buyCapitalBudget = roundMoney(deployedCapital * inputs.buyAllocPct / 100);
+        const sellSideWorkingCapital = roundMoney(deployedCapital - buyCapitalBudget);
 
-        if (freeSpace < 0) {
-            throw new Error(
-                `প্রকৃত প্রাইস রেঞ্জে Buy-এর সর্বোচ্চ (${fmtPrice(highestBuyNatural)}) ও ` +
-                `Sell-এর সর্বনিম্ন (${fmtPrice(lowestSellNatural)})-এর মাঝে gap = ` +
-                `${fmtPrice(naturalGap)}, কিন্তু আপনি চেয়েছেন ${fmtPrice(gap)}। ` +
-                `Gap কমান বা Ad সংখ্যা/Interval কমিয়ে দেখুন।`
-            );
+        // --- Price ladder construction ---
+        // Buy ladder: ascending from minPrice.
+        // Use (i) * interval so first ad sits at minPrice + interval (or minPrice if interval=0?).
+        // Better: level i price = minPrice + i * buyInterval, i = 0..N-1.
+        // This means first ad at minPrice, last at minPrice + (N-1)*interval.
+        // This fixes the old off-by-one (old code used (i+1)*interval which skipped minPrice).
+        const N = inputs.buyCount;
+        const buyLevels = [];
+        for (let i = 0; i < N; i++) {
+            buyLevels.push(round2(inputs.minPrice + i * inputs.buyInterval));
         }
 
-        // Distribute free space equally at both sides of the gap
-        const halfFree = freeSpace / 2;
-        const buyShiftPerAd  = halfFree / buyCnt;   // shift buy block upward
-        const sellShiftPerAd = halfFree / sellCnt;  // shift sell block downward
+        // --- Minimum viable sell price per buy level ---
+        // minViableSell = buyPrice * (1 + cost% + netProfit%) / (1 - cost%?) 
+        // Conservative: simple additive on buy price.
+        // We treat cost and net profit as % of buy price.
+        const costFrac = inputs.costPct / 100;
+        const profitFrac = inputs.netProfitPct / 100;
+        const minViableSell = buyLevels.map(bp => round2(bp * (1 + costFrac + profitFrac)));
 
-        const buyPrices = [];
-        for (let i = 0; i < buyCnt; i++) {
-            const price = minP + (i + 1) * buyIv + (i + 1) * buyShiftPerAd;
-            buyPrices.push(price);
+        // --- Sell ladder construction ---
+        // Constraint: planned sell price >= minViableSell for each linked ad.
+        // Also: sell prices should be ordered (ascending or descending) across N ads.
+        // We construct descending sell ladder starting from maxPrice downward,
+        // but clamp each to be >= minViableSell of corresponding buy ad.
+        // Correspondence: buy ad i (lowest to highest) ↔ sell ad i (in exit plan, low to high).
+        // We'll produce sellPrices[0..N-1] ascending (lowest exit first), each >= minViableSell[i].
+        // Base descending construction:
+        const M = inputs.sellCount;
+        // If sellCount != buyCount, we still need sell ads. We create M sell ads.
+        // For linkage, we map min index to min index.
+        // Build base sell prices from maxPrice downward: sellBase[j] = maxPrice - j * sellInterval, j=0..M-1
+        // But we want ascending order low→high. So reverse.
+        const sellBaseDesc = [];
+        for (let j = 0; j < M; j++) {
+            sellBaseDesc.push(round2(inputs.maxPrice - j * inputs.sellInterval));
         }
-        const sellPrices = [];
-        for (let i = 0; i < sellCnt; i++) {
-            const price = maxP - (i + 1) * sellIv - (i + 1) * sellShiftPerAd;
-            sellPrices.push(price);
+        // ascending order
+        const sellBaseAsc = sellBaseDesc.slice().reverse(); // [maxPrice-(M-1)*iv, ..., maxPrice]
+
+        // Now match: for each sell ad k (0..M-1 ascending), find linked buy index.
+        // Link by normalized position: buyIdx = round(k/(M-1)*(N-1)) if M>1.
+        // For each sell level, ensure sellPrice >= minViableSell[linkedBuyIdx].
+        // Also enforce sell prices strictly ordered ascending (allow equal if interval=0).
+        let sellPrices = new Array(M);
+        for (let k = 0; k < M; k++) {
+            const linkedBuyIdx = M === 1 ? 0 : Math.round(k / (M - 1) * (N - 1));
+            const mv = minViableSell[Math.min(linkedBuyIdx, N - 1)];
+            // Start from base, but raise to at least mv
+            let p = Math.max(sellBaseAsc[k], mv);
+            sellPrices[k] = round2(p);
+        }
+        // Enforce non-decreasing order (allow equal if interval=0)
+        for (let k = 1; k < M; k++) {
+            if (sellPrices[k] < sellPrices[k-1] - 1e-9) {
+                sellPrices[k] = sellPrices[k-1];
+            }
+        }
+        // Cap sell prices at maxPrice? User market range is a guide; but sell ads should be within reasonable range.
+        // We allow sell prices above maxPrice if minViableSell exceeds it, and warn.
+        let sellAboveMax = sellPrices.filter(p => p > inputs.maxPrice + 1e-9);
+        if (sellAboveMax.length > 0) {
+            warnings.push(sellAboveMax.length + 'টি Sell Ad-এর viable price market max (' +
+                fmtBDT(inputs.maxPrice) + ') এর উপরে — বাস্তবে buyer পাওয়া কঠিন হতে পারে।');
+        }
+        let sellBelowMin = sellPrices.filter(p => p < inputs.minPrice - 1e-9);
+        if (sellBelowMin.length > 0) {
+            warnings.push(sellBelowMin.length + 'টি Sell Ad-এর price market min-এর নিচে — সম্ভবত data error বা forced clamp।');
         }
 
-        const highestBuy = Math.max(...buyPrices);
-        const lowestSell = Math.min(...sellPrices);
-        const actualGap = lowestSell - highestBuy;
-
-        // Sanity
-        if (buyPrices.some(p => p < minP - 1e-9 || p > maxP + 1e-9)) {
-            throw new Error('গণনায় ত্রুটি: কোনো Buy Price মার্কেট রেঞ্জের বাইরে চলে গেছে।');
-        }
-        if (sellPrices.some(p => p < minP - 1e-9 || p > maxP + 1e-9)) {
-            throw new Error('গণনায় ত্রুটি: কোনো Sell Price মার্কেট রেঞ্জের বাইরে চলে গেছে।');
-        }
-        if (Math.abs(actualGap - gap) > 1e-6) {
-            throw new Error('গণনায় ত্রুটি: প্রকৃত Gap ইনপুট Gap-এর সঙ্গে মিলছে না।');
+        // --- Gap check: highest buy vs lowest sell ---
+        const highestBuy = Math.max.apply(null, buyLevels);
+        const lowestSell = Math.min.apply(null, sellPrices);
+        const actualGap = round2(lowestSell - highestBuy);
+        if (actualGap < inputs.gap - 1e-6) {
+            warnings.push('প্রকৃত Buy–Sell gross spread (' + fmtBDT(actualGap) +
+                ') আপনার target gap (' + fmtBDT(inputs.gap) + ') এর চেয়ে কম।');
         }
 
-        const minBuy = Math.min(...buyPrices);
-        const maxBuy = highestBuy;
-        const minSell = lowestSell;
-        const maxSell = Math.max(...sellPrices);
+        // --- Allocation weights ---
+        let weightsRaw = buildBuyWeights(N, inputs.riskProfile);
+        const capFraction = inputs.maxPerAdPct / 100;
+        const capResult = applyPerAdCap(weightsRaw, capFraction);
+        if (capResult.capped) {
+            warnings.push('Max Allocation Per Ad cap প্রয়োগ করা হয়েছে; সবচেয়ে বেশি allocation পাওয়া ad-দের ওজন কমানো হয়েছে।');
+        }
+        const weights = capResult.weights;
+
+        // --- Allocate BDT per buy ad ---
+        // base allocation = weight * buyCapitalBudget
+        let allocs = weights.map(w => roundMoney(w * buyCapitalBudget));
+        // Rounding adjustment: difference goes to last (lowest-weight adjustment) ad
+        let allocSum = allocs.reduce((a,b)=>a+b,0);
+        let diff = roundMoney(buyCapitalBudget - allocSum);
+        if (Math.abs(diff) > 0.0001) {
+            // Put diff on ad with largest allocation (or last)
+            let idx = allocs.indexOf(Math.max.apply(null, allocs));
+            allocs[idx] = roundMoney(allocs[idx] + diff);
+        }
+        // Final safety: if any alloc > capFraction * budget + 1 cent, warn
+        const capBDT = roundMoney(capFraction * buyCapitalBudget);
+        allocs.forEach((a, i) => {
+            if (a > capBDT + 0.01) {
+                warnings.push('Ad ' + (i+1) + ' allocation (' + fmtBDT(a) +
+                    ') cap (' + fmtBDT(capBDT) + ') ছাড়িয়েছে — rounding এর কারণে।');
+            }
+        });
+
+        // --- Per-ad economics ---
+        const buyAds = [];
+        for (let i = 0; i < N; i++) {
+            const bp = buyLevels[i];
+            const alloc = allocs[i];
+            const usdtQty = bp > 0 ? alloc / bp : 0;
+            // linked sell price: nearest sell index by normalized position
+            const linkedSellIdx = N === 1 ? 0 : Math.round(i / (N - 1) * (M - 1));
+            const plannedSell = sellPrices[Math.min(linkedSellIdx, M - 1)];
+            const mvSell = minViableSell[i];
+            // Gross profit per buy ad (if sold at plannedSell for full USDT qty)
+            const grossRevenue = usdtQty * plannedSell;
+            const grossProfit = roundMoney(grossRevenue - alloc);
+            const costAmount = roundMoney(alloc * costFrac); // cost on buy side
+            // Also cost on sell side? Conservative: cost on sell revenue too.
+            const sellCostAmount = roundMoney(grossRevenue * costFrac);
+            const totalCost = roundMoney(costAmount + sellCostAmount);
+            const netProfit = roundMoney(grossProfit - totalCost);
+            const netMarginPct = alloc > 0 ? round2(netProfit / alloc * 100) : 0;
+            // Stress test: buy price drops by stressPct
+            const stressPrice = round2(bp * (1 - inputs.stressPct / 100));
+            const stressValue = round2(usdtQty * stressPrice);
+            const stressLoss = roundMoney(alloc - stressValue); // unrealized loss in BDT
+            const stressLossPct = alloc > 0 ? round2(stressLoss / alloc * 100) : 0;
+            // Spread between plannedSell and buy price
+            const grossSpreadBDT = round2(plannedSell - bp);
+            const grossSpreadPct = bp > 0 ? round2(grossSpreadBDT / bp * 100) : 0;
+
+            // --- Risk status ---
+            let riskStatus = 'Low';
+            let reasons = [];
+            if (netProfit <= 0) {
+                riskStatus = 'Not Viable';
+                reasons.push('Estimated net profit ≤ 0 (cost ও target margin সহ)।');
+            } else if (netMarginPct < inputs.netProfitPct) {
+                riskStatus = 'High';
+                reasons.push('Net margin (' + fmtPct(netMarginPct) + ') target (' +
+                    fmtPct(inputs.netProfitPct) + ') এর নিচে।');
+            }
+            if (plannedSell < mvSell - 1e-6) {
+                riskStatus = 'Not Viable';
+                reasons.push('Planned sell price (' + fmtBDT(plannedSell) +
+                    ') minimum viable sell (' + fmtBDT(mvSell) + ') এর নিচে।');
+            }
+            // Stress-based risk
+            const stressThreshold = inputs.riskProfile === 'conservative' ? 2.0
+                                    : inputs.riskProfile === 'aggressive' ? 5.0 : 3.0;
+            if (stressLossPct >= stressThreshold) {
+                if (riskStatus === 'Low') riskStatus = 'High';
+                reasons.push('Stress scenario loss ' + fmtPct(stressLossPct) +
+                    ' (threshold ' + fmtPct(stressThreshold) + ')।');
+            } else if (stressLossPct >= stressThreshold * 0.6) {
+                if (riskStatus === 'Low') riskStatus = 'Medium';
+                reasons.push('Moderate stress loss ' + fmtPct(stressLossPct) + '।');
+            }
+            // Spread warning
+            if (grossSpreadBDT < inputs.gap - 1e-6) {
+                if (riskStatus === 'Low') riskStatus = 'Medium';
+                reasons.push('Gross spread ' + fmtBDT(grossSpreadBDT) +
+                    ' target gap ' + fmtBDT(inputs.gap) + ' এর নিচে।');
+            }
+            // Positive reasons if clean
+            if (reasons.length === 0) {
+                reasons.push('Net margin target পূরণ হয়েছে; stress loss সীমার মধ্যে।');
+            }
+
+            buyAds.push({
+                index: i + 1,
+                buyPrice: bp,
+                allocation: alloc,
+                allocPctOfTotal: totalInvestment > 0 ? round2(alloc / totalInvestment * 100) : 0,
+                allocPctOfBuyBudget: buyCapitalBudget > 0 ? round2(alloc / buyCapitalBudget * 100) : 0,
+                usdtQty: round2(usdtQty * 1e4) / 1e4, // 4 dp
+                minViableSell: mvSell,
+                plannedSell: plannedSell,
+                linkedSellIdx: linkedSellIdx + 1,
+                grossSpreadBDT: grossSpreadBDT,
+                grossSpreadPct: grossSpreadPct,
+                grossProfit: grossProfit,
+                totalCost: totalCost,
+                netProfit: netProfit,
+                netMarginPct: netMarginPct,
+                stressPrice: stressPrice,
+                stressLoss: stressLoss,
+                stressLossPct: stressLossPct,
+                riskStatus: riskStatus,
+                reasons: reasons
+            });
+        }
+
+        // --- Sell ad table (planned exits with inventory required) ---
+        const sellAds = [];
+        for (let k = 0; k < M; k++) {
+            const sp = sellPrices[k];
+            const linkedBuyIdx = M === 1 ? 0 : Math.round(k / (M - 1) * (N - 1));
+            const linkedBuy = buyAds[Math.min(linkedBuyIdx, N - 1)];
+            // Inventory required: sum of USDT qty of buy ads that map to this sell ad?
+            // Simpler: each sell ad maps to one buy ad; inventory required = that buy ad's USDT qty.
+            const inventoryRequired = linkedBuy ? linkedBuy.usdtQty : 0;
+            const linkedMv = linkedBuy ? linkedBuy.minViableSell : 0;
+            const viable = sp >= linkedMv - 1e-6;
+            sellAds.push({
+                index: k + 1,
+                sellPrice: sp,
+                linkedBuyIndex: linkedBuy ? linkedBuy.index : null,
+                linkedBuyPrice: linkedBuy ? linkedBuy.buyPrice : 0,
+                inventoryRequired: inventoryRequired,
+                minViableSell: linkedMv,
+                viable: viable,
+                note: viable
+                    ? 'Planned sell ≥ minimum viable sell।'
+                    : 'Planned sell minimum viable sell-এর নিচে — Not Viable।'
+            });
+        }
+
+        // --- Aggregate totals ---
+        const totalAllocatedBDT = roundMoney(buyAds.reduce((s,a) => s + a.allocation, 0));
+        const unallocatedBDT = roundMoney(buyCapitalBudget - totalAllocatedBDT);
+        const totalUsdtRequired = round2(buyAds.reduce((s,a) => s + a.usdtQty, 0) * 1e4) / 1e4;
+
+        // Weighted averages
+        let wSum = 0, wBuy = 0, wSell = 0;
+        buyAds.forEach(a => {
+            wSum += a.usdtQty;
+            wBuy += a.usdtQty * a.buyPrice;
+            wSell += a.usdtQty * a.plannedSell;
+        });
+        const wAvgBuy = wSum > 0 ? round2(wBuy / wSum) : 0;
+        const wAvgSell = wSum > 0 ? round2(wSell / wSum) : 0;
+
+        const totalGrossProfit = roundMoney(buyAds.reduce((s,a) => s + a.grossProfit, 0));
+        const totalCost = roundMoney(buyAds.reduce((s,a) => s + a.totalCost, 0));
+        const totalNetProfit = roundMoney(buyAds.reduce((s,a) => s + a.netProfit, 0));
+        const totalStressLoss = roundMoney(buyAds.reduce((s,a) => s + a.stressLoss, 0));
+
+        const viableCount = buyAds.filter(a => a.riskStatus === 'Low' || a.riskStatus === 'Medium').length;
+        const riskyCount = buyAds.filter(a => a.riskStatus === 'High').length;
+        const notViableCount = buyAds.filter(a => a.riskStatus === 'Not Viable').length;
+
+        // --- Reserve warning ---
+        const reservePct = totalInvestment > 0 ? reserveCapital / totalInvestment * 100 : 0;
+        if (reservePct < 10) {
+            warnings.push('Reserve Capital মাত্র ' + fmtPct(reservePct) +
+                ' — Low Reserve Warning। বাজারে downside এলে buffer কম।');
+        }
+
+        // --- Not viable count warning ---
+        if (notViableCount > 0) {
+            warnings.push(notViableCount + 'টি Buy Ad Not Viable — target profit/cost অনুযায়ী viable sell price পাওয়া যাচ্ছে না।');
+        }
+
+        // --- Gap warning aggregate ---
+        if (actualGap < inputs.gap - 1e-6) {
+            warnings.push('Spread Warning: প্রকৃত gap ' + fmtBDT(actualGap) +
+                ' < target ' + fmtBDT(inputs.gap) + '।');
+        }
 
         return {
-            minP, maxP, buyCnt, sellCnt, buyIv, sellIv, gap,
-            buyPrices, sellPrices,
-            minBuy, maxBuy, minSell, maxSell,
-            actualGap,
-            freeSpaceUsed: freeSpace,
-            remainingSpace: maxP - minP
+            ok: true,
+            errors: [],
+            warnings: warnings,
+            inputs: inputs,
+            totalInvestment: totalInvestment,
+            deployedCapital: deployedCapital,
+            reserveCapital: reserveCapital,
+            buyCapitalBudget: buyCapitalBudget,
+            sellSideWorkingCapital: sellSideWorkingCapital,
+            buyAds: buyAds,
+            sellAds: sellAds,
+            totalAllocatedBDT: totalAllocatedBDT,
+            unallocatedBDT: unallocatedBDT,
+            totalUsdtRequired: totalUsdtRequired,
+            wAvgBuy: wAvgBuy,
+            wAvgSell: wAvgSell,
+            totalGrossProfit: totalGrossProfit,
+            totalCost: totalCost,
+            totalNetProfit: totalNetProfit,
+            totalStressLoss: totalStressLoss,
+            viableCount: viableCount,
+            riskyCount: riskyCount,
+            notViableCount: notViableCount,
+            highestBuy: highestBuy,
+            lowestSell: lowestSell,
+            actualGap: actualGap,
+            targetGap: inputs.gap,
+            reservePct: reservePct
         };
     }
 
-    /* ========================
+    /* ============================================================
        RENDER
-       ======================== */
+       ============================================================ */
     const resultWrap = document.getElementById('resultWrap');
     const errorBox   = document.getElementById('errorBox');
     const buyList    = document.getElementById('buyList');
     const sellList   = document.getElementById('sellList');
     const buySummary = document.getElementById('buySummary');
     const sellSummary= document.getElementById('sellSummary');
-    const gapGrid    = document.getElementById('gapGrid');
+    const execSummary= document.getElementById('execSummary');
+    const execWarnings = document.getElementById('execWarnings');
+    const capitalSummary = document.getElementById('capitalSummary');
+    const riskSummary = document.getElementById('riskSummary');
+    const riskWarnings = document.getElementById('riskWarnings');
 
-    function renderAdList(container, prices, prefix, kind) {
-        container.innerHTML = '';
-        prices.forEach((p, i) => {
-            const div = document.createElement('div');
-            div.className = 'ad-item';
-            const priceStr = fmtPrice(p);
-            div.innerHTML = `
-                <div class="ad-label">
-                    <span class="ad-serial">${i + 1}</span>
-                    <span>${prefix} ${i + 1}</span>
-                </div>
-                <div class="ad-price">
-                    ${priceStr}
-                    <button class="copy-btn" data-copy="${priceStr}" data-label="${prefix} ${i+1}">📋</button>
-                </div>
-            `;
-            container.appendChild(div);
+    function riskTagClass(status) {
+        if (status === 'Low') return 'risk-low';
+        if (status === 'Medium') return 'risk-medium';
+        if (status === 'High') return 'risk-high';
+        return 'risk-na';
+    }
+
+    function row(k, v, cls) {
+        return '<div class="summary-row"><span class="k">' + k + '</span>' +
+               '<span class="v ' + (cls || '') + '">' + v + '</span></div>';
+    }
+
+    function renderBuyAd(ad) {
+        const riskCls = riskTagClass(ad.riskStatus);
+        let reasonCls = 'ad-reason';
+        if (ad.riskStatus === 'Not Viable' || ad.riskStatus === 'High') reasonCls += ' bad';
+        else if (ad.riskStatus === 'Low') reasonCls += ' good';
+
+        const div = document.createElement('div');
+        div.className = 'ad-card';
+        div.innerHTML =
+            '<div class="ad-card-top">' +
+                '<div class="ad-card-title">' +
+                    '<span class="ad-serial">' + ad.index + '</span>' +
+                    'Buy Ad ' + ad.index +
+                '</div>' +
+                '<div style="display:flex;gap:6px;align-items:center;">' +
+                    '<span class="risk-tag ' + riskCls + '">' + ad.riskStatus + '</span>' +
+                    '<button class="copy-btn" data-copy="buy-' + ad.index + '">📋</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="ad-grid">' +
+                '<span class="k">Buy Price</span><span class="v">' + fmtBDT(ad.buyPrice) + '</span>' +
+                '<span class="k">Allocated BDT</span><span class="v">' + fmtBDT(ad.allocation) + '</span>' +
+                '<span class="k">% of Total Invest</span><span class="v">' + fmtPct(ad.allocPctOfTotal) + '</span>' +
+                '<span class="k">% of Buy Budget</span><span class="v">' + fmtPct(ad.allocPctOfBuyBudget) + '</span>' +
+                '<span class="k">Est. USDT Qty</span><span class="v">' + fmtUSDT(ad.usdtQty) + '</span>' +
+                '<span class="k">Min Viable Sell</span><span class="v">' + fmtBDT(ad.minViableSell) + '</span>' +
+                '<span class="k">Planned Sell</span><span class="v">' + fmtBDT(ad.plannedSell) + '</span>' +
+                '<span class="k">Gross Spread</span><span class="v">' + fmtBDT(ad.grossSpreadBDT) + ' (' + fmtPct(ad.grossSpreadPct) + ')</span>' +
+                '<span class="k">Gross Profit</span><span class="v pos">' + fmtBDT(ad.grossProfit) + '</span>' +
+                '<span class="k">Est. Cost/Fee</span><span class="v neg">-' + fmtBDT(ad.totalCost) + '</span>' +
+                '<span class="k">Net Profit</span><span class="v ' + (ad.netProfit >= 0 ? 'pos' : 'neg') + '">' + fmtBDT(ad.netProfit) + '</span>' +
+                '<span class="k">Net Margin</span><span class="v ' + (ad.netMarginPct >= 0 ? 'pos' : 'neg') + '">' + fmtPct(ad.netMarginPct) + '</span>' +
+                '<span class="k">Stress Price (-' + inputsStressPct() + '%)</span><span class="v warn">' + fmtBDT(ad.stressPrice) + '</span>' +
+                '<span class="k">Stress Loss</span><span class="v neg">' + fmtBDT(ad.stressLoss) + ' (' + fmtPct(ad.stressLossPct) + ')</span>' +
+            '</div>' +
+            '<div class="' + reasonCls + '">' + ad.reasons.join(' ') + '</div>';
+        buyList.appendChild(div);
+        // store for copy
+        div.querySelector('.copy-btn').addEventListener('click', () => {
+            const text = [
+                'Buy Ad ' + ad.index,
+                'Buy Price: ' + fmtBDT(ad.buyPrice),
+                'Allocated: ' + fmtBDT(ad.allocation),
+                'USDT Qty: ' + fmtUSDT(ad.usdtQty),
+                'Planned Sell: ' + fmtBDT(ad.plannedSell),
+                'Net Profit: ' + fmtBDT(ad.netProfit) + ' (' + fmtPct(ad.netMarginPct) + ')',
+                'Risk: ' + ad.riskStatus
+            ].join('\n');
+            copyText(text, 'Buy Ad ' + ad.index);
         });
-        container.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                copyText(btn.dataset.copy, btn.dataset.label);
-            });
+    }
+
+    function inputsStressPct() {
+        return lastPlan ? lastPlan.inputs.stressPct : '';
+    }
+
+    function renderSellAd(ad) {
+        const div = document.createElement('div');
+        div.className = 'ad-card';
+        div.innerHTML =
+            '<div class="ad-card-top">' +
+                '<div class="ad-card-title">' +
+                    '<span class="ad-serial">' + ad.index + '</span>' +
+                    'Sell Ad ' + ad.index +
+                '</div>' +
+                '<div style="display:flex;gap:6px;align-items:center;">' +
+                    '<span class="risk-tag ' + (ad.viable ? 'risk-low' : 'risk-na') + '">' +
+                        (ad.viable ? 'Viable' : 'Not Viable') + '</span>' +
+                    '<button class="copy-btn">📋</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="ad-grid">' +
+                '<span class="k">Sell Price</span><span class="v">' + fmtBDT(ad.sellPrice) + '</span>' +
+                '<span class="k">Linked Buy Ad</span><span class="v">' +
+                    (ad.linkedBuyIndex ? '#' + ad.linkedBuyIndex + ' @ ' + fmtBDT(ad.linkedBuyPrice) : '—') + '</span>' +
+                '<span class="k">Inventory Required</span><span class="v">' + fmtUSDT(ad.inventoryRequired) + '</span>' +
+                '<span class="k">Min Viable Sell</span><span class="v">' + fmtBDT(ad.minViableSell) + '</span>' +
+            '</div>' +
+            '<div class="ad-reason ' + (ad.viable ? 'good' : 'bad') + '">' + ad.note + '</div>';
+        sellList.appendChild(div);
+        div.querySelector('.copy-btn').addEventListener('click', () => {
+            const text = [
+                'Sell Ad ' + ad.index,
+                'Sell Price: ' + fmtBDT(ad.sellPrice),
+                'Linked Buy: ' + (ad.linkedBuyIndex ? '#' + ad.linkedBuyIndex : '—'),
+                'Inventory: ' + fmtUSDT(ad.inventoryRequired),
+                'Viable: ' + (ad.viable ? 'Yes' : 'No')
+            ].join('\n');
+            copyText(text, 'Sell Ad ' + ad.index);
         });
     }
 
-    function renderSummary(container, kind, prices) {
-        const minV = Math.min(...prices);
-        const maxV = Math.max(...prices);
-        const color = kind === 'buy' ? '#166534' : '#991b1b';
-        container.innerHTML = `
-            <span class="sum-pill" style="color:${color}">মোট: ${prices.length}</span>
-            <span class="sum-pill" style="color:${color}">সর্বনিম্ন: ${fmtPrice(minV)}</span>
-            <span class="sum-pill" style="color:${color}">সর্বোচ্চ: ${fmtPrice(maxV)}</span>
-        `;
-    }
-
-    function gapRow(label, value, ok) {
-        const cls = ok === undefined ? '' : (ok ? 'ok' : 'bad');
-        return `<div class="gap-row"><span>${label}</span><span class="v ${cls}">${value}</span></div>`;
-    }
-
-    function renderGapInfo(r) {
-        const match = Math.abs(r.actualGap - r.gap) < 1e-6;
-        gapGrid.innerHTML = [
-            gapRow('Buy সর্বোচ্চ Price', fmtPrice(r.maxBuy)),
-            gapRow('Sell সর্বনিম্ন Price', fmtPrice(r.minSell)),
-            gapRow('প্রকৃত মধ্যবর্তী Gap', fmtPrice(r.actualGap), match),
-            gapRow('নির্ধারিত Gap', fmtPrice(r.gap), match),
-            gapRow('মার্কেট Range (Min→Max)', `${fmtPrice(r.minP)} → ${fmtPrice(r.maxP)}`),
-            gapRow('মোট বরাদ্দ (Ads + Gap)', fmtPrice(r.maxBuy - r.minP + (r.minSell - r.maxBuy) + (r.maxP - r.minSell))),
-            gapRow('অবশিষ্ট জায়গা', fmtPrice(r.remainingSpace - (r.maxBuy - r.minP) - (r.maxP - r.minSell) - r.actualGap))
-        ].join('');
-    }
-
-    function render() {
-        errorBox.classList.remove('show');
-        let r;
-        try {
-            r = calculate();
-        } catch (err) {
-            resultWrap.classList.remove('show');
-            errorBox.textContent = '❌ ' + err.message;
-            errorBox.classList.add('show');
-            lastResult = null;
-            return;
-        }
-        lastResult = r;
+    function render(plan) {
         resultWrap.classList.add('show');
-        renderSummary(buySummary, 'buy', r.buyPrices);
-        renderSummary(sellSummary, 'sell', r.sellPrices);
-        renderAdList(buyList, r.buyPrices, 'Buy Ad', 'buy');
-        renderAdList(sellList, r.sellPrices, 'Sell Ad', 'sell');
-        renderGapInfo(r);
+        buyList.innerHTML = '';
+        sellList.innerHTML = '';
+        buySummary.innerHTML = '';
+        sellSummary.innerHTML = '';
+        execSummary.innerHTML = '';
+        execWarnings.innerHTML = '';
+        capitalSummary.innerHTML = '';
+        riskSummary.innerHTML = '';
+        riskWarnings.innerHTML = '';
+
+        // Executive Summary
+        const ex = plan;
+        const exRows = [
+            row('Total Investment', fmtBDT(ex.totalInvestment)),
+            row('Deployed Capital', fmtBDT(ex.deployedCapital) + ' (' + fmtPct(ex.inputs.deployPct) + ')'),
+            row('Reserve Capital', fmtBDT(ex.reserveCapital) + ' (' + fmtPct(ex.reservePct) + ')',
+                ex.reservePct < 10 ? 'warn' : ''),
+            row('Buy Capital Budget', fmtBDT(ex.buyCapitalBudget)),
+            row('Sell-Side Working Capital (cash)', fmtBDT(ex.sellSideWorkingCapital)),
+            row('Total Buy BDT Allocated', fmtBDT(ex.totalAllocatedBDT)),
+            row('Unallocated / Rounding', fmtBDT(ex.unallocatedBDT)),
+            row('Total USDT Qty (Buy)', fmtUSDT(ex.totalUsdtRequired)),
+            row('Weighted Avg Buy Price', fmtBDT(ex.wAvgBuy)),
+            row('Weighted Avg Planned Sell', fmtBDT(ex.wAvgSell)),
+            row('Highest Buy / Lowest Sell', fmtBDT(ex.highestBuy) + ' / ' + fmtBDT(ex.lowestSell)),
+            row('Actual Gap (vs Target)', fmtBDT(ex.actualGap) + ' vs ' + fmtBDT(ex.targetGap),
+                ex.actualGap < ex.targetGap - 1e-6 ? 'warn' : 'pos'),
+            row('Total Gross Profit', fmtBDT(ex.totalGrossProfit), 'pos'),
+            row('Total Est. Cost/Fee', '-' + fmtBDT(ex.totalCost), 'neg'),
+            row('Total Net Profit', fmtBDT(ex.totalNetProfit),
+                ex.totalNetProfit >= 0 ? 'pos' : 'neg'),
+            row('Total Stress Loss', fmtBDT(ex.totalStressLoss), 'neg'),
+            row('Viable / Risky / Not Viable', ex.viableCount + ' / ' + ex.riskyCount + ' / ' + ex.notViableCount)
+        ];
+        execSummary.innerHTML = exRows.join('');
+
+        // Warnings
+        if (plan.warnings.length) {
+            const w = document.createElement('div');
+            w.className = 'warn-box';
+            w.innerHTML = '<strong>⚠️ সতর্কতা:</strong><ul style="margin:6px 0 0 16px;line-height:1.6;">' +
+                plan.warnings.map(x => '<li>' + x + '</li>').join('') + '</ul>';
+            execWarnings.appendChild(w);
+        }
+
+        // Buy summary pills
+        buySummary.innerHTML =
+            '<span class="sum-pill">Ads: ' + plan.buyAds.length + '</span>' +
+            '<span class="sum-pill">Budget: ' + fmtBDT(plan.buyCapitalBudget) + '</span>' +
+            '<span class="sum-pill">Allocated: ' + fmtBDT(plan.totalAllocatedBDT) + '</span>' +
+            '<span class="sum-pill">USDT: ' + fmtUSDT(plan.totalUsdtRequired) + '</span>';
+
+        // Sell summary pills
+        const viableSells = plan.sellAds.filter(a => a.viable).length;
+        sellSummary.innerHTML =
+            '<span class="sum-pill">Ads: ' + plan.sellAds.length + '</span>' +
+            '<span class="sum-pill">Viable: ' + viableSells + ' / ' + plan.sellAds.length + '</span>' +
+            '<span class="sum-pill">Inv. USDT: ' + fmtUSDT(plan.totalUsdtRequired) + '</span>';
+
+        // Render ads
+        plan.buyAds.forEach(renderBuyAd);
+        plan.sellAds.forEach(renderSellAd);
+
+        // Capital allocation summary
+        capitalSummary.innerHTML = [
+            row('Total Investment', fmtBDT(plan.totalInvestment)),
+            row('Deployment %', fmtPct(plan.inputs.deployPct)),
+            row('Deployed Capital', fmtBDT(plan.deployedCapital)),
+            row('Buy Allocation %', fmtPct(plan.inputs.buyAllocPct)),
+            row('Buy Capital Budget', fmtBDT(plan.buyCapitalBudget)),
+            row('Sell-Side Working Capital', fmtBDT(plan.sellSideWorkingCapital)),
+            row('Reserve Capital', fmtBDT(plan.reserveCapital),
+                plan.reservePct < 10 ? 'warn' : ''),
+            row('Reserve %', fmtPct(plan.reservePct),
+                plan.reservePct < 10 ? 'warn' : ''),
+            row('Total BDT Allocated to Buy Ads', fmtBDT(plan.totalAllocatedBDT)),
+            row('Rounding Adjustment', fmtBDT(plan.unallocatedBDT)),
+            row('Double-Count Check', 'Buy BDT + Sell Working Capital = Deployed ✓', 'pos')
+        ].join('');
+
+        // Risk summary
+        riskSummary.innerHTML = [
+            row('Risk Profile', plan.inputs.riskProfile),
+            row('Target Net Margin', fmtPct(plan.inputs.netProfitPct)),
+            row('Cost/Fee Est.', fmtPct(plan.inputs.costPct)),
+            row('Stress Move', fmtPct(plan.inputs.stressPct)),
+            row('Total Net Profit', fmtBDT(plan.totalNetProfit),
+                plan.totalNetProfit >= 0 ? 'pos' : 'neg'),
+            row('Total Stress Loss', fmtBDT(plan.totalStressLoss), 'neg'),
+            row('Viable Ads', String(plan.viableCount), 'pos'),
+            row('High-Risk Ads', String(plan.riskyCount), plan.riskyCount > 0 ? 'warn' : 'pos'),
+            row('Not Viable Ads', String(plan.notViableCount), plan.notViableCount > 0 ? 'neg' : 'pos'),
+            row('Reserve %', fmtPct(plan.reservePct), plan.reservePct < 10 ? 'warn' : 'pos')
+        ].join('');
+
+        // Risk warnings
+        if (plan.notViableCount > 0) {
+            const rw = document.createElement('div');
+            rw.className = 'warn-box';
+            rw.innerHTML = '<strong>🚨 Not Viable:</strong> ' + plan.notViableCount +
+                'টি Buy Ad-এর জন্য target profit/cost পূরণকারী viable sell price পাওয়া যাচ্ছে না। ' +
+                'প্রয়োজনীয় sell price বাড়ান, fee/মার্জিন কমান, বা market range পরিবর্তন করুন।';
+            riskWarnings.appendChild(rw);
+        }
     }
 
-    /* ========================
-       COPY ALL
-       ======================== */
-    function buildBuyText() {
-        if (!lastResult) return '';
-        return lastResult.buyPrices
-            .map((p, i) => `Buy Ad ${i+1}: ${fmtPrice(p)}`).join('\n');
+    /* ============================================================
+       COPY ALL BUILDERS
+       ============================================================ */
+    function buildBuyText(p) {
+        return p.buyAds.map(a =>
+            'Buy Ad ' + a.index + ': ' + fmtBDT(a.buyPrice) +
+            ' | Alloc: ' + fmtBDT(a.allocation) +
+            ' | USDT: ' + fmtUSDT(a.usdtQty) +
+            ' | Sell: ' + fmtBDT(a.plannedSell) +
+            ' | Net: ' + fmtBDT(a.netProfit) +
+            ' | Risk: ' + a.riskStatus
+        ).join('\n');
     }
-    function buildSellText() {
-        if (!lastResult) return '';
-        return lastResult.sellPrices
-            .map((p, i) => `Sell Ad ${i+1}: ${fmtPrice(p)}`).join('\n');
+    function buildSellText(p) {
+        return p.sellAds.map(a =>
+            'Sell Ad ' + a.index + ': ' + fmtBDT(a.sellPrice) +
+            ' | Linked Buy #' + (a.linkedBuyIndex || '—') +
+            ' | Inventory: ' + fmtUSDT(a.inventoryRequired) +
+            ' | ' + (a.viable ? 'Viable' : 'Not Viable')
+        ).join('\n');
     }
-    function buildAllText() {
-        if (!lastResult) return '';
-        const r = lastResult;
-        return [
-            '=== BUY ADS ===',
-            buildBuyText(),
-            '',
-            '=== SELL ADS ===',
-            buildSellText(),
-            '',
-            `Actual Gap: ${fmtPrice(r.actualGap)} (Target: ${fmtPrice(r.gap)})`,
-            `Market Range: ${fmtPrice(r.minP)} → ${fmtPrice(r.maxP)}`
-        ].join('\n');
+    function buildAllText(p) {
+        const lines = [];
+        lines.push('=== EXECUTIVE SUMMARY ===');
+        lines.push('Total Investment: ' + fmtBDT(p.totalInvestment));
+        lines.push('Deployed: ' + fmtBDT(p.deployedCapital) + ' | Reserve: ' + fmtBDT(p.reserveCapital));
+        lines.push('Buy Budget: ' + fmtBDT(p.buyCapitalBudget));
+        lines.push('Total USDT: ' + fmtUSDT(p.totalUsdtRequired));
+        lines.push('Net Profit: ' + fmtBDT(p.totalNetProfit) + ' | Stress Loss: ' + fmtBDT(p.totalStressLoss));
+        lines.push('Viable/Risky/NotViable: ' + p.viableCount + '/' + p.riskyCount + '/' + p.notViableCount);
+        lines.push('');
+        lines.push('=== BUY ADS ===');
+        lines.push(buildBuyText(p));
+        lines.push('');
+        lines.push('=== SELL ADS ===');
+        lines.push(buildSellText(p));
+        lines.push('');
+        if (p.warnings.length) {
+            lines.push('=== WARNINGS ===');
+            p.warnings.forEach(w => lines.push('- ' + w));
+        }
+        return lines.join('\n');
     }
 
-    /* ========================
+    /* ============================================================
        STATE PERSIST
-       ======================== */
+       ============================================================ */
     function saveState() {
         const s = {};
         INPUT_IDS.forEach(id => {
@@ -604,53 +1254,100 @@
         });
     }
 
-    /* ========================
+    /* ============================================================
+       VALIDATION-DRIVEN RUN
+       ============================================================ */
+    function collectInputs() {
+        return {
+            minPrice: readNum('minPrice', 'Minimum Market Price', { min: 0 }),
+            maxPrice: readNum('maxPrice', 'Maximum Market Price', { min: 0 }),
+            buyCount: readNum('buyCount', 'Total Buy Ads', { min: 1, max: 50, integer: true }),
+            sellCount: readNum('sellCount', 'Total Sell Ads', { min: 1, max: 50, integer: true }),
+            buyInterval: readNum('buyInterval', 'Buy Price Interval', { min: 0 }),
+            sellInterval: readNum('sellInterval', 'Sell Price Interval', { min: 0 }),
+            gap: readNum('gap', 'Buy–Sell Minimum Gross Spread', { min: 0 }),
+            totalInvestment: readNum('totalInvestment', 'Total Investment', { min: 0.01 }),
+            deployPct: readNum('deployPct', 'Capital Deployment %', { min: 1, max: 100 }),
+            buyAllocPct: readNum('buyAllocPct', 'Buy Allocation %', { min: 1, max: 100 }),
+            riskProfile: (document.getElementById('riskProfile').value || 'balanced'),
+            netProfitPct: readNum('netProfitPct', 'Expected Net Profit Margin %', { min: 0 }),
+            costPct: readNum('costPct', 'Trading Cost / Fee %', { min: 0 }),
+            stressPct: readNum('stressPct', 'Downside Stress Move %', { min: 0 }),
+            maxPerAdPct: readNum('maxPerAdPct', 'Max Allocation Per Ad %', { min: 1, max: 100 })
+        };
+    }
+
+    function run() {
+        errorBox.classList.remove('show');
+        let inputs;
+        try {
+            inputs = collectInputs();
+        } catch (err) {
+            resultWrap.classList.remove('show');
+            errorBox.textContent = '❌ ' + err.message;
+            errorBox.classList.add('show');
+            lastPlan = null;
+            return;
+        }
+        const plan = buildTradingPlan(inputs);
+        if (!plan.ok) {
+            resultWrap.classList.remove('show');
+            errorBox.textContent = '❌ ' + plan.errors.join(' ');
+            errorBox.classList.add('show');
+            lastPlan = null;
+            return;
+        }
+        lastPlan = plan;
+        render(plan);
+    }
+
+    /* ============================================================
        EVENT BINDING
-       ======================== */
+       ============================================================ */
     document.getElementById('calcBtn').addEventListener('click', () => {
-        render();
-        if (lastResult) showToast('হিসাব সম্পন্ন');
+        run();
+        if (lastPlan) showToast('Trading plan তৈরি হয়েছে');
     });
 
     document.getElementById('resetBtn').addEventListener('click', () => {
         storage.remove(STORAGE_KEY);
-        document.getElementById('minPrice').value = '100';
-        document.getElementById('maxPrice').value = '200';
-        document.getElementById('buyCount').value = '4';
-        document.getElementById('sellCount').value = '4';
-        document.getElementById('buyInterval').value = '10';
-        document.getElementById('sellInterval').value = '10';
-        document.getElementById('gap').value = '10';
-        INPUT_IDS.forEach(id => document.getElementById(id).classList.remove('invalid'));
-        render();
-        showToast('রিসেট হয়েছে');
+        INPUT_IDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = DEFAULTS[id];
+        });
+        INPUT_IDS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('invalid');
+        });
+        run();
+        showToast('ডিফল্ট মানে রিসেট হয়েছে');
     });
 
     document.getElementById('copyAllBtn').addEventListener('click', () => {
-        if (!lastResult) { showToast('আগে হিসাব করুন'); return; }
-        copyText(buildAllText(), 'সব (Buy + Sell)');
+        if (!lastPlan) { showToast('আগে হিসাব করুন'); return; }
+        copyText(buildAllText(lastPlan), 'সম্পূর্ণ Plan');
     });
     document.getElementById('copyAllBuy').addEventListener('click', () => {
-        if (!lastResult) { showToast('আগে হিসাব করুন'); return; }
-        copyText(buildBuyText(), 'সব Buy');
+        if (!lastPlan) { showToast('আগে হিসাব করুন'); return; }
+        copyText(buildBuyText(lastPlan), 'সব Buy');
     });
     document.getElementById('copyAllSell').addEventListener('click', () => {
-        if (!lastResult) { showToast('আগে হিসাব করুন'); return; }
-        copyText(buildSellText(), 'সব Sell');
+        if (!lastPlan) { showToast('আগে হিসাব করুন'); return; }
+        copyText(buildSellText(lastPlan), 'সব Sell');
     });
 
-    // Live update — ইনপুট বদলালেই রিক্যালকুলেট
+    // Live recalculation on input
     INPUT_IDS.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         el.addEventListener('input', () => {
             el.classList.remove('invalid');
             saveState();
-            render();
+            run();
         });
         el.addEventListener('change', () => {
             saveState();
-            render();
+            run();
         });
     });
 
@@ -659,20 +1356,20 @@
         if (document.visibilityState === 'hidden') saveState();
     });
 
-    /* ========================
+    /* ============================================================
        INIT
-       ======================== */
+       ============================================================ */
     restoreState();
-    render();
+    run();
 
-    /* ========================
-       SERVICE WORKER
-       ======================== */
+    /* ============================================================
+       SERVICE WORKER (PWA preserved)
+       ============================================================ */
     (function registerSW() {
         if (!('serviceWorker' in navigator)) return;
         if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
         const swCode = `
-            const CACHE = 'p2p-ad-calc-v1';
+            const CACHE = 'p2p-plan-calc-v2';
             self.addEventListener('install', e => self.skipWaiting());
             self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
             self.addEventListener('fetch', e => {
